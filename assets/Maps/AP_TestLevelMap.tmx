@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="26">
+ <tileset firstgid="1" source="AngryPigeonsTestTileset.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="40" height="23">
+  <data encoding="base64" compression="zlib">
+   eJztkksKgDAMBaO7unFhofe/qRUspEH8RLSCMzD7ySMiAADgIa0C/IEuOyj7tjkVS1vMjsrQtKjeyrZ5+uz+d7U9nj7dtHXjk+71la63m476vtBVnOT6TyCedQbYWBDa
+  </data>
+ </layer>
+ <objectgroup id="2" name="collision-layer">
+  <object id="1" x="128" y="416">
+   <polyline points="-128,64 -32,64 -32,32 0,32 0,0 160,0 160,192 288,192 288,160 350.609,160 350.609,128 416,128 416,96 512,96 512,64 1152,64"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="wood-layer">
+  <object id="18" x="896" y="320">
+   <polygon points="0,0 0,160 32,160 32,0"/>
+  </object>
+  <object id="19" x="1088" y="320">
+   <polygon points="0,0 0,160 32,160 32,0"/>
+  </object>
+  <object id="20" x="864" y="288">
+   <polygon points="0,0 288,0 288,32 0,32"/>
+  </object>
+  <object id="22" x="1120" y="256">
+   <polygon points="0,0 32,0 32,32 0,32"/>
+  </object>
+  <object id="23" x="864" y="256">
+   <polygon points="0,0 32,0 32,32 0,32"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="sling-shot">
+  <object id="25" x="160" y="288">
+   <polygon points="0,0 96,0 96,128 0,128"/>
+  </object>
+ </objectgroup>
+</map>
