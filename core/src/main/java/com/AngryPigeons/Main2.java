@@ -7,24 +7,28 @@ import com.AngryPigeons.Utils.Scene2DUtils;
 import com.AngryPigeons.views.*;
 import com.badlogic.gdx.Game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 // Scene2D entirely
 public class Main2 extends Game {
+
     // Only one instance of these classes is ever available
     private HomeScreen homeScreen;
     private LevelSelectorScreen levelSelectorScreen;
     private WinScreen winScreen;
-    private LevelRenderer levelRenderer;
+    // private LevelRenderer levelRenderer;
     private LoseScreen loseScreen;
+
+    private List<LevelRenderer> levelRendererList;
+    private List<LevelScreen> levelScreenList;
 
     @Override
     public void create() {
         Scene2DUtils.setBackgroundTexture("textures/main.jpg");
         Scene2DUtils.setMusic("music/music2.wav");
-        // Scene2DUtils.setSkin("skins/lgdxs/lgdxs-ui.json");
-        // Scene2DUtils.setSkin("skins/comic/comic-ui.json");
-        // Scene2DUtils.setSkin("skins/golden-spiral/golden-ui-skin.json");
         Scene2DUtils.setSkin("skins/freezing/freezing-ui.json");
 
         Music music = Scene2DUtils.music;
@@ -34,14 +38,19 @@ public class Main2 extends Game {
 
         homeScreen = new HomeScreen(this);
         levelSelectorScreen = new LevelSelectorScreen(this);
+        levelRendererList = new ArrayList<>();
+        levelScreenList = new ArrayList<>();
 
-        Level level1 = new Level();
-        Level level2 = new Level();
-        Level level3 = new Level();
+//        Level level1 = new Level();
+//        Level level2 = new Level();
+//        Level level3 = new Level();
+//
+//        levelSelectorScreen.addLevel(level1);
+//        levelSelectorScreen.addLevel(level2);
+//        levelSelectorScreen.addLevel(level3);
 
-        levelSelectorScreen.addLevel(level1);
-        levelSelectorScreen.addLevel(level2);
-        levelSelectorScreen.addLevel(level3);
+        LevelScreen levelScreen1 = new LevelScreen("Maps/AP_TestLevelMap.tmx");
+        levelScreenList.add(levelScreen1);
 
         this.changeScreen(Screens.HOMESCREEN);
     }
@@ -81,14 +90,14 @@ public class Main2 extends Game {
             Gdx.input.setInputProcessor(winScreen.getStage());
         }
 
-        else if (screen == Screens.LEVELRENDERER) {
-            if (levelRenderer == null) {
-                levelRenderer = new LevelRenderer(this);
-            }
-
-            this.setScreen(levelRenderer);
-            Gdx.input.setInputProcessor(levelRenderer.getStage());
-        }
+//        else if (screen == Screens.LEVELRENDERER) {
+//            if (levelRenderer == null) {
+//                levelRenderer = new LevelRenderer(this);
+//            }
+//
+//            this.setScreen(levelRenderer);
+//            Gdx.input.setInputProcessor(levelRenderer.getStage());
+//        }
 
         else if (screen == Screens.LOSESCREEN) {
             if (loseScreen == null) {
@@ -98,6 +107,24 @@ public class Main2 extends Game {
             this.setScreen(loseScreen);
             Gdx.input.setInputProcessor(loseScreen.getStage());
         }
+    }
+
+    public void changeLevel(int index) {
+
+        LevelRenderer levelRenderer;
+        LevelScreen levelScreen = levelScreenList.get(index);
+
+        try {
+            levelRenderer = levelRendererList.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            levelRenderer = new LevelRenderer(this, levelScreen);
+            levelRendererList.add(levelRenderer);
+        }
+
+        levelScreen.setLevelRenderer(levelRenderer);
+
+        this.setScreen(levelRenderer);
+        Gdx.input.setInputProcessor(levelRenderer.getStage());
     }
 
     @Override
@@ -117,7 +144,11 @@ public class Main2 extends Game {
         return winScreen;
     }
 
-    public LevelRenderer getLevelRenderer() {
-        return levelRenderer;
+//    public LevelRenderer getLevelRenderer() {
+//        return levelRenderer;
+//    }
+
+    public List<LevelScreen> getLevelScreenList() {
+        return levelScreenList;
     }
 }

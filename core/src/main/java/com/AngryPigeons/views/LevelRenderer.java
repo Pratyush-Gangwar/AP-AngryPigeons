@@ -1,5 +1,6 @@
 package com.AngryPigeons.views;
 
+import com.AngryPigeons.LevelScreen;
 import com.AngryPigeons.Main2;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -39,53 +40,50 @@ public class LevelRenderer implements Screen {
 
     private Table pauseMenuTable;
     private boolean isPaused;
+    private boolean wasHidden;
+
+    private LevelScreen levelScreen;
 
     // Box 2D
-    private final float SCALE = 1.0f;
+//    private final float SCALE = 1.0f;
+//
+//    private OrthographicCamera camera;
+//
+//    private OrthogonalTiledMapRenderer tmr;
+//    private TiledMap map;
+//
+//    Box2DDebugRenderer b2dr;
+//    private World world;
+//
+//    private SpriteBatch batch;
+//    private Texture background_tex, ice_tex, wood_tex, stone_tex;
+//
+//    ArrayList<Body> woodBlocks;
 
-    private OrthographicCamera camera;
-
-    private OrthogonalTiledMapRenderer tmr;
-    private TiledMap map;
-
-    Box2DDebugRenderer b2dr;
-    private World world;
-
-    private SpriteBatch batch;
-    private Texture background_tex, ice_tex, wood_tex, stone_tex;
-
-    ArrayList<Body> woodBlocks;
-
-    public LevelRenderer(Main2 main) {
+    public LevelRenderer(Main2 main, LevelScreen levelScreen) {
         // Scene2D
         this.main = main;
+        this.levelScreen = levelScreen;
         this.isPaused = false;
+        this.wasHidden = false;
+
         stage = new Stage( new ScreenViewport() );
+
         setupPauseMenu();
         setupMainTable();
+
     }
 
     // Box2D
     @Override
     public void show(){
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
+        if (wasHidden) {
+            wasHidden = false;
+            isPaused = false;
+            return;
+        }
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, w/SCALE, h/SCALE);
-
-        world = new World(new Vector2(0, -9.8f), false);
-
-        b2dr = new Box2DDebugRenderer();
-
-        batch = new SpriteBatch();
-        background_tex = new Texture("Images/Background.jpg");
-        wood_tex = new Texture("Images/Charmander.png");
-
-        map = new TmxMapLoader().load("Maps/AP_TestLevelMap.tmx");
-        tmr = new OrthogonalTiledMapRenderer(map);
-        TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("collision-layer").getObjects(), true);
-        woodBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("wood-layer").getObjects(), false);
+        levelScreen.show();
     }
 
     @Override
@@ -101,14 +99,15 @@ public class LevelRenderer implements Screen {
 
         if (isPaused) {
             stage.addActor(pauseMenuTable);
-            sleepBodies(); // pause physics for all bodies
+            levelScreen.sleepBodies(); // pause physics for all bodies
         } else {
             pauseMenuTable.remove();
         }
 
         // Box2D
         // must render game before pause menu
-        renderGame(v);
+        // renderGame(v);
+        levelScreen.render(v);
 
         // Scene2D
         stage.act(Gdx.graphics.getDeltaTime());
@@ -121,61 +120,42 @@ public class LevelRenderer implements Screen {
         stage.getViewport().update(width, height, true);
 
         // Box2D
-        camera.setToOrtho(false, (float) width /SCALE, (float) height /SCALE);
+        // camera.setToOrtho(false, (float) width /SCALE, (float) height /SCALE);
+        levelScreen.resize(width, height);
     }
 
 
     // Box2D
-    public void update(float delta){
+//    public void update(float delta){
+//
+//        // only step through physics simulation if not paused.
+//        if (!isPaused) {
+//            world.step(1 / 60f, 6, 2);
+//        }
+//
+//        // camera updated regardless of pause status
+//        camera.update();
+//    }
 
-        // only step through physics simulation if not paused.
-        if (!isPaused) {
-            world.step(1 / 60f, 6, 2);
-        }
-
-        // camera updated regardless of pause status
-        camera.update();
-    }
-
-    // Box2D
-    private void renderGame(float delta) {
-        update(Gdx.graphics.getDeltaTime());
-
-        batch.begin();
-        batch.draw(background_tex, 0, 0, camera.viewportWidth, camera.viewportHeight);
-
-        for (Body wood: woodBlocks){
-            batch.draw(wood_tex, wood.getPosition().x*PPM - ((float) wood_tex.getWidth()/2), wood.getPosition().y*PPM - ((float) wood_tex.getHeight()/2));
-        }
-
-        batch.end();
-
-        tmr.setView(camera);
-        tmr.render();
-
-        b2dr.render(world, camera.combined.scl(PPM));
-
-    }
-
-    // Box2D
-    private void sleepBodies() {
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
-
-        for(Body body : bodies) {
-            body.setAwake(false);
-        }
-    }
-
-    // Box2D
-    private void wakeBodies() {
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
-
-        for(Body body : bodies) {
-            body.setAwake(true);
-        }
-    }
+//    // Box2D
+//    private void renderGame(float delta) {
+//        update(Gdx.graphics.getDeltaTime());
+//
+//        batch.begin();
+//        batch.draw(background_tex, 0, 0, camera.viewportWidth, camera.viewportHeight);
+//
+//        for (Body wood: woodBlocks){
+//            batch.draw(wood_tex, wood.getPosition().x*PPM - ((float) wood_tex.getWidth()/2), wood.getPosition().y*PPM - ((float) wood_tex.getHeight()/2));
+//        }
+//
+//        batch.end();
+//
+//        tmr.setView(camera);
+//        tmr.render();
+//
+//        b2dr.render(world, camera.combined.scl(PPM));
+//
+//    }
 
     // Scene2D
     private void setTransparentBackground() {
@@ -236,7 +216,7 @@ public class LevelRenderer implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("resume clicked");
                 isPaused = false;
-                wakeBodies(); // resume physics for paused bodies
+                levelScreen.wakeBodies(); // resume physics for paused bodies
             }
         });
 
@@ -250,7 +230,7 @@ public class LevelRenderer implements Screen {
         debugCompleteBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getLevelSelectorScreen().getLevelList().get(1).setComplete(true);
+                // main.getLevelSelectorScreen().getLevelList().get(1).setComplete(true);
                 main.changeScreen(Screens.WINSCREEN);
             }
         });
@@ -302,21 +282,17 @@ public class LevelRenderer implements Screen {
         stage.addActor(mainTable);
     }
 
-    // Scene2D
-    public Stage getStage() {
-        return stage;
-    }
-
     @Override
     public void dispose() {
         // Scene2D
         stage.dispose();
 
         // Box2D
-        world.dispose();
-        b2dr.dispose();
-        tmr.dispose();
-        map.dispose();
+//        world.dispose();
+//        b2dr.dispose();
+//        tmr.dispose();
+//        map.dispose();
+        levelScreen.dispose();
     }
 
     // Scene2D
@@ -334,6 +310,20 @@ public class LevelRenderer implements Screen {
     // Scene2D
     @Override
     public void hide() {
+        isPaused = true;
+        wasHidden = true;
+    }
 
+    // Scene2D
+    public Stage getStage() {
+        return stage;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
     }
 }
