@@ -1,5 +1,6 @@
 package com.AngryPigeons.views;
 
+import com.AngryPigeons.LevelScreen;
 import com.AngryPigeons.Main2;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,11 +28,11 @@ public class LevelSelectorScreen implements Screen {
 
     private boolean wasHidden;
 
-    private List<Level> levelList;
+//    private List<Level> levelList;
 
     public LevelSelectorScreen(Main2 main) {
         this.main = main;
-        levelList = new ArrayList<>();
+//        levelList = new ArrayList<>();
         wasHidden = false;
 
         stage = new Stage( new ScreenViewport() );
@@ -45,9 +46,10 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
-        for(int i = 0; i < levelList.size(); i++) {
 
-            Level level = levelList.get(i);
+        for(int i = 0; i < main.getLevelScreenList().size(); i++) {
+
+            LevelScreen levelScreen = main.getLevelScreenList().get(i);
             Actor actor = table.getChild(i);
 
             TextButton levelButton;
@@ -57,7 +59,7 @@ public class LevelSelectorScreen implements Screen {
                 continue;
             }
 
-            if (level.isComplete()) {
+            if (levelScreen.isComplete()) {
                 levelButton.setColor(new Color(54, 134, 255, 255));
                 levelButton.setTouchable(Touchable.enabled);
             }
@@ -73,13 +75,15 @@ public class LevelSelectorScreen implements Screen {
             return;
         }
 
-        for(int i = 0; i < levelList.size(); i++) {
+        for(int i = 0; i < main.getLevelScreenList().size(); i++) {
 
-            Level level = levelList.get(i);
+            final int iCopy = i;
+
+            LevelScreen levelScreen = main.getLevelScreenList().get(i);
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
 
 
-            if (!level.isComplete() && i != 0) {
+            if (!levelScreen.isComplete() && i != 0) {
                 levelButton.setColor(Color.GRAY); // change color
                 levelButton.setTouchable(Touchable.disabled);
             }
@@ -87,7 +91,8 @@ public class LevelSelectorScreen implements Screen {
             levelButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    main.changeScreen(Screens.LEVELRENDERER);
+                    // main.changeScreen(Screens.LEVELRENDERER);
+                    main.changeLevel(iCopy);
                 }
             });
 
@@ -143,13 +148,13 @@ public class LevelSelectorScreen implements Screen {
         stage.dispose();
     }
 
-    public void addLevel(Level level) {
-        this.levelList.add(level);
-    }
-
-    public List<Level> getLevelList() {
-        return this.levelList;
-    }
+//    public void addLevel(Level level) {
+//        this.levelList.add(level);
+//    }
+//
+//    public List<Level> getLevelList() {
+//        return this.levelList;
+//    }
 
     public Stage getStage() {
         return stage;
