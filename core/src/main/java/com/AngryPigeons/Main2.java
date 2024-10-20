@@ -2,7 +2,6 @@ package com.AngryPigeons;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.AngryPigeons.domain.Level;
 import com.AngryPigeons.Utils.Scene2DUtils;
 import com.AngryPigeons.views.*;
 import com.badlogic.gdx.Game;
@@ -40,14 +39,6 @@ public class Main2 extends Game {
         levelSelectorScreen = new LevelSelectorScreen(this);
         levelRendererList = new ArrayList<>();
         levelScreenList = new ArrayList<>();
-
-//        Level level1 = new Level();
-//        Level level2 = new Level();
-//        Level level3 = new Level();
-//
-//        levelSelectorScreen.addLevel(level1);
-//        levelSelectorScreen.addLevel(level2);
-//        levelSelectorScreen.addLevel(level3);
 
         LevelScreen levelScreen1 = new LevelScreen("Maps/AP_TestLevelMap.tmx");
         levelScreenList.add(levelScreen1);

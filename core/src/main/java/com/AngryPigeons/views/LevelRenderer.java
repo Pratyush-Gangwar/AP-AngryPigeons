@@ -120,42 +120,8 @@ public class LevelRenderer implements Screen {
         stage.getViewport().update(width, height, true);
 
         // Box2D
-        // camera.setToOrtho(false, (float) width /SCALE, (float) height /SCALE);
         levelScreen.resize(width, height);
     }
-
-
-    // Box2D
-//    public void update(float delta){
-//
-//        // only step through physics simulation if not paused.
-//        if (!isPaused) {
-//            world.step(1 / 60f, 6, 2);
-//        }
-//
-//        // camera updated regardless of pause status
-//        camera.update();
-//    }
-
-//    // Box2D
-//    private void renderGame(float delta) {
-//        update(Gdx.graphics.getDeltaTime());
-//
-//        batch.begin();
-//        batch.draw(background_tex, 0, 0, camera.viewportWidth, camera.viewportHeight);
-//
-//        for (Body wood: woodBlocks){
-//            batch.draw(wood_tex, wood.getPosition().x*PPM - ((float) wood_tex.getWidth()/2), wood.getPosition().y*PPM - ((float) wood_tex.getHeight()/2));
-//        }
-//
-//        batch.end();
-//
-//        tmr.setView(camera);
-//        tmr.render();
-//
-//        b2dr.render(world, camera.combined.scl(PPM));
-//
-//    }
 
     // Scene2D
     private void setTransparentBackground() {
@@ -286,12 +252,6 @@ public class LevelRenderer implements Screen {
     public void dispose() {
         // Scene2D
         stage.dispose();
-
-        // Box2D
-//        world.dispose();
-//        b2dr.dispose();
-//        tmr.dispose();
-//        map.dispose();
         levelScreen.dispose();
     }
 

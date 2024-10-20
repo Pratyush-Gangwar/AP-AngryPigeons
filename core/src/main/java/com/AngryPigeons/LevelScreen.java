@@ -30,9 +30,11 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 public class LevelScreen implements Screen{
 
     private final float SCALE = 1.0f;
-    // private final Main main;
+
+    // Scene2D integration start
     private LevelRenderer levelRenderer;
     private boolean isComplete;
+    // Scene2D integration end
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -54,13 +56,7 @@ public class LevelScreen implements Screen{
     ArrayList<Material> stoneBlocks;
     ArrayList<Material> slingShot;
 
-//    public LevelScreen(TiledMap map, ArrayList<Bird> birds){
-//    public LevelScreen(TiledMap map, Main main){
-////        this.map = map;
-//        // this.main = main;
-////        this.birds = birds;
-//    }
-
+    // ~~~ Scene2D integration start ~~~
     public LevelScreen(String tilemapPath) {
         map = new TmxMapLoader().load(tilemapPath);
         isComplete = false;
@@ -69,6 +65,46 @@ public class LevelScreen implements Screen{
     public void setLevelRenderer(LevelRenderer levelRenderer) {
         this.levelRenderer = levelRenderer;
     }
+
+    public void sleepBodies() {
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+
+        for(Body body : bodies) {
+            body.setAwake(false);
+        }
+    }
+
+    public void wakeBodies() {
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+
+        for(Body body : bodies) {
+            body.setAwake(true);
+        }
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public void update(float delta){
+
+        // only step through physics simulation if not paused.
+        if (!levelRenderer.isPaused()) {
+            world.step(1 / 60f, 6, 2);
+            inputUpdate(delta);
+        }
+
+        // camera updated regardless of pause status
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+    }
+    // ~~~ Scene2D integration end ~~~
 
     @Override
     public void show(){
@@ -109,8 +145,6 @@ public class LevelScreen implements Screen{
         update(Gdx.graphics.getDeltaTime());
 
         //Rendering
-//        Gdx.gl.glClearColor(0f,0f, 0f,1f);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         float cameraCenterX = camera.position.x;
         float cameraCenterY = camera.position.y;
@@ -148,32 +182,6 @@ public class LevelScreen implements Screen{
 
 //      b2dr.render(world, camera.combined.scl(PPM));
 
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-//            Gdx.app.exit();
-//        }
-
-    }
-
-//    public void update(float delta){
-//        world.step(1/60f, 6, 2);
-//        inputUpdate(delta);
-//        camera.update();
-//
-////        tmr.setView(camera);//To ensure map moves with player
-//        batch.setProjectionMatrix(camera.combined);//To ensure texture moves with player
-//    }
-
-        public void update(float delta){
-
-        // only step through physics simulation if not paused.
-        if (!levelRenderer.isPaused()) {
-            world.step(1 / 60f, 6, 2);
-            inputUpdate(delta);
-        }
-
-        // camera updated regardless of pause status
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
     }
 
     public void inputUpdate(float delta){}
@@ -191,7 +199,6 @@ public class LevelScreen implements Screen{
 
     @Override
     public void resize(int w, int h) {
-        // camera.setToOrtho(false, (float) w /SCALE, (float) h /SCALE);
         viewport.update(w, h);
     }
 
@@ -203,33 +210,5 @@ public class LevelScreen implements Screen{
     @Override
     public void resume() {
 
-    }
-
-    // Box2D
-    public void sleepBodies() {
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
-
-        for(Body body : bodies) {
-            body.setAwake(false);
-        }
-    }
-
-    // Box2D
-    public void wakeBodies() {
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
-
-        for(Body body : bodies) {
-            body.setAwake(true);
-        }
-    }
-
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(boolean isComplete) {
-        this.isComplete = isComplete;
     }
 }
