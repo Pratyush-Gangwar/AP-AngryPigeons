@@ -4,7 +4,6 @@ import com.AngryPigeons.Main2;
 import com.AngryPigeons.Utils.Constants;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.AngryPigeons.Main;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {

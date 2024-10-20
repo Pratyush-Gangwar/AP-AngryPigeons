@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Main2;
 import com.AngryPigeons.Utils.Scene2DUtils;
-import com.AngryPigeons.domain.Level;
 
 import java.util.ArrayList;
 import java.util.List;
