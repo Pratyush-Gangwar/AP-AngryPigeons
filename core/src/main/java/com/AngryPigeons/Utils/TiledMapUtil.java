@@ -2,6 +2,7 @@ package com.AngryPigeons.Utils;
 
 import com.AngryPigeons.Material;
 import com.AngryPigeons.Pig;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.CircleMapObject;
@@ -57,7 +58,8 @@ public class TiledMapUtil {
 
         for (MapObject object: objects){
             float world_x = (float) object.getProperties().get("x")/PPM;
-            float world_y = (float) object.getProperties().get("y")/PPM;
+            float world_y = ((float) object.getProperties().get("y"))/PPM;
+            System.out.println(world_x +" WORLD "+ world_y);
             CircleShape shape;
             System.out.println(object);
             if (object instanceof EllipseMapObject){
@@ -67,7 +69,7 @@ public class TiledMapUtil {
             else {
                 continue;
             }
-            shape.setPosition(new Vector2(world_x, world_y));
+            shape.setPosition(new Vector2(world_x+shape.getRadius(), world_y+shape.getRadius()));
             Body body;
             BodyDef def = new BodyDef();
             if (isStatic) {
@@ -78,11 +80,10 @@ public class TiledMapUtil {
             }
             body = world.createBody(def);
             body.createFixture(shape, 1f);
+            pigs.add(new Pig(body, world_x, world_y));
             shape.dispose();
 
             System.out.println("r = "+shape.getRadius()+" "+object.getProperties().get("x")+" x "+(float) object.getProperties().get("y"));
-
-            pigs.add(new Pig(body, world_x, world_y));
         }
         return pigs;
     }

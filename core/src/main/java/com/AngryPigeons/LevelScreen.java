@@ -46,6 +46,7 @@ public class LevelScreen implements Screen{
 
     private SpriteBatch batch;
     private Texture background_tex, ice_tex, wood_tex, stone_tex;
+    private Texture largePigTex;
     private Texture slingShot_tex;
     private Texture cross_hair;
 
@@ -128,6 +129,7 @@ public class LevelScreen implements Screen{
 //        ice_tex = new Texture("Images/Background.png");
         wood_tex = new Texture("Images/Wood.jpg");
 //        stone_tex = new Texture("Images/Background.png");
+        largePigTex = new Texture("Images/LargePig.png");
         slingShot_tex = new Texture("Images/Slingshot.png");
         cross_hair = new Texture("Images/images.png");
 
@@ -140,7 +142,7 @@ public class LevelScreen implements Screen{
         woodBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("wood-layer").getObjects(), false);
 //      stoneBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("stone-blocks").getObjects());
 
-        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
+        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), true, 3);
 
         slingShot = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("sling-shot").getObjects(), true);
     }
@@ -179,6 +181,10 @@ public class LevelScreen implements Screen{
 //        for (Body stone: stoneBlocks){
 //            batch.draw(stone_tex, stone.getPosition().x*PPM - ((float) stone_tex.getWidth()/2), stone.getPosition().y*PPM - ((float) stone_tex.getHeight()/2));
 //        }
+        for (Pig largePig: largePigs){
+//            System.out.println(largePig.og_x+" x "+largePig.og_y);
+            batch.draw(largePigTex, (largePig.og_x*PPM)+(largePig.body.getPosition().x*PPM), (largePig.og_y*PPM)+(largePig.body.getPosition().y*PPM), 128, 128);
+        }
 
         tmr.setView(camera);
         tmr.render();

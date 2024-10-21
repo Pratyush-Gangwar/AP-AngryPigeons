@@ -34,7 +34,7 @@
   </object>
  </objectgroup>
  <objectgroup id="7" name="large-pigs">
-  <object id="31" x="992" y="352" width="128" height="128">
+  <object id="31" x="960" y="352" width="128" height="128">
    <ellipse/>
   </object>
  </objectgroup>
