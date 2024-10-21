@@ -25,7 +25,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
-//import com.AngryPigeons.Utils.TexturesUtil;
 
 public class LevelScreen implements Screen{
 
@@ -50,11 +49,15 @@ public class LevelScreen implements Screen{
     private Texture slingShot_tex;
     private Texture cross_hair;
 
-//    ArrayList<Bird> birds;
     ArrayList<Material> iceBlocks;
     ArrayList<Material> woodBlocks;
     ArrayList<Material> stoneBlocks;
     ArrayList<Material> slingShot;
+
+    //    ArrayList<Bird> birds;
+    ArrayList<Pig> smallPigs;
+    ArrayList<Pig> mediumPigs;
+    ArrayList<Pig> largePigs;
 
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(String tilemapPath) {
@@ -133,9 +136,11 @@ public class LevelScreen implements Screen{
 
         TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("collision-layer").getObjects(), true);
 
-        //      iceBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("ice-blocks").getObjects());
+//        iceBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("ice-blocks").getObjects());
         woodBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("wood-layer").getObjects(), false);
 //      stoneBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("stone-blocks").getObjects());
+
+        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
 
         slingShot = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("sling-shot").getObjects(), true);
     }
@@ -150,7 +155,7 @@ public class LevelScreen implements Screen{
         float cameraCenterY = camera.position.y;
         float crosshairSize = 5f;
 
-        System.out.println(cameraCenterX+" "+cameraCenterY);
+//        System.out.println(cameraCenterX+" "+cameraCenterY);
 
         batch.begin();
 //        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING
@@ -180,7 +185,7 @@ public class LevelScreen implements Screen{
 
         batch.end();
 
-//      b2dr.render(world, camera.combined.scl(PPM));
+      b2dr.render(world, camera.combined.scl(PPM));
 
     }
 
