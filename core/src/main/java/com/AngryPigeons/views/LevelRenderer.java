@@ -17,10 +17,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -37,6 +34,8 @@ public class LevelRenderer implements Screen {
     private Main2 main;
     private Stage stage;
     private Table mainTable;
+    private Dialog musicDialog;
+    private Dialog exitDialog;
 
     private Table pauseMenuTable;
     private boolean isPaused;
@@ -44,28 +43,15 @@ public class LevelRenderer implements Screen {
 
     private LevelScreen levelScreen;
 
-    // Box 2D
-//    private final float SCALE = 1.0f;
-//
-//    private OrthographicCamera camera;
-//
-//    private OrthogonalTiledMapRenderer tmr;
-//    private TiledMap map;
-//
-//    Box2DDebugRenderer b2dr;
-//    private World world;
-//
-//    private SpriteBatch batch;
-//    private Texture background_tex, ice_tex, wood_tex, stone_tex;
-//
-//    ArrayList<Body> woodBlocks;
-
     public LevelRenderer(Main2 main, LevelScreen levelScreen) {
         // Scene2D
         this.main = main;
         this.levelScreen = levelScreen;
         this.isPaused = false;
         this.wasHidden = false;
+
+        musicDialog = null;
+        exitDialog = null;
 
         stage = new Stage( new ScreenViewport() );
 
@@ -118,6 +104,13 @@ public class LevelRenderer implements Screen {
     public void resize(int width, int height) {
         // Scene2D
         stage.getViewport().update(width, height, true);
+        if (musicDialog != null) {
+            musicDialog.setPosition((Gdx.graphics.getWidth() - musicDialog.getWidth())/2, (Gdx.graphics.getHeight() - musicDialog.getHeight())/2);
+        }
+
+        if (exitDialog != null) {
+            exitDialog.setPosition((Gdx.graphics.getWidth() - exitDialog.getWidth())/2, (Gdx.graphics.getHeight() - exitDialog.getHeight())/2);
+        }
 
         // Box2D
         levelScreen.resize(width, height);
@@ -196,7 +189,8 @@ public class LevelRenderer implements Screen {
         debugCompleteBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // main.getLevelSelectorScreen().getLevelList().get(1).setComplete(true);
+                levelScreen.setComplete(true);
+                main.getLevelSelectorScreen().incrementLastCompleted();
                 main.changeScreen(Screens.WINSCREEN);
             }
         });
@@ -211,14 +205,16 @@ public class LevelRenderer implements Screen {
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Scene2DUtils.makeExitWindow(stage);
+                exitDialog = Scene2DUtils.makeExitWindow();
+                exitDialog.show(stage);
             }
         });
 
         musicBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Scene2DUtils.makeMusicControlWindow(stage);
+                musicDialog = Scene2DUtils.makeMusicControlWindow();
+                musicDialog.show(stage);
             }
         });
 

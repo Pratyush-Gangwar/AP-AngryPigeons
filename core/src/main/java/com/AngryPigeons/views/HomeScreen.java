@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -12,12 +13,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Main2;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
+import java.util.List;
+
 
 public class HomeScreen implements Screen {
 
     private Main2 main; // orchestrator class
     private Stage stage;
     private Table table;
+    private Dialog musicDialog;
+    private Dialog exitDialog;
 
     private boolean wasHidden; // to prevent multiple rendering
 
@@ -26,6 +31,9 @@ public class HomeScreen implements Screen {
 
         this.main = main;
         wasHidden = false;
+
+        musicDialog = null;
+        exitDialog = null;
 
         stage = new Stage( new ScreenViewport() ); // stage controls all GUI elements
 
@@ -48,7 +56,7 @@ public class HomeScreen implements Screen {
         }
 
         // expandY() makes sure that the Label and Button have space between them
-        table.add(Scene2DUtils.makeLabel("Angry Pigeons", 100)).expandY();
+        table.add(Scene2DUtils.makeLabel("Angry Pigeons", 150)).expandY();
         table.row(); // new row
 
         // width(200) - 200 pixels wide
@@ -77,14 +85,16 @@ public class HomeScreen implements Screen {
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Scene2DUtils.makeExitWindow(stage);
+                exitDialog = Scene2DUtils.makeExitWindow();
+                exitDialog.show(stage); // adds dialog to stage, sets dialog as the input processor
             }
         });
 
         musicBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Scene2DUtils.makeMusicControlWindow(stage);
+                musicDialog = Scene2DUtils.makeMusicControlWindow();
+                musicDialog.show(stage);
             }
         });
 
@@ -105,6 +115,17 @@ public class HomeScreen implements Screen {
     public void resize(int width, int height) {
         // ensure the stage resizes appropriate
         stage.getViewport().update(width, height, true);
+
+        // before user clicks on music or exit button, both of these are null
+        // resize with screen
+        if (musicDialog != null) {
+            musicDialog.setPosition((Gdx.graphics.getWidth() - musicDialog.getWidth())/2, (Gdx.graphics.getHeight() - musicDialog.getHeight())/2);
+        }
+
+        if (exitDialog != null) {
+            exitDialog.setPosition((Gdx.graphics.getWidth() - exitDialog.getWidth())/2, (Gdx.graphics.getHeight() - exitDialog.getHeight())/2);
+        }
+
     }
 
     @Override

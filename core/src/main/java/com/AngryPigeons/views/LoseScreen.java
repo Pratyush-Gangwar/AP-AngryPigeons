@@ -43,6 +43,7 @@ public class LoseScreen implements Screen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // automatically change after 10 seconds
         if (duration >= 10.0f) {
             main.changeScreen(Screens.HOMESCREEN);
         }
