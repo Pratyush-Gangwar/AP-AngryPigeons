@@ -26,13 +26,12 @@ public class LevelSelectorScreen implements Screen {
     private Table table;
 
     private boolean wasHidden;
-
-//    private List<Level> levelList;
+    private int lastCompleted;
 
     public LevelSelectorScreen(Main2 main) {
         this.main = main;
-//        levelList = new ArrayList<>();
         wasHidden = false;
+        lastCompleted = -1;
 
         stage = new Stage( new ScreenViewport() );
 
@@ -45,23 +44,14 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
+        int toComplete = lastCompleted + 1;
+        int numLevelButtons = main.getLevelScreenList().size() - 1; // last button is back button
 
-        for(int i = 0; i < main.getLevelScreenList().size(); i++) {
-
-            LevelScreen levelScreen = main.getLevelScreenList().get(i);
-            Actor actor = table.getChild(i);
-
-            TextButton levelButton;
-            if (actor instanceof TextButton) {
-                levelButton = (TextButton) actor;
-            } else {
-                continue;
-            }
-
-            if (levelScreen.isComplete()) {
-                levelButton.setColor(new Color(54, 134, 255, 255));
-                levelButton.setTouchable(Touchable.enabled);
-            }
+        if (toComplete < numLevelButtons) {
+            System.out.println("enabled");
+            Actor actor = table.getChild(toComplete);
+            TextButton levelButton = (TextButton) actor;
+            levelButton.setTouchable(Touchable.enabled);
         }
     }
 
@@ -82,7 +72,7 @@ public class LevelSelectorScreen implements Screen {
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
 
 
-            if (!levelScreen.isComplete() && i != 0) {
+            if (!levelScreen.isComplete() && i != lastCompleted + 1) {
                 levelButton.setColor(Color.GRAY); // change color
                 levelButton.setTouchable(Touchable.disabled);
             }
@@ -90,7 +80,6 @@ public class LevelSelectorScreen implements Screen {
             levelButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    // main.changeScreen(Screens.LEVELRENDERER);
                     main.changeLevel(iCopy);
                 }
             });
@@ -147,15 +136,11 @@ public class LevelSelectorScreen implements Screen {
         stage.dispose();
     }
 
-//    public void addLevel(Level level) {
-//        this.levelList.add(level);
-//    }
-//
-//    public List<Level> getLevelList() {
-//        return this.levelList;
-//    }
-
     public Stage getStage() {
         return stage;
+    }
+
+    public void incrementLastCompleted() {
+        lastCompleted++;
     }
 }

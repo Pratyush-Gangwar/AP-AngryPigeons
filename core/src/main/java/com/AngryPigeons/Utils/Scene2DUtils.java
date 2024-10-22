@@ -55,8 +55,14 @@ public class Scene2DUtils {
         return new Label(text, labelStyle);
     }
 
-    public static void makeExitWindow(Stage stage) {
+    public static Dialog makeExitWindow() {
         Dialog dialog = new Dialog("Exit", Scene2DUtils.skin) {
+            // whenever a dialog.button is clicked, result() is called
+
+            // after result() is called, hide() is called on the Dialog automatically
+            // hides() show the exit animations for the Dialog and removes it from the Stage
+            // after result, the input processor is restored to its previous values
+
             @Override
             protected void result(Object object) {
                 Integer option = (Integer) object;
@@ -71,29 +77,49 @@ public class Scene2DUtils {
         dialog.button("Yes", 1);
         dialog.button("No", 0);
 
-        dialog.show(stage);
+        return dialog;
     }
 
-    public static void makeMusicControlWindow(Stage stage) {
+    public static Dialog makeMusicControlWindow() {
         Dialog dialog = new Dialog("Music", Scene2DUtils.skin) {
             @Override
-            protected void result(Object object) {}
+            protected void result(Object object) {
+                // do nothing
+            }
+
+            // Custom Height and Width
+//            @Override
+//            public float getPrefWidth() {
+//                return 300;
+//            }
+//
+//            @Override
+//            public float getPrefHeight() {
+//                return 150;
+//            }
         };
 
+//        BitmapFont font = Scene2DUtils.skin.getFont("font");
+//        font.getData().setScale(4f);
+//
+//        Label label = new Label("Set volume: ", new Label.LabelStyle(font, Color.WHITE));
+
         Slider volSlider = new Slider(0f, 100f, 0.01f, false, Scene2DUtils.skin);
-        volSlider.setValue(Scene2DUtils.music.getVolume() * 100);
+        volSlider.setValue(Scene2DUtils.music.getVolume() * 100); // .getVolume() returns value between 0 and 1
 
         volSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Scene2DUtils.music.setVolume(volSlider.getValue() / 100);
+                Scene2DUtils.music.setVolume(volSlider.getValue() / 100); // getValue() returns value between 0 and 100
             }
         });
 
-        dialog.text("Set volume");
+        // Order of these calls controls order of display
+        dialog.text("Set Volume:");
         dialog.button("Done");
 
-        dialog.getContentTable().add(volSlider);
-        dialog.show(stage);
+        // dialog.getContentTable().add(label).pad(10);
+        dialog.getContentTable().add(volSlider); // .width(300);
+        return dialog;
     }
 }
