@@ -39,6 +39,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
+            fixtureDef.density = 2f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
@@ -62,6 +63,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
+            fixtureDef.density = 2f;
             body.createFixture(fixtureDef);
             shape.dispose();
         }
@@ -86,6 +88,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
+            fixtureDef.density = 1f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
@@ -114,6 +117,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
+            fixtureDef.density = 1f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
