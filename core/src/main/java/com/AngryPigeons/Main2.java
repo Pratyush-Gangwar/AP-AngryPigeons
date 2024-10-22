@@ -43,6 +43,9 @@ public class Main2 extends Game {
         LevelScreen levelScreen1 = new LevelScreen("Maps/AP_TestLevelMap.tmx");
         levelScreenList.add(levelScreen1);
 
+        LevelScreen levelScreen2 = new LevelScreen("Maps/AP_TestLevelMap2.tmx");
+        levelScreenList.add(levelScreen2);
+
         this.changeScreen(Screens.HOMESCREEN);
     }
 
@@ -80,15 +83,6 @@ public class Main2 extends Game {
             this.setScreen(winScreen);
             Gdx.input.setInputProcessor(winScreen.getStage());
         }
-
-//        else if (screen == Screens.LEVELRENDERER) {
-//            if (levelRenderer == null) {
-//                levelRenderer = new LevelRenderer(this);
-//            }
-//
-//            this.setScreen(levelRenderer);
-//            Gdx.input.setInputProcessor(levelRenderer.getStage());
-//        }
 
         else if (screen == Screens.LOSESCREEN) {
             if (loseScreen == null) {
@@ -134,10 +128,6 @@ public class Main2 extends Game {
     public WinScreen getWinScreen() {
         return winScreen;
     }
-
-//    public LevelRenderer getLevelRenderer() {
-//        return levelRenderer;
-//    }
 
     public List<LevelScreen> getLevelScreenList() {
         return levelScreenList;

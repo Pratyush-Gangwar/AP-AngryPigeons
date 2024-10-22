@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -45,12 +46,16 @@ public class LevelSelectorScreen implements Screen {
 
     private void updateLevelStatus() {
         int toComplete = lastCompleted + 1;
-        int numLevelButtons = main.getLevelScreenList().size() - 1; // last button is back button
+
+        // all these buttons have already been rendered. we just need to re-enable them
+        int numLevelButtons = main.getLevelScreenList().size();
+
+        System.out.println(toComplete);
 
         if (toComplete < numLevelButtons) {
-            System.out.println("enabled");
             Actor actor = table.getChild(toComplete);
             TextButton levelButton = (TextButton) actor;
+            levelButton.setColor(new Color(37f, 150f, 190f, 1f));
             levelButton.setTouchable(Touchable.enabled);
         }
     }
