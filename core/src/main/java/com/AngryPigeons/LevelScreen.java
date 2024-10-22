@@ -43,9 +43,7 @@ public class LevelScreen implements Screen{
     private World world;
 
     private SpriteBatch batch;
-    private Texture background_tex, ice_tex, wood_tex, stone_tex;
-    private Texture pigTex;
-    private Texture slingShot_tex;
+    private Texture background_tex;;
     private Texture cross_hair;
 
     ArrayList<Material> iceBlocks;
@@ -124,11 +122,6 @@ public class LevelScreen implements Screen{
         batch = new SpriteBatch();
 
         background_tex = new Texture("Images/Background.jpg");
-//        ice_tex = new Texture("Images/Background.png");
-        wood_tex = new Texture("Images/Wood.jpg");
-//        stone_tex = new Texture("Images/Background.png");
-        pigTex = new Texture("Images/LargePig.png");
-        slingShot_tex = new Texture("Images/Slingshot.png");
         cross_hair = new Texture("Images/images.png");
 
         tmr = new OrthogonalTiledMapRenderer(map);
@@ -136,7 +129,7 @@ public class LevelScreen implements Screen{
 
         TiledMapUtil.parseBoundary(world, map.getLayers().get("collision-layer").getObjects(), true);
 
-//        iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-blocks").getObjects());
+        iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
         woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
         stoneBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3);
 
@@ -159,6 +152,9 @@ public class LevelScreen implements Screen{
 
         slingShot.update();
 
+        for (Material ice: iceBlocks){
+            ice.update();
+        }
         for (Material wood: woodBlocks){
             wood.update();
         }
@@ -188,9 +184,9 @@ public class LevelScreen implements Screen{
         batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         slingShot.render(batch);
 
-//        for (Body ice: iceBlocks){
-//            batch.draw(ice_tex, ice.getPosition().x*PPM - ((float) ice_tex.getWidth()/2), ice.getPosition().y*PPM - ((float) ice_tex.getHeight()/2));
-//        }
+        for (Material ice: iceBlocks){
+            ice.render(batch);
+        }
         for (Material wood: woodBlocks){
             wood.render(batch);
         }

@@ -19,6 +19,9 @@ public class Material {
         this.w = w;
         this.h = h;
         sprite = new Sprite();
+        if (type == 1) {
+            sprite = new Sprite(new Texture("Images/Ice.png"));
+        }
         if (type == 2) {
             sprite = new Sprite(new Texture("Images/Wood.jpg"));
         }

@@ -88,6 +88,9 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
+            if (type == 1) {
+                fixtureDef.density = 1f;
+            }
             if (type == 2) {
                 fixtureDef.density = 3f;
             }
