@@ -2,12 +2,15 @@ package com.AngryPigeons.Utils;
 
 import com.AngryPigeons.Material;
 import com.AngryPigeons.Pig;
+import com.AngryPigeons.SlingShot;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.math.Ellipse;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -17,17 +20,37 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class TiledMapUtil {
 
-    public static ArrayList<Material> parseMaterial(World world, MapObjects objects, boolean isStatic) {
-        ArrayList<Material> material = new ArrayList<>();
+    public static SlingShot parseSlingShot(World world, MapObjects objects, boolean isStatic) {
+        SlingShot ss = new SlingShot();
         for (MapObject object: objects){
             Shape shape;
-            float x = (float) object.getProperties().get("x");
             if (object instanceof PolygonMapObject){
-                System.out.println("IS DYNAMIC SHAPE");
                 shape = createPolygonShape((PolygonMapObject) object);
             }
-            else if (object instanceof PolylineMapObject){
-                System.out.println("IS STATIC");
+            else {
+                continue;
+            }
+            Body body;
+            BodyDef def = new BodyDef();
+            def.type = BodyDef.BodyType.StaticBody;
+            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
+            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
+            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
+            body = world.createBody(def);
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            body.createFixture(fixtureDef);
+            shape.dispose();
+
+            ss = (new SlingShot(body, rect.getWidth(), rect.getHeight()));
+        }
+        return ss;
+    }
+
+    public static void parseBoundary(World world, MapObjects objects, boolean isStatic) {
+        for (MapObject object: objects){
+            Shape shape;
+            if (object instanceof PolylineMapObject){
                 shape = createChainShape((PolylineMapObject) object);
             }
             else {
@@ -35,75 +58,71 @@ public class TiledMapUtil {
             }
             Body body;
             BodyDef def = new BodyDef();
-            if (isStatic) {
-                def.type = BodyDef.BodyType.StaticBody;
-            }
-            else {
-                def.type = BodyDef.BodyType.DynamicBody;
-            }
+            def.type = BodyDef.BodyType.StaticBody;
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 5f;
-            fixtureDef.friction = 0.5f;
-            fixtureDef.restitution = 0f;
-            body.createFixture(shape, 1f);
+            body.createFixture(fixtureDef);
+            shape.dispose();
+        }
+    }
+
+    public static ArrayList<Material> parseMaterial(World world, MapObjects objects, boolean isStatic) {
+        ArrayList<Material> material = new ArrayList<>();
+        for (MapObject object: objects){
+            Shape shape;
+            if (object instanceof PolygonMapObject){
+                shape = createPolygonShape((PolygonMapObject) object);
+            }
+            else {
+                continue;
+            }
+            Body body;
+            BodyDef def = new BodyDef();
+            def.type = BodyDef.BodyType.DynamicBody;
+            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
+            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
+            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
+            body = world.createBody(def);
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            body.createFixture(fixtureDef);
             shape.dispose();
 
-            material.add(new Material(body, (float) object.getProperties().get("x"), (float) object.getProperties().get("y")));
+            material.add(new Material(body, rect.getWidth(), rect.getHeight()));
         }
         return material;
     }
 
     public static ArrayList<Pig> parsePigs(World world, MapObjects objects, boolean isStatic, int type) {
-        System.out.println("PARSING PIGS");
         ArrayList<Pig> pigs = new ArrayList<>();
 
         for (MapObject object: objects){
-//            float world_x = (float) object.getProperties().get("x")/PPM;
-//            float world_y = ((float) object.getProperties().get("y"))/PPM;
-//            System.out.println(world_x +" WORLD "+ world_y);
-            CircleShape shape;
-            System.out.println(object);
-            if (object instanceof EllipseMapObject){
-                System.out.println("IS CIRCLE");
-                EllipseMapObject Obj = (EllipseMapObject) object;
-                shape = createCircleShape((EllipseMapObject) object);
+            PolygonShape shape;
+            if (object instanceof PolygonMapObject){
+                shape = createPolygonShape((PolygonMapObject)object);
             }
             else {
                 continue;
             }
-
-            float world_x = ((EllipseMapObject) object).getEllipse().x/PPM;
-            float world_y = ((EllipseMapObject) object).getEllipse().y/PPM;
-            shape.setPosition(new Vector2(world_x+shape.getRadius(), world_y+shape.getRadius()));
+            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
             Body body;
             BodyDef def = new BodyDef();
-            if (isStatic) {
-                def.type = BodyDef.BodyType.StaticBody;
-            }
-            else {
-                def.type = BodyDef.BodyType.DynamicBody;
-            }
+            def.type = BodyDef.BodyType.DynamicBody;
+            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
+            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 1f;
-            fixtureDef.friction = 0.5f;
-            fixtureDef.restitution = 0f;
             body.createFixture(fixtureDef);
-            if (type == 1) {
-                pigs.add(new Pig(body, world_x, world_y, 25, shape.getRadius()));
-            }
-            else if (type == 2) {
-                pigs.add(new Pig(body, world_x, world_y, 50, shape.getRadius()));
-            }
-            else{
-                pigs.add(new Pig(body, world_x, world_y, 100, shape.getRadius()));
-            }
             shape.dispose();
 
-            System.out.println("r = "+shape.getRadius()+" "+object.getProperties().get("x")+" x "+(float) object.getProperties().get("y"));
+
+            pigs.add(new Pig(body, rect.getWidth(), rect.getHeight()));
+
+            System.out.println(body.getPosition());
+
+//            System.out.println("r = "+shape.getRadius()+" "+object.getProperties().get("x")+" x "+(float) object.getProperties().get("y"));
         }
         return pigs;
     }
@@ -125,6 +144,9 @@ public class TiledMapUtil {
             System.err.println("Polygon with more than 8 vertices is not supported by Box2D PolygonShape.");
         }
 
+        Rectangle rect = polygonObject.getPolygon().getBoundingRectangle();
+        shape.setAsBox(rect.getWidth()/PPM/2, rect.getHeight()/PPM/2);
+
         return shape;
     }
 
@@ -140,12 +162,5 @@ public class TiledMapUtil {
         cs.createChain(worldVertices);
 
         return cs;
-    }
-
-    public static CircleShape createCircleShape(EllipseMapObject circleObject) {
-        CircleShape shape = new CircleShape();
-        shape.setRadius(circleObject.getEllipse().width/2/PPM);
-
-        return shape;
     }
 }

@@ -1,60 +1,39 @@
 package com.AngryPigeons.Utils;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class TextureRenderUtil {
-    public static float getBodyWidth(Body body) {
-        for (Fixture fixture : body.getFixtureList()) {
-            Shape shape = fixture.getShape();
 
-            if (shape instanceof PolygonShape) {
-                PolygonShape polygon = (PolygonShape) shape;
-                float maxX = Float.NEGATIVE_INFINITY;
-                float minX = Float.POSITIVE_INFINITY;
+    public static float getPolygonWidth(PolygonMapObject polygonMapObject) {
+        Polygon polygon = polygonMapObject.getPolygon();
+        float[] vertices = polygon.getVertices();
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
 
-                Vector2 vertex = new Vector2();
-                for (int i = 0; i < polygon.getVertexCount(); i++) {
-                    polygon.getVertex(i, vertex);
-                    maxX = Math.max(maxX, vertex.x);
-                    minX = Math.min(minX, vertex.x);
-                }
-                return (maxX - minX) * PPM;  // Convert to pixels
-            } else if (shape instanceof CircleShape) {
-                CircleShape circle = (CircleShape) shape;
-                return circle.getRadius() * 2 * PPM;  // Convert diameter to pixels
-            }
+        for (int i = 0; i < vertices.length; i += 2) {
+            float x = vertices[i];
+            maxX = Math.max(maxX, x);
+            minX = Math.min(minX, x);
         }
-        return 0;
+
+        return (maxX - minX) * polygon.getScaleX();
     }
 
-    public static float getBodyHeight(Body body) {
-        for (Fixture fixture : body.getFixtureList()) {
-            Shape shape = fixture.getShape();
+    public static float getPolygonHeight(PolygonMapObject polygonMapObject) {
+        Polygon polygon = polygonMapObject.getPolygon();
+        float[] vertices = polygon.getVertices();
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
 
-            if (shape instanceof PolygonShape) {
-                PolygonShape polygon = (PolygonShape) shape;
-                float maxY = Float.NEGATIVE_INFINITY;
-                float minY = Float.POSITIVE_INFINITY;
-
-                Vector2 vertex = new Vector2();
-                for (int i = 0; i < polygon.getVertexCount(); i++) {
-                    polygon.getVertex(i, vertex);
-                    maxY = Math.max(maxY, vertex.y);
-                    minY = Math.min(minY, vertex.y);
-                }
-                return (maxY - minY) * PPM;  // Convert to pixels
-            } else if (shape instanceof CircleShape) {
-                CircleShape circle = (CircleShape) shape;
-                return circle.getRadius() * 2 * PPM;  // Convert diameter to pixels
-            }
+        for (int i = 1; i < vertices.length; i += 2) {
+            float y = vertices[i];
+            maxY = Math.max(maxY, y);
+            minY = Math.min(minY, y);
         }
-        return 0;
+
+        return (maxY - minY) * polygon.getScaleY();
     }
 }
