@@ -5,9 +5,7 @@ import com.AngryPigeons.Utils.TextureRenderUtil;
 import com.AngryPigeons.Utils.TiledMapUtil;
 import com.AngryPigeons.views.LevelRenderer;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,7 +44,7 @@ public class LevelScreen implements Screen{
 
     private SpriteBatch batch;
     private Texture background_tex, ice_tex, wood_tex, stone_tex;
-    private Texture largePigTex;
+    private Texture pigTex;
     private Texture slingShot_tex;
     private Texture cross_hair;
 
@@ -129,22 +127,24 @@ public class LevelScreen implements Screen{
 //        ice_tex = new Texture("Images/Background.png");
         wood_tex = new Texture("Images/Wood.jpg");
 //        stone_tex = new Texture("Images/Background.png");
-        largePigTex = new Texture("Images/LargePig.png");
+        pigTex = new Texture("Images/LargePig.png");
         slingShot_tex = new Texture("Images/Slingshot.png");
         cross_hair = new Texture("Images/images.png");
 
         tmr = new OrthogonalTiledMapRenderer(map);
         tmr.setView(camera);
 
-        TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("collision-layer").getObjects(), true);
+        TiledMapUtil.parseMaterial(world, map.getLayers().get("collision-layer").getObjects(), true);
 
-//        iceBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("ice-blocks").getObjects());
-        woodBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("wood-layer").getObjects(), false);
-//      stoneBlocks = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("stone-blocks").getObjects());
+//        iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-blocks").getObjects());
+        woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), false);
+//      stoneBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-blocks").getObjects());
 
-        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), true, 3);
+        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
+        mediumPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2);
+        smallPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1);
 
-        slingShot = TiledMapUtil.parseTiledObjectLayer(world, map.getLayers().get("sling-shot").getObjects(), true);
+        slingShot = TiledMapUtil.parseMaterial(world, map.getLayers().get("sling-shot").getObjects(), true);
     }
 
 //    @Override
@@ -158,6 +158,9 @@ public class LevelScreen implements Screen{
         float crosshairSize = 5f;
 
 //        System.out.println(cameraCenterX+" "+cameraCenterY);
+
+//        batch.setProjectionMatrix(camera.projection);
+//        batch.setTransformMatrix(camera.view);
 
         batch.begin();
 //        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING
@@ -182,8 +185,19 @@ public class LevelScreen implements Screen{
 //            batch.draw(stone_tex, stone.getPosition().x*PPM - ((float) stone_tex.getWidth()/2), stone.getPosition().y*PPM - ((float) stone_tex.getHeight()/2));
 //        }
         for (Pig largePig: largePigs){
-//            System.out.println(largePig.og_x+" x "+largePig.og_y);
-            batch.draw(largePigTex, (largePig.og_x*PPM)+(largePig.body.getPosition().x*PPM), (largePig.og_y*PPM)+(largePig.body.getPosition().y*PPM), 128, 128);
+//            System.out.println(largePig.r);
+//            Vector2 velocity = largePig.body.getLinearVelocity();
+//            System.out.println("Velocity: " + velocity.x + ", " + velocity.y);
+            batch.draw(pigTex, (largePig.og_x*PPM)+(largePig.body.getPosition().x*PPM), (largePig.og_y*PPM)+(largePig.body.getPosition().y*PPM), 2*largePig.r*PPM,2*largePig.r*PPM);
+        }
+        for (Pig mediumPig: mediumPigs){
+            System.out.println((mediumPig.body.getPosition().x*PPM)+" x "+(mediumPig.body.getPosition().y*PPM));
+            Vector2 velocity = mediumPig.body.getLinearVelocity();
+//            System.out.println("Velocity: " + velocity.x + ", " + velocity.y);
+            batch.draw(pigTex, (mediumPig.og_x*PPM)+(mediumPig.body.getPosition().x*PPM), (mediumPig.og_y*PPM)+(mediumPig.body.getPosition().y*PPM), 2*mediumPig.r*PPM,2*mediumPig.r*PPM);
+        }
+        for (Pig smallPig: smallPigs){
+            batch.draw(pigTex, (smallPig.og_x*PPM)+(smallPig.body.getPosition().x*PPM), (smallPig.og_y*PPM)+(smallPig.body.getPosition().y*PPM), 2*smallPig.r*PPM,2*smallPig.r*PPM);
         }
 
         tmr.setView(camera);
