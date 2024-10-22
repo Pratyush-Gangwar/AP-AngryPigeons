@@ -1,5 +1,6 @@
 package com.AngryPigeons.Utils;
 
+import com.AngryPigeons.Bird;
 import com.AngryPigeons.Material;
 import com.AngryPigeons.Pig;
 import com.AngryPigeons.SlingShot;
@@ -137,6 +138,34 @@ public class TiledMapUtil {
 //            System.out.println("r = "+shape.getRadius()+" "+object.getProperties().get("x")+" x "+(float) object.getProperties().get("y"));
         }
         return pigs;
+    }
+
+    public static ArrayList<Bird> parseBird(World world, MapObjects objects, int type) {
+        ArrayList<Bird> birds = new ArrayList<>();
+        for (MapObject object: objects){
+            Shape shape;
+            if (object instanceof PolygonMapObject){
+                shape = createPolygonShape((PolygonMapObject) object);
+            }
+            else {
+                continue;
+            }
+            Body body;
+            BodyDef def = new BodyDef();
+            def.type = BodyDef.BodyType.DynamicBody;
+            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
+            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
+            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
+            body = world.createBody(def);
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.density = 2f;
+            body.createFixture(fixtureDef);
+            shape.dispose();
+
+            birds.add(new Bird(body, rect.getWidth(), rect.getHeight(), type));
+        }
+        return birds;
     }
 
     public static PolygonShape createPolygonShape(PolygonMapObject polygonObject) {

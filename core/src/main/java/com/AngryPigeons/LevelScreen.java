@@ -51,7 +51,7 @@ public class LevelScreen implements Screen{
     ArrayList<Material> stoneBlocks;
     SlingShot slingShot;
 
-    //    ArrayList<Bird> birds;
+    ArrayList<Bird> birds1, birds2, birds3;
     ArrayList<Pig> smallPigs;
     ArrayList<Pig> mediumPigs;
     ArrayList<Pig> largePigs;
@@ -129,6 +129,9 @@ public class LevelScreen implements Screen{
 
         TiledMapUtil.parseBoundary(world, map.getLayers().get("collision-layer").getObjects(), true);
 
+        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
+        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
+
         iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
         woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
         stoneBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3);
@@ -146,11 +149,20 @@ public class LevelScreen implements Screen{
 
         //Rendering
 
-        float cameraCenterX = camera.position.x;
-        float cameraCenterY = camera.position.y;
-        float crosshairSize = 5f;
+//        b2dr.render(world, camera.combined.scl(PPM));
+
+//        float cameraCenterX = camera.position.x;
+//        float cameraCenterY = camera.position.y;
+//        float crosshairSize = 5f;
 
         slingShot.update();
+
+        for (Bird bird:birds1){
+            bird.update();
+        }
+        for (Bird bird:birds2){
+            bird.update();
+        }
 
         for (Material ice: iceBlocks){
             ice.update();
@@ -184,6 +196,13 @@ public class LevelScreen implements Screen{
         batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         slingShot.render(batch);
 
+        for (Bird bird:birds1){
+            bird.render(batch);
+        }
+        for (Bird bird:birds2){
+            bird.render(batch);
+        }
+
         for (Material ice: iceBlocks){
             ice.render(batch);
         }
@@ -193,6 +212,7 @@ public class LevelScreen implements Screen{
         for (Material stone: stoneBlocks){
             stone.render(batch);
         }
+
         for (Pig largePig: largePigs){
             largePig.render(batch);
         }
@@ -207,7 +227,6 @@ public class LevelScreen implements Screen{
         tmr.render();
 
         batch.end();
-//        b2dr.render(world, camera.combined.scl(PPM));
     }
 
     public void inputUpdate(float delta){}

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="52">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="56">
  <tileset firstgid="1" source="AngryPigeonsTestTileset.tsx"/>
- <layer id="1" name="Tile Layer 1" width="40" height="23">
+ <layer id="14" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
-   eJztkksKgDAMBaO7unFhofe/qRUspEH8RLSCMzD7ySMiAADgIa0C/IEuOyj7tjkVS1vMjsrQtKjeyrZ5+uz+d7U9nj7dtHXjk+71la63m476vtBVnOT6TyCedQbYWBDa
+   eJztkrsKwCAMAGM3XRza//9WXZQQFJRSUuQObr88RAAAAADWCNWkvHxzOq3rqWZldOpJRtu122f3/tZRy26fbprN97WjvtkvePf9qat5i/8N8TwLSZcROA==
   </data>
  </layer>
  <objectgroup id="2" name="collision-layer">
   <object id="1" x="128" y="416">
-   <polyline points="-128,64 -32,64 -32,32 0,32 0,0 160,0 160,192 288,192 288,160 350.609,160 350.609,128 416,128 416,96 512,96 512,64 1152,64"/>
+   <polyline points="-128,64 0,64 0,32 64,32 64,0 224,0 224,192 288,192 288,160 350.609,160 350.609,128 416,128 416,96 512,96 512,64 1152,64"/>
   </object>
  </objectgroup>
  <objectgroup id="4" name="wood-layer">
@@ -50,8 +50,8 @@
    <polygon points="0,0 32,0 32,320 0,320"/>
   </object>
  </objectgroup>
- <objectgroup id="5" name="sling-shot">
-  <object id="25" x="160" y="288">
+ <objectgroup id="5" name="sling-shot" offsetx="64" offsety="0">
+  <object id="25" x="192" y="288">
    <polygon points="0,0 96,0 96,128 0,128"/>
   </object>
  </objectgroup>
@@ -68,6 +68,16 @@
  <objectgroup id="9" name="small-pigs">
   <object id="43" x="1056" y="224">
    <polygon points="0,0 64,0 64,64 0,64"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="13" name="pigeons1">
+  <object id="53" x="128" y="384">
+   <polygon points="0,0 0,64 64,64 64,0"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="15" name="pigeons2">
+  <object id="55" x="32" y="384">
+   <polygon points="0,0 0,96 64,96 64,0"/>
   </object>
  </objectgroup>
 </map>
