@@ -63,13 +63,13 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 2f;
+            fixtureDef.density = 15f;
             body.createFixture(fixtureDef);
             shape.dispose();
         }
     }
 
-    public static ArrayList<Material> parseMaterial(World world, MapObjects objects, boolean isStatic) {
+    public static ArrayList<Material> parseMaterial(World world, MapObjects objects, int type) {
         ArrayList<Material> material = new ArrayList<>();
         for (MapObject object: objects){
             Shape shape;
@@ -88,11 +88,16 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 1f;
+            if (type == 2) {
+                fixtureDef.density = 3f;
+            }
+            if (type == 3){
+                fixtureDef.density = 5f;
+            }
             body.createFixture(fixtureDef);
             shape.dispose();
 
-            material.add(new Material(body, rect.getWidth(), rect.getHeight()));
+            material.add(new Material(body, rect.getWidth(), rect.getHeight(), type));
         }
         return material;
     }
@@ -117,7 +122,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 1f;
+            fixtureDef.density = 2f;
             body.createFixture(fixtureDef);
             shape.dispose();
 

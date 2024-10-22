@@ -14,11 +14,17 @@ public class Material {
     float w;
     float h;
 
-    public Material(Body body, float w, float h){
+    public Material(Body body, float w, float h, int type){
         this.body = body;
         this.w = w;
         this.h = h;
-        sprite = new Sprite(new Texture("Images/Wood.jpg"));
+        sprite = new Sprite();
+        if (type == 2) {
+            sprite = new Sprite(new Texture("Images/Wood.jpg"));
+        }
+        if (type == 3) {
+            sprite = new Sprite(new Texture("Images/Stone.jpg"));
+        }
         sprite.setSize(w, h);
         sprite.setOriginCenter();
     }
