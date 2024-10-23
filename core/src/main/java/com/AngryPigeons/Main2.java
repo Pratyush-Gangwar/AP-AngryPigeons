@@ -26,7 +26,7 @@ public class Main2 extends Game {
 
     @Override
     public void create() {
-        Scene2DUtils.setBackgroundTexture("textures/main.jpg");
+        Scene2DUtils.setBackgroundTexture("textures/main2.jpg");
         Scene2DUtils.setMusic("music/music2.wav");
         Scene2DUtils.setSkin("skins/freezing/freezing-ui.json");
 
