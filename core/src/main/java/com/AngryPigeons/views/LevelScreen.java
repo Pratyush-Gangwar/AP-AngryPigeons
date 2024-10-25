@@ -121,7 +121,7 @@ public class LevelScreen implements Screen{
 
         batch = new SpriteBatch();
 
-        background_tex = new Texture("Images/Background.jpg");
+        background_tex = new Texture("Images/BG.png");
         cross_hair = new Texture("Images/images.png");
 
         tmr = new OrthogonalTiledMapRenderer(map);

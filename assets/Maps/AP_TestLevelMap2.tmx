@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="26">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="34">
  <tileset firstgid="1" source="AngryPigeonsTestTileset.tsx"/>
+ <tileset firstgid="25" source="MyTileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
-   eJztk7EKgDAMBaubLg76/99qOwTkQW2eTbHDO7gx6VFISkIIIYT4gyW7g6tzFufQXsqOK3uAJ9GJs2YEtd3Pzi+NUbT6ihu5JxJPH/OH0Xj6TO/NvNG6J5Tps5vphXmTNYrZ+0Z1jmTmtlrjDQcfClw=
+   eJztk0sKgDAMBd81/LvRjW6E3P9szU4Iahpau3oDs0vJQChACCGEkNb0joPz/lCvF88KfbPjWmFHCewrg303Hfz/aI30SaBFHuaXjH1RbV9Oo6Bd36juiN/FuqnTD3302wRm0B20
   </data>
  </layer>
  <objectgroup id="2" name="collision-layer">
-  <object id="1" x="0" y="416">
-   <polyline points="0,0 32,0 32,-32 224,-32 224,0 288,0 288,32 320,32 320,96 352,96 352,128 384,128 384,160 416,160 416,192 384,192 384,288 352,288 352,320"/>
+  <object id="30" x="608" y="416">
+   <polyline points="0,0 -64,0 -96,-32 160,-32 128,0 32,0"/>
   </object>
-  <object id="2" x="608" y="544">
-   <polyline points="0,0 0,-32 -32,-32 -32,-96 -64,-96 -64,-128 -96,-128 -96,-160 160,-160 160,-128 128,-128 128,-96 96,-96 96,-64 64,-64 64,-32 32,-32 32,0"/>
+  <object id="31" x="0" y="384">
+   <polyline points="0,0 288,0 288,256 864,256 864,160 1280,160"/>
   </object>
-  <object id="3" x="1280" y="544">
-   <polyline points="0,0 -384,0 -384,32 -352,32 -352,64 -320,64 -320,96 -256,96 -256,128 -160,128 -160,160 -128,160 -128,192"/>
+  <object id="32" x="352" y="640">
+   <polyline points="0,0 0,-64 32,-64 32,-32 64,-32 64,0"/>
+  </object>
+  <object id="33" x="672" y="640">
+   <polyline points="0,0 0,-32 32,-32 32,-64 96,-64 96,0"/>
   </object>
  </objectgroup>
  <objectgroup id="3" name="ice-layer">
@@ -81,18 +85,18 @@
   </object>
  </objectgroup>
  <objectgroup id="9" name="sling-shot">
-  <object id="23" x="128" y="256">
+  <object id="23" x="160" y="256">
    <polygon points="0,0 0,128 96,128 96,0"/>
   </object>
  </objectgroup>
  <objectgroup id="10" name="pigeons1">
-  <object id="24" x="0" y="384">
-   <polygon points="0,0 0,32 32,32 32,0"/>
+  <object id="24" x="0" y="320">
+   <polygon points="0,0 0,64 64,64 64,0"/>
   </object>
  </objectgroup>
  <objectgroup id="11" name="pigeons2">
-  <object id="25" x="64" y="320">
-   <polygon points="0,0 0,64 32,64 32,0"/>
+  <object id="25" x="64" y="288">
+   <polygon points="0,0 0,96 64,96 64,0"/>
   </object>
  </objectgroup>
 </map>
