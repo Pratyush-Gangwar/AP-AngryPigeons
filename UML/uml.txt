@@ -1,0 +1,228 @@
+@startuml
+skinparam linetype polyline
+skinparam linetype ortho
+left to right direction
+set separator none
+
+
+Screen <|--  HomeScreen
+Screen <|-[norank]- LevelSelectorScreen
+
+Screen <|-[norank]- LevelRenderer
+
+Drawable <|--  Material
+Drawable <|-- Slingshot
+Drawable <|-- Pig
+Drawable <|-- Bird
+
+Level o-- "0..*" Pig
+Level o-- "0..*" Bird
+Level o-- "0..*" Material
+Level *-- "1" Slingshot
+
+Slingshot ..> Bird
+
+HomeScreen *-- "1" LevelSelectorScreen
+LevelSelectorScreen *-- "1" LevelRenderer
+
+LevelSelectorScreen o-- "0..*" Level
+LevelRenderer -- Bird
+
+LevelRenderer ..> Level
+Serializable <|-- Level
+Serializable  <|-- LevelRenderer
+
+Screen <|--  PauseGameMenu
+LevelRenderer *-- "1" PauseGameMenu
+
+PauseGameMenu *-- "1" SavedLevel
+
+java.lang.Exception <|-- FileNotFoundException
+java.lang.Exception <|-- SaveLevelException
+java.lang.Exception <|-- LoadLevelException 
+
+FileNotFoundException <.. Level : throws
+FileNotFoundException <.. LevelSelectorScreen : throws  
+FileNotFoundException <.. Level : throws  
+FileNotFoundException <.. HomeScreen : throws  
+FileNotFoundException <.. Drawable : throws  
+
+SaveLevelException  <.. SavedLevel : throws  
+SaveLevelException  <.. PauseGameMenu : throws  
+
+LoadLevelException  <.. SavedLevel : throws  
+LoadLevelException  <.. PauseGameMenu : throws  
+
+interface Serializable {
+}
+
+abstract class Screen {
++show() : void
++close() : void
+}
+
+note bottom of Screen: Pratyush Gangwar (2023395), Ramanujan Gopalan (2023424)
+
+
+class HomeScreen {
+-background : Texture
+-levelSelectorScreen : LevelSelectorScreen
+
++play() : void
++turnOffSounds() : void
+
++getBackground() : Texture
++setBackground(background : Texture) : void
+
++getLevelSelectorScreen() : LevelSelectorScreen
++setLevelSelectorScreen(levelSelectorScreen : LevelSelectorScreen) : void
+}
+
+class LevelSelectorScreen{
+-levelsList : List<Level>
+-levelRenderer:LevelRenderer
+-background: Texture
+
++selectLevel() : void
+
++getLevelsList() : List<Level>
++setLevelsList(levelsList : List<Level>) : void
++addLevel(level : Level) : void
++removeLevel(level : Level) : void
+
++getLevelRenderer() : LevelRenderer
++setLevelRenderer(levelRenderer : LevelRenderer) : void
+
++getBackground() : Texture
++setBackground(background : Texture) : void
+}
+
+
+class Level {
+-pigsList : List<Pig>
+-birdsList : List<Bird>
+-materialList:List<Material>
+-slingShot: SlingShot
+-background : Texture
+-completed: Boolean
+
++getNumberOfBirds() : int
+
++getPigsList() : List<Pig>
++setPigsList(pigsList : List<Pig>) : void
+
++addPig(pig : Pig) : void
++removePig( pig : Pig ) : void
+
++getBirdsList() : List<Bird>
++setBirdsList(birdsList : List<Bird>) : void
+
++addBird(bird : Bird) : void
++removeBird(bird : Bird) : void
+
++getMaterialList() : List<Material>
++setMaterialList(materialList : List<Material>) : void
+
++addMaterial( material : Material)
++removeMaterial( material : Material)
+
++getSlingShot() : Slingshot
++setSlingShot(slingShot : Slingshot) : void
+
++getBackground() : Texture
++setBackground(background : Texture) : void
+
++getCompleted(): Boolean
++setCompleted(staus: Boolean): void 
+}
+
+class Drawable {
+-texture : Texture
+-sprite : Sprite
+
++getTexture() : Texture
++setTexture(texture : Texture) : void
+
++getSprite() : Sprite
++setSprite(sprite : Sprite) : void
+}
+
+class Material {
+-healthLeft : float
+
++getHealthLeft() : float
++setHealthLeft(healthLeft : float) : void
+}
+
+
+class Bird {
+-damageDealt : float
+-weight : float
+-velocity : Vector2
+
++useAbility() : void
+
++getDamageDealt() : float
++setDamageDealt(damageDealt : float) : void
+
++getWeight() : float
++setWeight(weight : float) : void
+
++getVelocity() : Vector2
++setVelocity(velocity : Vector2) : void
+}
+
+class Pig {
+-healthLeft : float
+-dead: boolean
+
++getHealthLeft() : float
++setHealthLeft(healthLeft : float) : void
+
++isDead() : boolean
++setDead(dead : boolean) : void
+}
+
+
+Class LevelRenderer {
+-currentBird: Bird
+-pause: PauseGameMenu
+-input()
+-logic()
+-draw(Level level):void
+
++handleCollision() : void
++handleCollapse() : void
+
++create()
++render()
+
++getCurrentBird() : Bird
++setCurrentBird(currentBird : Bird) : void
+}
+
+
+Class Slingshot {
++pullSlingshot(Bird bird): void
++showPath(Bird bird) : void
++shoot(Bird bird) : void
+}
+
+Class SavedLevel {
+-savedLevel: Level
+
++setSaveLevel(level : Level): void
++getSaveLevel() : Level
+}
+
+Class PauseGameMenu{
+-savedLevel: SavedLevel
+
++loadLevel():Level
++resume():void
+
++getSavedLevel() : SavedLevel
++setSavedLevel( savedLevel : SavedLevel ) : void
+}
+
+@enduml
