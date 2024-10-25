@@ -44,7 +44,7 @@ public class LoseScreen implements Screen {
 
         // automatically change after 10 seconds
         if (duration >= 10.0f) {
-            main.changeScreen(Screens.HOMESCREEN);
+            main.changeScreen(Screens.LEVELSELECTORSCREEN);
         }
 
         stage.act(Gdx.graphics.getDeltaTime());
@@ -91,7 +91,7 @@ public class LoseScreen implements Screen {
         Drawable drawable = new TextureRegionDrawable(background);
         table.setBackground(drawable);
 
-        TextButton homeBtn = new TextButton("Home", Scene2DUtils.skin);
+        TextButton homeBtn = new TextButton("Levels", Scene2DUtils.skin);
         TextButton restartBtn = new TextButton("Restart", Scene2DUtils.skin);
 
         table.add(homeBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
@@ -101,7 +101,7 @@ public class LoseScreen implements Screen {
         homeBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(Screens.HOMESCREEN);
+                main.changeScreen(Screens.LEVELSELECTORSCREEN);
             }
         });
     }

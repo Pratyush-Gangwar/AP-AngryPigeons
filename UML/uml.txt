@@ -104,6 +104,7 @@ class LevelSelectorScreen{
 +getStage() : Stage
 +incrementLastCompleted() : void
 -updateLevelStatus() : void
+-levelSelectHandler() : void
 
 +show() : void
 +render( delta : float ) : void

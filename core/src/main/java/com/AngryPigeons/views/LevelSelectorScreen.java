@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -65,7 +66,7 @@ public class LevelSelectorScreen implements Screen {
 
         for(int i = 0; i < main.getLevelScreenList().size(); i++) {
 
-            final int iCopy = i;
+            final int iCopy = i; // lambda functions can only access local variables if they are final
 
             LevelScreen levelScreen = main.getLevelScreenList().get(i);
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
@@ -79,7 +80,7 @@ public class LevelSelectorScreen implements Screen {
             levelButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    main.changeLevel(iCopy);
+                    levelSelectHandler(iCopy);
                 }
             });
 
@@ -141,5 +142,30 @@ public class LevelSelectorScreen implements Screen {
 
     public void incrementLastCompleted() {
         lastCompleted++;
+    }
+
+    private void levelSelectHandler(int levelIndex) {
+
+        Dialog dialog = new Dialog("Play Level", Scene2DUtils.skin) {
+
+            @Override
+            protected void result(Object object) {
+
+                // if you use this.hide() (without null), then the fade-out animation is played
+                // however, this.hide() doesn't wait for the animation to complete and immediately returns
+                // as soon as it returns, the screen is changed. the fade-out animation has not completed and is paused
+                // when you win/lose a level and return to the level selector screen, the previously paused fade-out animation is resumed
+                // when you pass null to this.hide(), it disables the fade-out mechanism and so the above problem doesn't occur
+
+                this.hide(null);
+                main.changeLevel(levelIndex);
+            }
+        };
+
+        // numeric values will be used later to execute different methods
+        dialog.button("New", 1);
+        dialog.button("Load saved", 2);
+
+        dialog.show(stage);
     }
 }

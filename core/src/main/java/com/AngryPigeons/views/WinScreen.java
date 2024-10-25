@@ -43,7 +43,7 @@ public class WinScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (duration >= 10.0f) {
-            main.changeScreen(Screens.HOMESCREEN);
+            main.changeScreen(Screens.LEVELSELECTORSCREEN);
         }
 
         stage.act(Gdx.graphics.getDeltaTime());
@@ -90,11 +90,11 @@ public class WinScreen implements Screen {
         Drawable drawable = new TextureRegionDrawable(background);
         table.setBackground(drawable);
 
-        TextButton textButton = new TextButton("Home", Scene2DUtils.skin);
+        TextButton textButton = new TextButton("Levels", Scene2DUtils.skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(Screens.HOMESCREEN);
+                main.changeScreen(Screens.LEVELSELECTORSCREEN);
             }
         });
 
