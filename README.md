@@ -70,4 +70,10 @@ https://angrybirds.fandom.com/wiki/Angry_Birds_Wiki</br>
 
 
 ## Box2D references:
+https://libgdx.com/wiki/extensions/physics/box2d</br>
+https://www.gamedevelopment.blog/full-libgdx-game-tutorial-box2d/</br>
 https://www.youtube.com/playlist?list=PLD_bW3UTVsElsuvyKcYXHLnWb8bD0EQNI</br>
+https://gamefromscratch.com/libgdx-tutorial-13-physics-with-box2d-part-1-a-basic-physics-simulations/</br>
+
+## Repository Link:
+
