@@ -18,7 +18,7 @@ This project
 - Once again, Right click on Lwjgl3Launcher.java and select `Run Lwjgl3Launcher.main()`
 - Now you can run the program by just pressing the run button on the top right
 
-## Scene2D References
+## References
 #### General:
 https://libgdx.com/wiki/start/a-simple-game</br>
 https://javadoc.io/doc/com.badlogicgames.gdx/gdx/1.13.0/index.html</br>
@@ -69,11 +69,11 @@ https://www.gameart2d.com/free-platformer-game-tileset.html</br>
 https://angrybirds.fandom.com/wiki/Angry_Birds_Wiki</br>
 
 
-## Box2D references:
+#### Box2D:
 https://libgdx.com/wiki/extensions/physics/box2d</br>
 https://www.gamedevelopment.blog/full-libgdx-game-tutorial-box2d/</br>
 https://www.youtube.com/playlist?list=PLD_bW3UTVsElsuvyKcYXHLnWb8bD0EQNI</br>
 https://gamefromscratch.com/libgdx-tutorial-13-physics-with-box2d-part-1-a-basic-physics-simulations/</br>
 
 ## Repository Link:
-
+https://github.com/Pratyush-Gangwar/AP-AngryPigeons
