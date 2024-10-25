@@ -6,17 +6,17 @@ left to right direction
 
 Game <|-- Main
 
-Screen <|..  HomeScreen
-Screen <|.. LevelSelectorScreen
-Screen <|.. LevelRenderer
-Screen <|.. LevelScreen
-Screen <|.. LoseScreen
-Screen <|.. WinScreen
+Screen <|.[norank].  HomeScreen
+Screen <|.[norank]. LevelSelectorScreen
+Screen <|.[norank]. LevelRenderer
+Screen <|.[norank]. LevelScreen
+Screen <|.[norank]. LoseScreen
+Screen <|.[norank]. WinScreen
 
-Drawable <|--  Material
-Drawable <|-- Slingshot
-Drawable <|-- Pig
-Drawable <|-- Bird
+Drawable <|-[norank]-  Material
+Drawable <|-[norank]- Slingshot
+Drawable <|-[norank]- Pig
+Drawable <|-[norank]- Bird
 
 Main *-- HomeScreen
 Main *-- LevelSelectorScreen
