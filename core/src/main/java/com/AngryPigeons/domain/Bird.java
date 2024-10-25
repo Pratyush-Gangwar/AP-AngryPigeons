@@ -20,6 +20,9 @@ public class Bird extends Drawable {
         if (type == 2) {
             sprite = new Sprite(new Texture("Images/Bomb.png"));
         }
+        if (type == 3) {
+            sprite = new Sprite(new Texture("Images/Chuck.png"));
+        }
         sprite.setSize(w, h);
         sprite.setOriginCenter();
     }

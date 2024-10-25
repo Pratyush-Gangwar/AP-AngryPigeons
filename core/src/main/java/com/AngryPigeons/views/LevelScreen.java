@@ -131,6 +131,7 @@ public class LevelScreen implements Screen{
 
         birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
         birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
+        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
 
         iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
         woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
@@ -161,6 +162,9 @@ public class LevelScreen implements Screen{
             bird.update();
         }
         for (Bird bird:birds2){
+            bird.update();
+        }
+        for (Bird bird:birds3){
             bird.update();
         }
 
@@ -200,6 +204,9 @@ public class LevelScreen implements Screen{
             bird.render(batch);
         }
         for (Bird bird:birds2){
+            bird.render(batch);
+        }
+        for (Bird bird:birds3){
             bird.render(batch);
         }
 

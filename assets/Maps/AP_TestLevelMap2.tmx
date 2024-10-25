@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="34">
- <tileset firstgid="1" source="AngryPigeonsTestTileset.tsx"/>
- <tileset firstgid="25" source="MyTileset.tsx"/>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="38">
+ <tileset firstgid="1" source="MyTileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
-   eJztk0sKgDAMBd81/LvRjW6E3P9szU4Iahpau3oDs0vJQChACCGEkNb0joPz/lCvF88KfbPjWmFHCewrg303Hfz/aI30SaBFHuaXjH1RbV9Oo6Bd36juiN/FuqnTD3302wRm0B20
+   eJxjYBgFo2AUjIJRMApGAb0BEwHMTEC/MBBL4sAiVHAfGwHMQQU7KAGj7qMM0Mp9skAsN4jdpwzEKmhijAyE8yM6prb7YOGGToMAOxH2kYpJdR8s3NBpWrmPBYj5GEiPF3TMC8SsNHDfKMaPAainB7Q=
   </data>
  </layer>
  <objectgroup id="2" name="collision-layer">
   <object id="30" x="608" y="416">
-   <polyline points="0,0 -64,0 -96,-32 160,-32 128,0 32,0"/>
+   <polyline points="0,-8 -72,-8 -96,-32 160,-32 144,-8 8,-8"/>
   </object>
   <object id="31" x="0" y="384">
    <polyline points="0,0 288,0 288,256 864,256 864,160 1280,160"/>
   </object>
-  <object id="32" x="352" y="640">
-   <polyline points="0,0 0,-64 32,-64 32,-32 64,-32 64,0"/>
-  </object>
-  <object id="33" x="672" y="640">
-   <polyline points="0,0 0,-32 32,-32 32,-64 96,-64 96,0"/>
+  <object id="36" x="0" y="384">
+   <polyline points="0,0 288,0 288,256 640,256 640,192 704,192 704,128 768,128 768,192 832,192 832,256 864,256 864,160 1280,160"/>
   </object>
  </objectgroup>
  <objectgroup id="3" name="ice-layer">
@@ -99,4 +95,5 @@
    <polygon points="0,0 0,96 64,96 64,0"/>
   </object>
  </objectgroup>
+ <objectgroup id="12" name="pigeons3"/>
 </map>

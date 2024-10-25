@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="56">
- <tileset firstgid="1" source="AngryPigeonsTestTileset.tsx"/>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="57">
+ <tileset firstgid="1" source="MyTileset.tsx"/>
  <layer id="14" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
-   eJztkrsKwCAMAGM3XRza//9WXZQQFJRSUuQObr88RAAAAADWCNWkvHxzOq3rqWZldOpJRtu122f3/tZRy26fbprN97WjvtkvePf9qat5i/8N8TwLSZcROA==
+   eJztksEKgDAMxaZO8aL//7mrh0kZdWyIdEICuaePhgAAAADQxiTOysU35+bqOsRV3JS7U4/eyOrq7St3f6vV0tuXm2r3fa3V9/QL3n0jdWWjeA7Yhf82Aaq0BvY=
   </data>
  </layer>
  <objectgroup id="2" name="collision-layer">
@@ -75,9 +75,10 @@
    <polygon points="0,0 0,64 64,64 64,0"/>
   </object>
  </objectgroup>
- <objectgroup id="15" name="pigeons2">
-  <object id="55" x="32" y="384">
-   <polygon points="0,0 0,96 64,96 64,0"/>
+ <objectgroup id="15" name="pigeons2"/>
+ <objectgroup id="16" name="pigeons3">
+  <object id="56" x="32" y="416">
+   <polygon points="0,0 0,64 64,64 64,0"/>
   </object>
  </objectgroup>
 </map>
