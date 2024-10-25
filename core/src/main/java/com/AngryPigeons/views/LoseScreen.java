@@ -1,6 +1,6 @@
 package com.AngryPigeons.views;
 
-import com.AngryPigeons.Main2;
+import com.AngryPigeons.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,19 +12,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.AngryPigeons.Main2;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
 public class LoseScreen implements Screen {
 
-    private Main2 main;
+    private Main main;
     private Stage stage;
     private Table table;
 
     private Texture background;
     private float duration;
 
-    public LoseScreen(Main2 main) {
+    public LoseScreen(Main main) {
         this.main = main;
         this.stage = new Stage();
         background = new Texture(Gdx.files.internal("textures/lose.jpg"));

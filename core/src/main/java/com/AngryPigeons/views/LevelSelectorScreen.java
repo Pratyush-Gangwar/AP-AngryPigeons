@@ -1,7 +1,6 @@
 package com.AngryPigeons.views;
 
-import com.AngryPigeons.LevelScreen;
-import com.AngryPigeons.Main2;
+import com.AngryPigeons.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -9,27 +8,22 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.AngryPigeons.Main2;
 import com.AngryPigeons.Utils.Scene2DUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LevelSelectorScreen implements Screen {
 
-    private Main2 main;
+    private Main main;
     private Stage stage;
     private Table table;
 
     private boolean wasHidden;
     private int lastCompleted;
 
-    public LevelSelectorScreen(Main2 main) {
+    public LevelSelectorScreen(Main main) {
         this.main = main;
         wasHidden = false;
         lastCompleted = -1;

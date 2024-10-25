@@ -1,9 +1,11 @@
-package com.AngryPigeons;
+package com.AngryPigeons.views;
 
+import com.AngryPigeons.domain.Bird;
+import com.AngryPigeons.domain.Material;
+import com.AngryPigeons.domain.Pig;
+import com.AngryPigeons.domain.SlingShot;
 import com.AngryPigeons.Utils.Constants;
-import com.AngryPigeons.Utils.TextureRenderUtil;
 import com.AngryPigeons.Utils.TiledMapUtil;
-import com.AngryPigeons.views.LevelRenderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,8 +23,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
-
-import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class LevelScreen implements Screen{
 

@@ -11,19 +11,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.AngryPigeons.Main2;
+import com.AngryPigeons.Main;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
 public class WinScreen implements Screen {
 
-    private Main2 main;
+    private Main main;
     private Stage stage;
     private Table table;
 
     private Texture background;
     private float duration;
 
-    public WinScreen(Main2 main) {
+    public WinScreen(Main main) {
         this.main = main;
         this.stage = new Stage();
         background = new Texture(Gdx.files.internal("textures/win.jpg"));

@@ -1,16 +1,13 @@
 package com.AngryPigeons.Utils;
 
-import com.AngryPigeons.Bird;
-import com.AngryPigeons.Material;
-import com.AngryPigeons.Pig;
-import com.AngryPigeons.SlingShot;
+import com.AngryPigeons.domain.Bird;
+import com.AngryPigeons.domain.Material;
+import com.AngryPigeons.domain.Pig;
+import com.AngryPigeons.domain.SlingShot;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.math.Ellipse;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -22,7 +19,8 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 public class TiledMapUtil {
 
     public static SlingShot parseSlingShot(World world, MapObjects objects, boolean isStatic) {
-        SlingShot ss = new SlingShot();
+        SlingShot ss;
+
         for (MapObject object: objects){
             Shape shape;
             if (object instanceof PolygonMapObject){
@@ -44,9 +42,11 @@ public class TiledMapUtil {
             body.createFixture(fixtureDef);
             shape.dispose();
 
-            ss = (new SlingShot(body, rect.getWidth(), rect.getHeight()));
+            ss = new SlingShot(body, rect.getWidth(), rect.getHeight());
+            return ss;
         }
-        return ss;
+
+        return  null;
     }
 
     public static void parseBoundary(World world, MapObjects objects, boolean isStatic) {

@@ -1,37 +1,22 @@
 package com.AngryPigeons.views;
 
-import com.AngryPigeons.LevelScreen;
-import com.AngryPigeons.Main2;
+import com.AngryPigeons.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Utils.Scene2DUtils;
-import com.AngryPigeons.Utils.TiledMapUtil;
-
-import java.util.ArrayList;
-
-import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class LevelRenderer implements Screen {
     // Scene2D
-    private Main2 main;
+    private Main main;
     private Stage stage;
     private Table mainTable;
     private Dialog musicDialog;
@@ -43,7 +28,7 @@ public class LevelRenderer implements Screen {
 
     private LevelScreen levelScreen;
 
-    public LevelRenderer(Main2 main, LevelScreen levelScreen) {
+    public LevelRenderer(Main main, LevelScreen levelScreen) {
         // Scene2D
         this.main = main;
         this.levelScreen = levelScreen;
@@ -277,9 +262,5 @@ public class LevelRenderer implements Screen {
 
     public boolean isPaused() {
         return isPaused;
-    }
-
-    public void setPaused(boolean paused) {
-        isPaused = paused;
     }
 }

@@ -12,13 +12,12 @@ import java.util.List;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 // Scene2D entirely
-public class Main2 extends Game {
+public class Main extends Game {
 
     // Only one instance of these classes is ever available
     private HomeScreen homeScreen;
     private LevelSelectorScreen levelSelectorScreen;
     private WinScreen winScreen;
-    // private LevelRenderer levelRenderer;
     private LoseScreen loseScreen;
 
     private List<LevelRenderer> levelRendererList;
@@ -117,16 +116,8 @@ public class Main2 extends Game {
         super.render(); // won't run without it
     }
 
-    public HomeScreen getHomeScreen() {
-        return homeScreen;
-    }
-
     public LevelSelectorScreen getLevelSelectorScreen() {
         return levelSelectorScreen;
-    }
-
-    public WinScreen getWinScreen() {
-        return winScreen;
     }
 
     public List<LevelScreen> getLevelScreenList() {

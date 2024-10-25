@@ -10,15 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.AngryPigeons.Main2;
+import com.AngryPigeons.Main;
 import com.AngryPigeons.Utils.Scene2DUtils;
-
-import java.util.List;
 
 
 public class HomeScreen implements Screen {
 
-    private Main2 main; // orchestrator class
+    private Main main; // orchestrator class
     private Stage stage;
     private Table table;
     private Dialog musicDialog;
@@ -26,7 +24,7 @@ public class HomeScreen implements Screen {
 
     private boolean wasHidden; // to prevent multiple rendering
 
-    public HomeScreen(Main2 main) {
+    public HomeScreen(Main main) {
         System.out.println("Constructed home");
 
         this.main = main;
