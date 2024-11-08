@@ -3,9 +3,11 @@ package com.AngryPigeons.views;
 import com.AngryPigeons.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -14,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
-public class LevelRenderer implements Screen {
+public class LevelRenderer implements Screen, InputProcessor {
     // Scene2D
     private Main main;
     private Stage stage;
@@ -54,6 +56,8 @@ public class LevelRenderer implements Screen {
             return;
         }
 
+        Gdx.input.setInputProcessor(this);
+
         levelScreen.show();
     }
 
@@ -83,6 +87,10 @@ public class LevelRenderer implements Screen {
         // Scene2D
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
+        if (!stage.getViewport().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).isZero()) {
+            Gdx.input.setInputProcessor(this);
+        }
     }
 
     @Override
@@ -263,4 +271,41 @@ public class LevelRenderer implements Screen {
     public boolean isPaused() {
         return isPaused;
     }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) { //<- Added
+//        System.out.println("Mouse down at: " + screenX + ", " + screenY);
+        levelScreen.touchDown(screenX, screenY, pointer, button);
+        return true;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) { //<- Added
+//        System.out.println("Mouse dragged at: " + screenX + ", " + screenY);
+        levelScreen.touchDragged(screenX, screenY, pointer);
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) { //<- Added
+//        System.out.println("Mouse up at: " + screenX + ", " + screenY);
+        levelScreen.touchUp(screenX, screenY, pointer, button);
+        return true;
+    }
+
+    @Override
+    public boolean touchCancelled(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) { return false; } //<- Added
+    @Override
+    public boolean keyUp(int keycode) { return false; } //<- Added
+    @Override
+    public boolean keyTyped(char character) { return false; } //<- Added
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) { return false; } //<- Added
+    @Override
+    public boolean scrolled(float amountX, float amountY) { return false; } //<- Added
 }

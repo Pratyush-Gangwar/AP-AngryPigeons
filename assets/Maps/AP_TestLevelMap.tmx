@@ -51,8 +51,8 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="sling-shot" offsetx="64" offsety="0">
-  <object id="25" x="192" y="288">
-   <polygon points="0,0 96,0 96,128 0,128"/>
+  <object id="25" x="224" y="320">
+   <polygon points="0,0 32,0 32,32 0,32"/>
   </object>
  </objectgroup>
  <objectgroup id="7" name="large-pigs">
