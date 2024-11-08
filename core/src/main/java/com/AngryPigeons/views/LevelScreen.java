@@ -254,9 +254,10 @@ public class LevelScreen implements Screen{
     }
 
     public void inputUpdate(float delta){
-//        if (Gdx.input.isTouched(Input.Buttons.LEFT)){
-//            currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
-//        }
+        if (Gdx.input.isTouched(Input.Buttons.LEFT)){
+            System.out.println("MOUSE PRESSED");
+            currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
+        }
     }
 
     @Override
@@ -296,8 +297,8 @@ public class LevelScreen implements Screen{
         distance = Math.min(distance, Constants.SS_RADIUS);
         System.out.println(distance);
 
-        currentBird.getBody().setTransform((float) (ssPosition.x+distance* -Math.cos(angle)), (float) (ssPosition.y+distance* -Math.sin(angle)), angle);
-//        currentBird.getBody().setTransform(screenX/PPM, (Gdx.graphics.getHeight()-screenY)/PPM, 0);
+        currentBirdPos = new Vector3((float) (ssPosition.x+distance* -Math.cos(angle)), (float) (ssPosition.y+distance* -Math.sin(angle)), angle);
+//        currentBird.getBody().setTransform((float) (ssPosition.x+distance* -Math.cos(angle)), (float) (ssPosition.y+distance* -Math.sin(angle)), angle);
     }
 
     public void touchDragged(int screenX, int screenY, int pointer) { //<- Added
@@ -311,7 +312,8 @@ public class LevelScreen implements Screen{
         distance = Math.min(distance, Constants.SS_RADIUS);
         System.out.println(distance);
 
-        currentBird.getBody().setTransform((float) (ssPosition.x+distance* -Math.cos(angle)), (float) (ssPosition.y+distance* -Math.sin(angle)), angle);
+        currentBirdPos = new Vector3((float) (ssPosition.x+distance* -Math.cos(angle)), (float) (ssPosition.y+distance* -Math.sin(angle)), angle);
+//        currentBird.getBody().setTransform((float) (ssPosition.x+distance* -Math.cos(angle)), (float) (ssPosition.y+distance* -Math.sin(angle)), angle);
     }
 
     public void touchUp(int screenX, int screenY, int pointer, int button) { //<- Added
