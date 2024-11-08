@@ -164,8 +164,6 @@ public class LevelScreen implements Screen{
 
         //Rendering
 
-        b2dr.render(world, camera.combined.scl(PPM));
-
 //        float cameraCenterX = camera.position.x;
 //        float cameraCenterY = camera.position.y;
 //        float crosshairSize = 5f;
@@ -211,8 +209,8 @@ public class LevelScreen implements Screen{
 //        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING
 //        batch.draw(cross_hair, 240,360, crosshairSize, crosshairSize); //DEBUGGING
 
-//        batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-//        slingShot.render(batch);
+        batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        slingShot.render(batch);
 //
         for (Bird bird:birds1){
             bird.render(batch);
@@ -224,16 +222,16 @@ public class LevelScreen implements Screen{
 //            bird.render(batch);
 //        }
 //
-//        for (Material ice: iceBlocks){
-//            ice.render(batch);
-//        }
-//        for (Material wood: woodBlocks){
-//            wood.render(batch);
-//        }
-//        for (Material stone: stoneBlocks){
-//            stone.render(batch);
-//        }
-//
+        for (Material ice: iceBlocks){
+            ice.render(batch);
+        }
+        for (Material wood: woodBlocks){
+            wood.render(batch);
+        }
+        for (Material stone: stoneBlocks){
+            stone.render(batch);
+        }
+
 //        for (Pig largePig: largePigs){
 //            largePig.render(batch);
 //        }
@@ -245,9 +243,11 @@ public class LevelScreen implements Screen{
 //        }
 //
 //        tmr.setView(camera);
-//        tmr.render();
+        tmr.render();
 
         batch.end();
+
+//        b2dr.render(world, camera.combined.scl(PPM));
 
 //        System.out.println(currentBird.getBody().getPosition());
 //        System.out.println(ssPosition);
@@ -255,7 +255,7 @@ public class LevelScreen implements Screen{
 
     public void inputUpdate(float delta){
         if (Gdx.input.isTouched(Input.Buttons.LEFT)){
-            System.out.println("MOUSE PRESSED");
+//            System.out.println("MOUSE PRESSED");
             currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
         }
     }
@@ -318,5 +318,7 @@ public class LevelScreen implements Screen{
 
     public void touchUp(int screenX, int screenY, int pointer, int button) { //<- Added
         System.out.println("Mouse up received at: " + screenX + ", " + screenY);
+        Vector2 velocity = new Vector2((float) (currentBirdPos.x*Constants.MAX_VELOCITY*Math.cos(currentBirdPos.z)), (float) (currentBirdPos.y*Constants.MAX_VELOCITY*Math.sin(currentBirdPos.z)));
+        currentBird.getBody().setLinearVelocity(velocity);
     }
 }

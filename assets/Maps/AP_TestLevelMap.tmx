@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="57">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="59">
  <tileset firstgid="1" source="MyTileset.tsx"/>
  <layer id="14" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
-   eJztksEKgDAMxaZO8aL//7mrh0kZdWyIdEICuaePhgAAAADQxiTOysU35+bqOsRV3JS7U4/eyOrq7St3f6vV0tuXm2r3fa3V9/QL3n0jdWWjeA7Yhf82Aaq0BvY=
+   eJztkTsKACEQxcYvNu79j6uNhaAwgqAuCaR9BJ4IAAAAQI9V6g71RaXpJ31G9J9o3NHXmnI1LGzudNRnDjfN+m7qavrqd2EXvm0BmnsHIA==
   </data>
  </layer>
  <objectgroup id="2" name="collision-layer">
   <object id="1" x="128" y="416">
-   <polyline points="-128,64 0,64 0,32 64,32 64,0 224,0 224,192 288,192 288,160 350.609,160 350.609,128 416,128 416,96 512,96 512,64 1152,64"/>
+   <polyline points="-128,0 64,0 224,0 224,192 288,192 288,160 350.609,160 350.609,128 416,128 416,96 512,96 512,64 1152,64"/>
+  </object>
+  <object id="58" x="0" y="704">
+   <polyline points="0,0 1280,0"/>
   </object>
  </objectgroup>
  <objectgroup id="4" name="wood-layer">
@@ -51,7 +54,7 @@
   </object>
  </objectgroup>
  <objectgroup id="5" name="sling-shot" offsetx="64" offsety="0">
-  <object id="25" x="224" y="320">
+  <object id="25" x="224" y="288">
    <polygon points="0,0 32,0 32,32 0,32"/>
   </object>
  </objectgroup>
@@ -71,13 +74,13 @@
   </object>
  </objectgroup>
  <objectgroup id="13" name="pigeons1">
-  <object id="53" x="128" y="384">
+  <object id="53" x="128" y="352">
    <polygon points="0,0 0,64 64,64 64,0"/>
   </object>
  </objectgroup>
  <objectgroup id="15" name="pigeons2"/>
  <objectgroup id="16" name="pigeons3">
-  <object id="56" x="32" y="416">
+  <object id="56" x="32" y="352">
    <polygon points="0,0 0,64 64,64 64,0"/>
   </object>
  </objectgroup>

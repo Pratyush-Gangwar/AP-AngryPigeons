@@ -36,13 +36,13 @@ public class TiledMapUtil {
             def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
             def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
             body = world.createBody(def);
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.shape = shape;
-            fixtureDef.density = 2f;
-            body.createFixture(fixtureDef);
+//            FixtureDef fixtureDef = new FixtureDef();
+//            fixtureDef.shape = shape;
+//            fixtureDef.density = 2f;
+//            body.createFixture(fixtureDef);
             shape.dispose();
 
-            ss = new SlingShot(body, rect.getWidth(), rect.getHeight());
+            ss = new SlingShot(body, 3*PPM, 5*PPM);
             return ss;
         }
 
@@ -159,7 +159,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 2f;
+            fixtureDef.density = 5f;
             body.createFixture(fixtureDef);
             shape.dispose();
 

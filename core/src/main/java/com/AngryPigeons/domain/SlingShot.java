@@ -17,7 +17,8 @@ public class SlingShot extends Drawable {
     }
 
     public void update(){
-        sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2);
+        sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2-PPM);
+//        sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2);
         sprite.setRotation((float) Math.toDegrees(body.getAngle()));
     }
 }
