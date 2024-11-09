@@ -1,14 +1,18 @@
 package com.AngryPigeons.Utils;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.AngryPigeons.domain.Bird;
+import com.badlogic.gdx.math.Vector3;
+
+import static com.AngryPigeons.Utils.Constants.PPM;
 
 
 public class SlingShotUtil {
 
     public static float calculateEuclideanDistance(float x1, float y1, float x2, float y2){
-        System.out.println(x1+" x "+y1+" to "+x2+" x "+y2);
-        System.out.println("DISTANCE "+Math.sqrt(((x1-x2)*(x1-x2))+((y1-y2)*(y1-y2))));
         return (float) Math.sqrt(((x1-x2)*(x1-x2))+((y1-y2)*(y1-y2)));
     }
 
@@ -21,8 +25,26 @@ public class SlingShotUtil {
         return angle;
     }
 
-    public static void fireBird(Bird bird){
-        System.out.println("WEE!!!");
+    public static void drawTrajectory(ShapeRenderer shapeRenderer, OrthographicCamera camera, Vector3 startPosition, float distance, Vector2 gravity){
+        System.out.println("Drawing trajectory at "+startPosition);
+        float x = startPosition.x*PPM;
+        float y = startPosition.y*PPM;
+        float vx = (float) ((distance)*Constants.MAX_VELOCITY*Math.cos(startPosition.z));
+        float vy = (float) ((distance)*Constants.MAX_VELOCITY*Math.sin(startPosition.z));
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        for (int i = 0; i<25; i++){
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.BLACK);
+            shapeRenderer.circle(x,y,8);
+            shapeRenderer.end();
+
+            x+=2*vx;
+            y+=2*vy;
+            vy+=2*(gravity.y/PPM);
+        }
     }
+
+
 
 }

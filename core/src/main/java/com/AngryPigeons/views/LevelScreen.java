@@ -13,6 +13,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -48,6 +49,8 @@ public class LevelScreen implements Screen{
     private World world;
 
     private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
+
     private Texture background_tex;;
     private Texture cross_hair;
 
@@ -59,6 +62,8 @@ public class LevelScreen implements Screen{
     Vector2 ssPosition;
     Bird currentBird;
     Vector3 currentBirdPos;
+    boolean ssPulled;
+    float distance;
 
     ArrayList<Bird> birds1, birds2, birds3;
     ArrayList<Pig> smallPigs;
@@ -129,6 +134,7 @@ public class LevelScreen implements Screen{
         b2dr = new Box2DDebugRenderer();
 
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
         background_tex = new Texture("Images/BG.png");
         cross_hair = new Texture("Images/images.png");
@@ -144,6 +150,7 @@ public class LevelScreen implements Screen{
 
         currentBird = birds1.getFirst();
         currentBirdPos = new Vector3();
+        ssPulled = false;
 
         iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
         woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
@@ -170,37 +177,17 @@ public class LevelScreen implements Screen{
 
         slingShot.update();
 
-        for (Bird bird:birds1){
-            bird.update();
-        }
-        for (Bird bird:birds2){
-            bird.update();
-        }
-        for (Bird bird:birds3){
-            bird.update();
-        }
+        for (Bird bird:birds1){bird.update();}
+        for (Bird bird:birds2){bird.update();}
+        for (Bird bird:birds3){bird.update();}
 
-        for (Material ice: iceBlocks){
-            ice.update();
-        }
-        for (Material wood: woodBlocks){
-            wood.update();
-        }
-        for (Material stone: stoneBlocks){
-            stone.update();
-        }
+        for (Material ice: iceBlocks){ice.update();}
+        for (Material wood: woodBlocks){wood.update();}
+        for (Material stone: stoneBlocks){stone.update();}
 
-        for (Pig largePig:largePigs){
-            largePig.update();
-        }
-        for (Pig pig:mediumPigs){
-            pig.update();
-        }
-        for (Pig smallPig:smallPigs){
-            smallPig.update();
-        }
-
-//        System.out.println(cameraCenterX+" "+cameraCenterY);
+        for (Pig largePig:largePigs){largePig.update();}
+        for (Pig pig:mediumPigs){pig.update();}
+        for (Pig smallPig:smallPigs){smallPig.update();}
 
 //        batch.setProjectionMatrix(camera.projection);
 //        batch.setTransformMatrix(camera.view);
@@ -211,41 +198,28 @@ public class LevelScreen implements Screen{
 
         batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         slingShot.render(batch);
-//
-        for (Bird bird:birds1){
-            bird.render(batch);
-        }
-//        for (Bird bird:birds2){
-//            bird.render(batch);
-//        }
-//        for (Bird bird:birds3){
-//            bird.render(batch);
-//        }
-//
-        for (Material ice: iceBlocks){
-            ice.render(batch);
-        }
-        for (Material wood: woodBlocks){
-            wood.render(batch);
-        }
-        for (Material stone: stoneBlocks){
-            stone.render(batch);
-        }
 
-//        for (Pig largePig: largePigs){
-//            largePig.render(batch);
-//        }
-//        for (Pig mediumPig: mediumPigs){
-//            mediumPig.render(batch);
-//        }
-//        for (Pig smallPig: smallPigs){
-//            smallPig.render(batch);
-//        }
-//
+        for (Bird bird:birds1){bird.render(batch);}
+//        for (Bird bird:birds2){bird.render(batch);}
+//        for (Bird bird:birds3){bird.render(batch);}
+
+        for (Material ice: iceBlocks){ice.render(batch);}
+        for (Material wood: woodBlocks){wood.render(batch);}
+        for (Material stone: stoneBlocks){stone.render(batch);}
+
+        for (Pig largePig: largePigs){largePig.render(batch);}
+        for (Pig mediumPig: mediumPigs){mediumPig.render(batch);}
+        for (Pig smallPig: smallPigs){smallPig.render(batch);}
+
 //        tmr.setView(camera);
         tmr.render();
 
         batch.end();
+
+        if (ssPulled) {
+            SlingShotUtil.drawTrajectory(shapeRenderer, camera, currentBirdPos, distance, world.getGravity());
+        }
+
 
 //        b2dr.render(world, camera.combined.scl(PPM));
 
@@ -256,6 +230,7 @@ public class LevelScreen implements Screen{
     public void inputUpdate(float delta){
         if (Gdx.input.isTouched(Input.Buttons.LEFT)){
 //            System.out.println("MOUSE PRESSED");
+            ssPulled = true;
             currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
         }
     }
@@ -291,7 +266,7 @@ public class LevelScreen implements Screen{
         float bird_x = screenX/PPM;
         float bird_y = (Gdx.graphics.getHeight() - screenY)/PPM;
 
-        float distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
+        distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
         float angle = SlingShotUtil.calculateAngle(bird_x, bird_y, ssPosition.x, ssPosition.y);
         System.out.println(distance);
         distance = Math.min(distance, Constants.SS_RADIUS);
@@ -306,7 +281,7 @@ public class LevelScreen implements Screen{
         float bird_x = screenX/PPM;
         float bird_y = (Gdx.graphics.getHeight() - screenY)/PPM;
 
-        float distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
+        distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
         float angle = SlingShotUtil.calculateAngle(bird_x, bird_y, ssPosition.x, ssPosition.y);
         System.out.println(distance);
         distance = Math.min(distance, Constants.SS_RADIUS);
@@ -318,7 +293,8 @@ public class LevelScreen implements Screen{
 
     public void touchUp(int screenX, int screenY, int pointer, int button) { //<- Added
         System.out.println("Mouse up received at: " + screenX + ", " + screenY);
-        Vector2 velocity = new Vector2((float) (currentBirdPos.x*Constants.MAX_VELOCITY*Math.cos(currentBirdPos.z)), (float) (currentBirdPos.y*Constants.MAX_VELOCITY*Math.sin(currentBirdPos.z)));
+        ssPulled = false;
+        Vector2 velocity = new Vector2((float) (distance*Constants.MAX_VELOCITY*Math.cos(currentBirdPos.z)), (float) (distance*Constants.MAX_VELOCITY*Math.sin(currentBirdPos.z)));
         currentBird.getBody().setLinearVelocity(velocity);
     }
 }

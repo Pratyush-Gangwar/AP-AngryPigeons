@@ -56,8 +56,6 @@ public class LevelRenderer implements Screen, InputProcessor {
             return;
         }
 
-        Gdx.input.setInputProcessor(this);
-
         levelScreen.show();
     }
 
@@ -88,8 +86,13 @@ public class LevelRenderer implements Screen, InputProcessor {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 
-        if (!stage.getViewport().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).isZero()) {
-            Gdx.input.setInputProcessor(this);
+        if (!isPaused) {
+            if (!stage.getViewport().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).isZero()) {
+                Gdx.input.setInputProcessor(this);
+            }
+        }
+        else {
+            Gdx.input.setInputProcessor(stage);
         }
     }
 
