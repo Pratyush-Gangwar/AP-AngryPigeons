@@ -71,6 +71,30 @@ public class TiledMapUtil {
         }
     }
 
+    public static void parseFloor(World world, MapObjects objects, boolean isStatic) {
+        for (MapObject object: objects){
+            Shape shape;
+            if (object instanceof PolygonMapObject){
+                shape = createPolygonShape((PolygonMapObject) object);
+            }
+            else {
+                continue;
+            }
+            Body body;
+            BodyDef def = new BodyDef();
+            def.type = BodyDef.BodyType.StaticBody;
+            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
+            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
+            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
+            body = world.createBody(def);
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.density = 50f;
+            body.createFixture(fixtureDef);
+            shape.dispose();
+        }
+    }
+
     public static ArrayList<Material> parseMaterial(World world, MapObjects objects, int type) {
         ArrayList<Material> material = new ArrayList<>();
         for (MapObject object: objects){
