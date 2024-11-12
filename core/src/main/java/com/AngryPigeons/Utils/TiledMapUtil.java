@@ -6,6 +6,7 @@ import com.AngryPigeons.domain.Pig;
 import com.AngryPigeons.domain.SlingShot;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.math.Rectangle;
@@ -93,10 +94,10 @@ public class TiledMapUtil {
                 fixtureDef.density = 1f;
             }
             if (type == 2) {
-                fixtureDef.density = 3f;
+                fixtureDef.density = 5f;
             }
             if (type == 3){
-                fixtureDef.density = 5f;
+                fixtureDef.density = 7f;
             }
             body.createFixture(fixtureDef);
             shape.dispose();
@@ -110,28 +111,27 @@ public class TiledMapUtil {
         ArrayList<Pig> pigs = new ArrayList<>();
 
         for (MapObject object: objects){
-            PolygonShape shape;
-            if (object instanceof PolygonMapObject){
-                shape = createPolygonShape((PolygonMapObject)object);
+            CircleShape shape;
+            if (object instanceof EllipseMapObject){
+                shape = createCircleShape((EllipseMapObject) object);
             }
             else {
                 continue;
             }
-            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
             Body body;
             BodyDef def = new BodyDef();
             def.type = BodyDef.BodyType.DynamicBody;
-            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
-            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
+            def.position.x = (float) object.getProperties().get("x")/PPM+shape.getRadius()/PPM;
+            def.position.y = (float) object.getProperties().get("y")/PPM+shape.getRadius()/PPM;
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 2f;
+            fixtureDef.density = 1f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
 
-            pigs.add(new Pig(body, rect.getWidth(), rect.getHeight()));
+            pigs.add(new Pig(body, 2* shape.getRadius()*PPM, 2* shape.getRadius()*PPM));
 
             System.out.println(body.getPosition());
 
@@ -144,8 +144,8 @@ public class TiledMapUtil {
         ArrayList<Bird> birds = new ArrayList<>();
         for (MapObject object: objects){
             Shape shape;
-            if (object instanceof PolygonMapObject){
-                shape = createPolygonShape((PolygonMapObject) object);
+            if (object instanceof EllipseMapObject){
+                shape = createCircleShape((EllipseMapObject) object);
             }
             else {
                 continue;
@@ -153,9 +153,8 @@ public class TiledMapUtil {
             Body body;
             BodyDef def = new BodyDef();
             def.type = BodyDef.BodyType.DynamicBody;
-            Rectangle rect = ((PolygonMapObject) object).getPolygon().getBoundingRectangle();
-            def.position.x = (float) object.getProperties().get("x")/PPM+rect.width/PPM/2;
-            def.position.y = (float) object.getProperties().get("y")/PPM-rect.height/PPM/2;
+            def.position.x = (float) object.getProperties().get("x")/PPM+shape.getRadius()/PPM;
+            def.position.y = (float) object.getProperties().get("y")/PPM+shape.getRadius()/PPM;
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -163,7 +162,7 @@ public class TiledMapUtil {
             body.createFixture(fixtureDef);
             shape.dispose();
 
-            birds.add(new Bird(body, rect.getWidth(), rect.getHeight(), type));
+            birds.add(new Bird(body, 2*shape.getRadius()*PPM, 2*shape.getRadius()*PPM, type));
         }
         return birds;
     }
@@ -203,5 +202,12 @@ public class TiledMapUtil {
         cs.createChain(worldVertices);
 
         return cs;
+    }
+
+    public static CircleShape createCircleShape(EllipseMapObject ellipse){
+        float r = ellipse.getEllipse().height/2;
+        CircleShape c = new CircleShape();
+        c.setRadius(r/PPM);
+        return c;
     }
 }

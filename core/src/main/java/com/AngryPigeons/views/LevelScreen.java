@@ -148,6 +148,7 @@ public class LevelScreen implements Screen{
         birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
         birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
 
+        System.out.println(birds1.size());
         currentBird = birds1.getFirst();
         currentBirdPos = new Vector3();
         ssPulled = false;
@@ -201,7 +202,7 @@ public class LevelScreen implements Screen{
 
         for (Bird bird:birds1){bird.render(batch);}
 //        for (Bird bird:birds2){bird.render(batch);}
-//        for (Bird bird:birds3){bird.render(batch);}
+        for (Bird bird:birds3){bird.render(batch);}
 
         for (Material ice: iceBlocks){ice.render(batch);}
         for (Material wood: woodBlocks){wood.render(batch);}
@@ -221,7 +222,7 @@ public class LevelScreen implements Screen{
         }
 
 
-//        b2dr.render(world, camera.combined.scl(PPM));
+        b2dr.render(world, camera.combined.scl(PPM));
 
 //        System.out.println(currentBird.getBody().getPosition());
 //        System.out.println(ssPosition);

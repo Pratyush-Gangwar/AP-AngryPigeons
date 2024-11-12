@@ -14,11 +14,12 @@ public class Pig extends Drawable {
 
         sprite = new Sprite(new Texture("Images/LargePig.png"));
         sprite.setSize(w, h);
+        sprite.setOriginCenter();
     }
 
     public void update(){
         sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2);
-//        sprite.setRotation((float) Math.toDegrees(body.getAngle()));
+        sprite.setRotation((float) Math.toDegrees(body.getAngle()));
     }
 
 }

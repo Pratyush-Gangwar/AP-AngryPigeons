@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="59">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="66">
  <tileset firstgid="1" source="MyTileset.tsx"/>
  <layer id="14" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
@@ -59,29 +59,32 @@
   </object>
  </objectgroup>
  <objectgroup id="7" name="large-pigs">
-  <object id="42" x="960" y="352">
-   <polygon points="0,0 128,0 128,128 0,128"/>
+  <object id="64" x="960" y="352" width="128" height="128">
+   <ellipse/>
+  </object>
+  <object id="65" x="1376" y="384">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="8" name="medium-pigs">
-  <object id="41" x="928" y="192">
-   <polygon points="0,0 96,0 96,96 0,96"/>
+  <object id="62" x="928" y="192" width="96" height="96">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="9" name="small-pigs">
-  <object id="43" x="1056" y="224">
-   <polygon points="0,0 64,0 64,64 0,64"/>
+  <object id="63" x="1056" y="224" width="64" height="64">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="13" name="pigeons1">
-  <object id="53" x="128" y="352">
-   <polygon points="0,0 0,64 64,64 64,0"/>
+  <object id="59" x="128" y="352" width="64" height="64">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="15" name="pigeons2"/>
  <objectgroup id="16" name="pigeons3">
-  <object id="56" x="32" y="352">
-   <polygon points="0,0 0,64 64,64 64,0"/>
+  <object id="61" x="32" y="352" width="64" height="64">
+   <ellipse/>
   </object>
  </objectgroup>
 </map>
