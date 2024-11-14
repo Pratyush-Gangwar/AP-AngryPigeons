@@ -7,6 +7,7 @@ import com.AngryPigeons.domain.Pig;
 import com.AngryPigeons.domain.SlingShot;
 import com.AngryPigeons.Utils.Constants;
 import com.AngryPigeons.Utils.TiledMapUtil;
+import com.AngryPigeons.logic.LevelContactListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -19,9 +20,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -130,6 +129,7 @@ public class LevelScreen implements Screen{
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
 
         world = new World(new Vector2(0, -9.8f), false);
+        world.setContactListener(new LevelContactListener());
 
         b2dr = new Box2DDebugRenderer();
 
@@ -189,6 +189,11 @@ public class LevelScreen implements Screen{
         for (Pig largePig:largePigs){largePig.update();}
         for (Pig pig:mediumPigs){pig.update();}
         for (Pig smallPig:smallPigs){smallPig.update();}
+
+        if (!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f) {
+            currentBird.setStopped(true);
+            currentBird = birds3.getFirst();
+        }
 
 //        batch.setProjectionMatrix(camera.projection);
 //        batch.setTransformMatrix(camera.view);
@@ -297,5 +302,7 @@ public class LevelScreen implements Screen{
         ssPulled = false;
         Vector2 velocity = new Vector2((float) (distance*Constants.MAX_VELOCITY*Math.cos(currentBirdPos.z)), (float) (distance*Constants.MAX_VELOCITY*Math.sin(currentBirdPos.z)));
         currentBird.getBody().setLinearVelocity(velocity);
+
+        currentBird.setWaiting(false);
     }
 }

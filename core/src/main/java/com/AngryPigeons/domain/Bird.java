@@ -9,8 +9,14 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class Bird extends Drawable {
 
+    private boolean stopped;
+    private boolean waiting;
+
     public Bird(Body body, float w, float h, int type){
         super(body, w, h);
+
+        stopped = true;
+        waiting = true;
 
         sprite = new Sprite();
 
@@ -32,4 +38,19 @@ public class Bird extends Drawable {
         sprite.setRotation((float) Math.toDegrees(body.getAngle()));
     }
 
+    public boolean isWaiting() {
+        return waiting;
+    }
+
+    public void setWaiting(boolean waiting) {
+        this.waiting = waiting;
+    }
+
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
+    }
 }
