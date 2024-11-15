@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.AngryPigeons.domain.Bird;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
@@ -44,7 +45,4 @@ public class SlingShotUtil {
             vy+=2*(gravity.y/PPM);
         }
     }
-
-
-
 }

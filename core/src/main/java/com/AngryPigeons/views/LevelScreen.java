@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
@@ -64,14 +65,18 @@ public class LevelScreen implements Screen{
     boolean ssPulled;
     float distance;
 
-    ArrayList<Bird> birds1, birds2, birds3;
+//    ArrayList<Bird> birds1, birds2, birds3;
+    ArrayList<Integer> birds;
+    int birdPointer;
+
     ArrayList<Pig> smallPigs;
     ArrayList<Pig> mediumPigs;
     ArrayList<Pig> largePigs;
 
     // ~~~ Scene2D integration start ~~~
-    public LevelScreen(String tilemapPath) {
-        map = new TmxMapLoader().load(tilemapPath);
+    public LevelScreen(String tileMapPath, ArrayList<Integer> birds) {
+        map = new TmxMapLoader().load(tileMapPath);
+        this.birds = birds;
         isComplete = false;
     }
 
@@ -144,12 +149,11 @@ public class LevelScreen implements Screen{
 
         TiledMapUtil.parseFloor(world, map.getLayers().get("collision-layer").getObjects(), true);
 
-        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
-        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
-        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
-
-        System.out.println(birds1.size());
-        currentBird = birds1.getFirst();
+//        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
+//        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
+//        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
+        birdPointer = 0;
+        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
         currentBirdPos = new Vector3();
         ssPulled = false;
 
@@ -177,10 +181,10 @@ public class LevelScreen implements Screen{
 //        float crosshairSize = 5f;
 
         slingShot.update();
-
-        for (Bird bird:birds1){bird.update();}
-        for (Bird bird:birds2){bird.update();}
-        for (Bird bird:birds3){bird.update();}
+        currentBird.update();
+//        for (Bird bird:birds1){bird.update();}
+//        for (Bird bird:birds2){bird.update();}
+//        for (Bird bird:birds3){bird.update();}
 
         for (Material ice: iceBlocks){ice.update();}
         for (Material wood: woodBlocks){wood.update();}
@@ -192,7 +196,10 @@ public class LevelScreen implements Screen{
 
         if (!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f) {
             currentBird.setStopped(true);
-            currentBird = birds3.getFirst();
+            if (birdPointer<birds.size()) {
+                world.destroyBody(currentBird.getBody());
+                currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
+            }
         }
 
 //        batch.setProjectionMatrix(camera.projection);
@@ -205,9 +212,11 @@ public class LevelScreen implements Screen{
         batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         slingShot.render(batch);
 
-        for (Bird bird:birds1){bird.render(batch);}
+//        for (Bird bird:birds1){bird.render(batch);}
 //        for (Bird bird:birds2){bird.render(batch);}
-        for (Bird bird:birds3){bird.render(batch);}
+//        for (Bird bird:birds3){bird.render(batch);}
+
+        currentBird.render(batch);
 
         for (Material ice: iceBlocks){ice.render(batch);}
         for (Material wood: woodBlocks){wood.render(batch);}

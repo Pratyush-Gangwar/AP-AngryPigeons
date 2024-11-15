@@ -160,7 +160,6 @@ public class TiledMapUtil {
 
             body.setUserData("pig");
 
-
             pigs.add(new Pig(body, 2* shape.getRadius()*PPM, 2* shape.getRadius()*PPM));
 
             System.out.println(body.getPosition());
@@ -170,8 +169,8 @@ public class TiledMapUtil {
         return pigs;
     }
 
-    public static ArrayList<Bird> parseBird(World world, MapObjects objects, int type) {
-        ArrayList<Bird> birds = new ArrayList<>();
+    public static Bird parseBird(World world, MapObjects objects, int type) {
+        Bird bird;
         for (MapObject object: objects){
             Shape shape;
             if (object instanceof EllipseMapObject){
@@ -194,9 +193,10 @@ public class TiledMapUtil {
 
             body.setUserData("bird");
 
-            birds.add(new Bird(body, 2*shape.getRadius()*PPM, 2*shape.getRadius()*PPM, type));
+            bird = (new Bird(body, 2*shape.getRadius()*PPM, 2*shape.getRadius()*PPM, type));
+            return bird;
         }
-        return birds;
+        return null;
     }
 
     public static PolygonShape createPolygonShape(PolygonMapObject polygonObject) {

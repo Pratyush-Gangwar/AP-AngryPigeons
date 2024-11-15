@@ -91,14 +91,8 @@
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup id="13" name="pigeons1">
+ <objectgroup id="13" name="bird">
   <object id="59" x="128" y="352" width="64" height="64">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup id="15" name="pigeons2"/>
- <objectgroup id="16" name="pigeons3">
-  <object id="61" x="32" y="352" width="64" height="64">
    <ellipse/>
   </object>
  </objectgroup>
