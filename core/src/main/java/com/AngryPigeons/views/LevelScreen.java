@@ -147,7 +147,8 @@ public class LevelScreen implements Screen{
         tmr = new OrthogonalTiledMapRenderer(map);
         tmr.setView(camera);
 
-        TiledMapUtil.parseFloor(world, map.getLayers().get("collision-layer").getObjects(), true);
+        TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
+//        TiledMapUtil.parseBoundary(world, map.getLayers().get("boundary").getObjects(), true);
 
 //        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
 //        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);

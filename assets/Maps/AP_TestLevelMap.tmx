@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="17" nextobjectid="72">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="18" nextobjectid="79">
  <tileset firstgid="1" source="MyTileset.tsx"/>
- <layer id="14" name="Tile Layer 1" width="40" height="23">
+ <layer id="14" name="Tile Layer" width="40" height="23">
   <data encoding="base64" compression="zlib">
    eJztkTsKACEQxcYvNu79j6uNhaAwgqAuCaR9BJ4IAAAAQI9V6g71RaXpJ31G9J9o3NHXmnI1LGzudNRnDjfN+m7qavrqd2EXvm0BmnsHIA==
   </data>
  </layer>
- <objectgroup id="2" name="collision-layer">
+ <objectgroup id="2" name="ground">
   <object id="58" x="0" y="704">
    <polyline points="0,0 1280,0"/>
   </object>
@@ -27,6 +27,14 @@
   </object>
   <object id="71" x="640" y="480">
    <polygon points="0,0 0,224 640,224 640,0"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="17" name="boundary">
+  <object id="77" x="1280" y="736">
+   <polyline points="0,0 0,-896"/>
+  </object>
+  <object id="78" x="0" y="-160">
+   <polyline points="0,0 0,896"/>
   </object>
  </objectgroup>
  <objectgroup id="4" name="wood-layer">
@@ -75,9 +83,6 @@
  </objectgroup>
  <objectgroup id="7" name="large-pigs">
   <object id="64" x="960" y="352" width="128" height="128">
-   <ellipse/>
-  </object>
-  <object id="65" x="1376" y="384">
    <ellipse/>
   </object>
  </objectgroup>

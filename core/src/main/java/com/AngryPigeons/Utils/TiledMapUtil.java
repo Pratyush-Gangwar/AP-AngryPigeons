@@ -187,7 +187,7 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 5f;
+            fixtureDef.density = 7f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
