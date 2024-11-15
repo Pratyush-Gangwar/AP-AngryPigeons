@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="38">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="53">
  <tileset firstgid="1" source="MyTileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="40" height="23">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2AUjIJRMApGAb0BEwHMTEC/MBBL4sAiVHAfGwHMQQU7KAGj7qMM0Mp9skAsN4jdpwzEKmhijAyE8yM6prb7YOGGToMAOxH2kYpJdR8s3NBpWrmPBYj5GEiPF3TMC8SsNHDfKMaPAainB7Q=
   </data>
  </layer>
- <objectgroup id="2" name="collision-layer">
-  <object id="30" x="608" y="416">
-   <polyline points="0,-8 -72,-8 -96,-32 160,-32 144,-8 8,-8"/>
-  </object>
+ <objectgroup id="2" name="ground">
   <object id="31" x="0" y="384">
    <polyline points="0,0 288,0 288,256 864,256 864,160 1280,160"/>
   </object>
-  <object id="36" x="0" y="384">
-   <polyline points="0,0 288,0 288,256 640,256 640,192 704,192 704,128 768,128 768,192 832,192 832,256 864,256 864,160 1280,160"/>
+  <object id="43" x="0" y="384">
+   <polygon points="0,0 288,0 288,352 0,352"/>
+  </object>
+  <object id="44" x="288" y="640">
+   <polygon points="0,0 576,0 576,96 0,96"/>
+  </object>
+  <object id="45" x="864" y="544">
+   <polygon points="0,0 416,0 416,192 0,192"/>
+  </object>
+  <object id="46" x="512" y="384">
+   <polygon points="0,0 0,8 0,16 32,16 256,16 256,0"/>
+  </object>
+  <object id="48" x="528" y="400">
+   <polygon points="0,0 0,8 224,8 224,0"/>
+  </object>
+  <object id="51" x="640" y="576">
+   <polygon points="0,0 192,0 192,64 0,64"/>
+  </object>
+  <object id="52" x="704" y="512">
+   <polygon points="0,0 64,0 64,64 0,64"/>
   </object>
  </objectgroup>
  <objectgroup id="3" name="ice-layer">
@@ -63,37 +78,31 @@
   <object id="10" x="608" y="176">
    <polygon points="0,0 32,0 32,32 0,32"/>
   </object>
-  <object id="21" x="960" y="512">
-   <polygon points="0,0 32,0 32,32 0,32"/>
+  <object id="42" x="960" y="512" width="32" height="32">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="7" name="medium-pigs">
-  <object id="19" x="608" y="288">
-   <polygon points="0,0 64,0 64,64 0,64"/>
+  <object id="39" x="608" y="288" width="64" height="64">
+   <ellipse/>
   </object>
-  <object id="20" x="1136" y="288">
-   <polygon points="0,0 64,0 64,64 0,64"/>
+  <object id="40" x="1120" y="288" width="64" height="64">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="8" name="large-pigs">
-  <object id="22" x="1088" y="448">
-   <polygon points="0,0 96,0 96,96 0,96"/>
+  <object id="41" x="1088" y="448" width="96" height="96">
+   <ellipse/>
   </object>
  </objectgroup>
  <objectgroup id="9" name="sling-shot">
-  <object id="23" x="160" y="256">
-   <polygon points="0,0 0,128 96,128 96,0"/>
+  <object id="23" x="192" y="256">
+   <polygon points="0,0 0,32 32,32 32,0"/>
   </object>
  </objectgroup>
- <objectgroup id="10" name="pigeons1">
-  <object id="24" x="0" y="320">
-   <polygon points="0,0 0,64 64,64 64,0"/>
+ <objectgroup id="10" name="bird">
+  <object id="38" x="64" y="320" width="64" height="64">
+   <ellipse/>
   </object>
  </objectgroup>
- <objectgroup id="11" name="pigeons2">
-  <object id="25" x="96" y="288">
-   <polygon points="0,0 0,96 64,96 64,0"/>
-  </object>
- </objectgroup>
- <objectgroup id="12" name="pigeons3"/>
 </map>

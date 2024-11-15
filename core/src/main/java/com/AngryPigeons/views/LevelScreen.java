@@ -195,7 +195,8 @@ public class LevelScreen implements Screen{
         for (Pig pig:mediumPigs){pig.update();}
         for (Pig smallPig:smallPigs){smallPig.update();}
 
-        if (!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f) {
+        System.out.println(currentBird.getBody().getPosition());
+        if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
             currentBird.setStopped(true);
             if (birdPointer<birds.size()) {
                 world.destroyBody(currentBird.getBody());
@@ -281,15 +282,13 @@ public class LevelScreen implements Screen{
 
     public void touchDown(int screenX, int screenY, int pointer, int button) {
         if (currentBird.isWaiting()) {
-            System.out.println("Mouse down received at: " + screenX + ", " + screenY);
+//            System.out.println("Mouse down received at: " + screenX + ", " + screenY);
             float bird_x = screenX / PPM;
             float bird_y = (Gdx.graphics.getHeight() - screenY) / PPM;
 
             distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
             float angle = SlingShotUtil.calculateAngle(bird_x, bird_y, ssPosition.x, ssPosition.y);
-            System.out.println(distance);
             distance = Math.min(distance, Constants.SS_RADIUS);
-            System.out.println(distance);
 
             currentBirdPos = new Vector3((float) (ssPosition.x + distance * -Math.cos(angle)), (float) (ssPosition.y + distance * -Math.sin(angle)), angle);
         }
@@ -297,15 +296,13 @@ public class LevelScreen implements Screen{
 
     public void touchDragged(int screenX, int screenY, int pointer) {
         if (currentBird.isWaiting()) {
-            System.out.println("Mouse dragged received at: " + screenX + ", " + screenY);
+//            System.out.println("Mouse dragged received at: " + screenX + ", " + screenY);
             float bird_x = screenX / PPM;
             float bird_y = (Gdx.graphics.getHeight() - screenY) / PPM;
 
             distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
             float angle = SlingShotUtil.calculateAngle(bird_x, bird_y, ssPosition.x, ssPosition.y);
-            System.out.println(distance);
             distance = Math.min(distance, Constants.SS_RADIUS);
-            System.out.println(distance);
 
             currentBirdPos = new Vector3((float) (ssPosition.x + distance * -Math.cos(angle)), (float) (ssPosition.y + distance * -Math.sin(angle)), angle);
         }
@@ -313,7 +310,7 @@ public class LevelScreen implements Screen{
 
     public void touchUp(int screenX, int screenY, int pointer, int button) {
         if (currentBird.isWaiting()) {
-            System.out.println("Mouse up received at: " + screenX + ", " + screenY);
+//            System.out.println("Mouse up received at: " + screenX + ", " + screenY);
             ssPulled = false;
             Vector2 velocity = new Vector2((float) (distance * Constants.MAX_VELOCITY * Math.cos(currentBirdPos.z)), (float) (distance * Constants.MAX_VELOCITY * Math.sin(currentBirdPos.z)));
             currentBird.getBody().setLinearVelocity(velocity);
