@@ -9,12 +9,21 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class Pig extends Drawable {
 
-    public Pig(Body body, float w, float h) {
+    private int health;
+
+    public Pig(Body body, float w, float h, int health) {
         super(body, w, h);
 
         sprite = new Sprite(new Texture("Images/LargePig.png"));
         sprite.setSize(w, h);
         sprite.setOriginCenter();
+
+        this.health = health;
+        body.setUserData(this);
+    }
+
+    public Pig(Body body, float w, float h) {
+        this(body, w, h, 100);
     }
 
     public void update(){

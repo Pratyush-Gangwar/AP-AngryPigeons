@@ -27,7 +27,7 @@ public class SlingShotUtil {
     }
 
     public static void drawTrajectory(ShapeRenderer shapeRenderer, OrthographicCamera camera, Vector3 startPosition, float distance, Vector2 gravity){
-        System.out.println("Drawing trajectory at "+startPosition);
+//        System.out.println("Drawing trajectory at "+startPosition);
         float x = startPosition.x*PPM;
         float y = startPosition.y*PPM;
         float vx = (float) ((distance)*Constants.MAX_VELOCITY*Math.cos(startPosition.z));

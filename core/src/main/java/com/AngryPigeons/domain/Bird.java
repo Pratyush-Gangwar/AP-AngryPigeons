@@ -31,6 +31,7 @@ public class Bird extends Drawable {
         }
         sprite.setSize(w, h);
         sprite.setOriginCenter();
+        body.setUserData(this);
     }
 
     public void update(){

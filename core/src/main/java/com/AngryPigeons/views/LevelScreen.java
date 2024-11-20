@@ -195,7 +195,7 @@ public class LevelScreen implements Screen{
         for (Pig pig:mediumPigs){pig.update();}
         for (Pig smallPig:smallPigs){smallPig.update();}
 
-        System.out.println(currentBird.getBody().getPosition());
+//        System.out.println(currentBird.getBody().getPosition());
         if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
             currentBird.setStopped(true);
             if (birdPointer<birds.size()) {

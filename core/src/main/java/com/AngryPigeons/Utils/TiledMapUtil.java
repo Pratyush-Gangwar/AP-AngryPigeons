@@ -128,7 +128,7 @@ public class TiledMapUtil {
             body.createFixture(fixtureDef);
             shape.dispose();
 
-            body.setUserData("material");
+//            body.setUserData("material");
 
             material.add(new Material(body, rect.getWidth(), rect.getHeight(), type));
         }
@@ -158,7 +158,7 @@ public class TiledMapUtil {
             body.createFixture(fixtureDef);
             shape.dispose();
 
-            body.setUserData("pig");
+//            body.setUserData("pig");
 
             pigs.add(new Pig(body, 2* shape.getRadius()*PPM, 2* shape.getRadius()*PPM));
 
@@ -191,7 +191,7 @@ public class TiledMapUtil {
             body.createFixture(fixtureDef);
             shape.dispose();
 
-            body.setUserData("bird");
+//            body.setUserData("bird");
 
             bird = (new Bird(body, 2*shape.getRadius()*PPM, 2*shape.getRadius()*PPM, type));
             return bird;

@@ -26,6 +26,7 @@ public class Material extends Drawable {
 
         sprite.setSize(w, h);
         sprite.setOriginCenter();
+        body.setUserData(this);
     }
 
     @Override

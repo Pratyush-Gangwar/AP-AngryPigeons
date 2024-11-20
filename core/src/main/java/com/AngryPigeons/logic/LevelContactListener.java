@@ -6,10 +6,13 @@ public class LevelContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
 //        System.out.println("Contact");
-        Fixture fa = contact.getFixtureA();
-        Fixture fb = contact.getFixtureB();
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
 
-        // System.out.println(fa.getBody().getUserData()+" has hit "+ fb.getBody().getUserData());
+        Body bodyA = fixtureA.getBody();
+        Body bodyB = fixtureB.getBody();
+
+         System.out.println(fixtureA.getBody().getUserData()+" has hit "+ fixtureB.getBody().getUserData());
     }
 
     @Override
@@ -26,4 +29,5 @@ public class LevelContactListener implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
     }
+
 }
