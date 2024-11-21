@@ -20,6 +20,8 @@ public class Pig extends Drawable {
 
         this.health = health;
         body.setUserData(this);
+        body.setLinearDamping(1.5f);
+        body.setAngularDamping(1.5f);
     }
 
     public Pig(Body body, float w, float h) {

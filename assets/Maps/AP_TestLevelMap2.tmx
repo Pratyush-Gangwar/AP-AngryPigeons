@@ -83,7 +83,7 @@
   </object>
  </objectgroup>
  <objectgroup id="7" name="medium-pigs">
-  <object id="39" x="608" y="288" width="64" height="64">
+  <object id="39" x="624" y="288" width="64" height="64">
    <ellipse/>
   </object>
   <object id="40" x="1120" y="288" width="64" height="64">
