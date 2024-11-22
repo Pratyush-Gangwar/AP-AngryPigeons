@@ -68,7 +68,11 @@ public class LevelRenderer implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_BLEND); // needed to render transparent backgrounds
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && levelScreen.getCurrentBird().isWaiting()) {
+        // Cannot pause if a bird is flying
+        // Cannot pause if a bird has landed but hasn't disappeared yet
+        // Cannot pause if you've pulled the slingshot
+        // Can only pause if there's a bird on the slingshot and you haven't pulled it
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && levelScreen.getCurrentBird().isWaiting() && !levelScreen.isSsPulled()) {
             isPaused = !isPaused;
         }
 

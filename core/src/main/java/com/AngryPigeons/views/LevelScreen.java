@@ -120,6 +120,10 @@ public class LevelScreen implements Screen{
         return currentBird;
     }
 
+    public boolean isSsPulled() {
+        return ssPulled;
+    }
+
     public void update(float delta){
 
         // only step through physics simulation if not paused.
@@ -208,8 +212,12 @@ public class LevelScreen implements Screen{
         for (Pig smallPig:smallPigs){smallPig.update();}
 
 //        System.out.println(currentBird.getBody().getPosition());
+
+        // We delete the bird if its velocity is less than a certain magnitude
+        // At this magnitude, the bird has almost stopped moving
+        // But all birds apart from the current bird have a velocity of 0.
+        // So, we need a boolean (isWaiting) to differentiate between the one flying bird and the others birds which haven't been launched
         if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
-            currentBird.setStopped(true);
             if (birdPointer<birds.size()) {
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
