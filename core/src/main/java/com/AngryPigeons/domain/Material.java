@@ -27,7 +27,7 @@ public class Material extends Drawable {
             sprite = new Sprite(new Texture("Images/Wood.jpg"),0 ,0 , (int)(w), (int)(h));
         }
         if (type == 3) {
-            hp = 300;
+            hp = 200;
             sprite = new Sprite(new Texture("Images/1.jpg"),20 ,20 , (int)(w), (int)(h));
         }
 

@@ -24,6 +24,27 @@ public class LevelContactListener implements ContactListener {
             A.damage(STD_DP);
             B.damage(STD_DP);
         }
+        // Pig - Pig collision
+        if (bodyA.getUserData() instanceof Pig && bodyB.getUserData() instanceof Pig) {
+            Pig A = (Pig) bodyA.getUserData();
+            Pig B = (Pig) bodyB.getUserData();
+            A.damage(STD_DP);
+            B.damage(STD_DP);
+        }
+        // Material - Pig collision
+        if (bodyA.getUserData() instanceof Material && bodyB.getUserData() instanceof Pig) {
+            Material A = (Material) bodyA.getUserData();
+            Pig B = (Pig) bodyB.getUserData();
+            A.damage(STD_DP);
+            B.damage(STD_DP);
+        }
+        // Pig - Material collision
+        if (bodyA.getUserData() instanceof Pig && bodyB.getUserData() instanceof Material) {
+            Pig A = (Pig) bodyA.getUserData();
+            Material B = (Material) bodyB.getUserData();
+            A.damage(STD_DP);
+            B.damage(STD_DP);
+        }
         // Material - Bird
         else if (bodyA.getUserData() instanceof Material && bodyB.getUserData() instanceof Bird) {
             Material A = (Material) bodyA.getUserData();
@@ -60,6 +81,7 @@ public class LevelContactListener implements ContactListener {
             Pig B = (Pig) bodyB.getUserData();
             B.damage(STD_DP);
         }
+
 
         System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
     }

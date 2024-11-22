@@ -12,29 +12,34 @@ public class Bird extends Drawable {
     private boolean waiting;
 
     private int dp;
+    private int type;
 
     public Bird(Body body, float w, float h, int type){
         super(body, w, h);
 
+        this.type = type;
         waiting = true;
 
         sprite = new Sprite();
 
         if (type == 1) {
             sprite = new Sprite(new Texture("Images/Red.png"));
-            dp = 40;
+            dp = 25;
         }
         if (type == 2) {
             sprite = new Sprite(new Texture("Images/Chuck.png"));
-            dp = 80;
+            dp = 75;
         }
         if (type == 3) {
             sprite = new Sprite(new Texture("Images/Bomb.png"));
-            dp = 150;
+            dp = 100;
         }
         sprite.setSize(w, h);
         sprite.setOriginCenter();
+
         body.setUserData(this);
+        body.setLinearDamping(0.1f);
+        body.setAngularDamping(0.1f);
     }
 
     public void update(){
