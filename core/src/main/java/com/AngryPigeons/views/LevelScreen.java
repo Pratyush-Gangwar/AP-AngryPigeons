@@ -228,12 +228,15 @@ public class LevelScreen implements Screen{
             stone.update();
         }
 
+        boolean flag = false;
+
         for (Pig largePig:largePigs){
             if (largePig.isDead()){continue;}
             if ((largePig.getHp()<=0)||(largePig.getBody().getPosition().y<0)){
                 largePig.dispose(world);
                 continue;
             }
+            flag = true;
             largePig.update();
         }
         for (Pig mediumPig:mediumPigs){
@@ -242,6 +245,7 @@ public class LevelScreen implements Screen{
                 mediumPig.dispose(world);
                 continue;
             }
+            flag = true;
             mediumPig.update();
         }
         for (Pig smallPig:smallPigs){
@@ -250,7 +254,13 @@ public class LevelScreen implements Screen{
                 smallPig.dispose(world);
                 continue;
             }
+            flag = true;
             smallPig.update();
+        }
+
+        if (!flag){
+            Gdx.input.setInputProcessor(levelRenderer.getStage());
+            levelRenderer.winLevel();
         }
 
 //        System.out.println(currentBird.getBody().getPosition());

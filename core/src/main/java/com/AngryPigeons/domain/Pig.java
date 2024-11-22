@@ -21,13 +21,13 @@ public class Pig extends Drawable {
         sprite.setOriginCenter();
 
         if (type == 1) {
-            hp = 50;
+            hp = 10;
         }
         if (type == 2) {
-            hp = 100;
+            hp = 10;
         }
         if (type == 3) {
-            hp = 200;
+            hp = 10;
         }
 
         body.setUserData(this);
