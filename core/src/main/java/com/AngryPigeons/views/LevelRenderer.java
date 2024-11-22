@@ -68,7 +68,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_BLEND); // needed to render transparent backgrounds
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && levelScreen.getCurrentBird().isWaiting()) {
             isPaused = !isPaused;
         }
 

@@ -116,6 +116,10 @@ public class LevelScreen implements Screen{
         return wasShown;
     }
 
+    public Bird getCurrentBird() {
+        return currentBird;
+    }
+
     public void update(float delta){
 
         // only step through physics simulation if not paused.

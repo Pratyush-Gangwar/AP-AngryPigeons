@@ -94,8 +94,8 @@ public class LoseScreen implements Screen {
         TextButton levelsBtn = new TextButton("Levels", Scene2DUtils.skin);
 //        TextButton restartBtn = new TextButton("Restart", Scene2DUtils.skin);
 
-        table.add(levelsBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        table.row();
+        table.add(levelsBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
+//        table.row();
 //        table.add(restartBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
 
         levelsBtn.addListener(new ChangeListener() {
