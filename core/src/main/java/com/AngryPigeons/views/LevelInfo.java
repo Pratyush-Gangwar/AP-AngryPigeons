@@ -1,7 +1,5 @@
 package com.AngryPigeons.views;
 
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-
 import java.util.ArrayList;
 
 public class LevelInfo {

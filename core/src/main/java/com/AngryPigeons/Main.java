@@ -1,5 +1,6 @@
 package com.AngryPigeons;
 
+import com.AngryPigeons.views.LevelInfo;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.AngryPigeons.Utils.Scene2DUtils;
@@ -105,7 +106,7 @@ public class Main extends Game {
         }
     }
 
-    public void newLevel(int index) {
+    public LevelScreen resetLevel(int index) {
         LevelScreen levelScreen = new LevelScreen(levelInfoList.get(index));
         //        levelScreenList.add(levelScreen);
         try {
@@ -114,6 +115,11 @@ public class Main extends Game {
             levelScreenList.add(levelScreen);
         }
 
+        return levelScreen;
+    }
+
+    public void playNewLevel(int index) {
+        LevelScreen levelScreen = resetLevel(index);
 
 //        LevelRenderer levelRenderer = new LevelRenderer(this, levelScreen);
 

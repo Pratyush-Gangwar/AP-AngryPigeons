@@ -91,14 +91,14 @@ public class LoseScreen implements Screen {
         Drawable drawable = new TextureRegionDrawable(background);
         table.setBackground(drawable);
 
-        TextButton homeBtn = new TextButton("Levels", Scene2DUtils.skin);
-        TextButton restartBtn = new TextButton("Restart", Scene2DUtils.skin);
+        TextButton levelsBtn = new TextButton("Levels", Scene2DUtils.skin);
+//        TextButton restartBtn = new TextButton("Restart", Scene2DUtils.skin);
 
-        table.add(homeBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
+        table.add(levelsBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
         table.row();
-        table.add(restartBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
+//        table.add(restartBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
 
-        homeBtn.addListener(new ChangeListener() {
+        levelsBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 main.changeScreen(Screens.LEVELSELECTORSCREEN);

@@ -185,7 +185,7 @@ public class LevelSelectorScreen implements Screen {
 
                 int choice = (Integer) object;
                 if (choice == 1) {
-                    main.newLevel(levelIndex);
+                    main.playNewLevel(levelIndex);
                 }
 
 

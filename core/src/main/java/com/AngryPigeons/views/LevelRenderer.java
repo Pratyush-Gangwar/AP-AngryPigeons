@@ -187,16 +187,15 @@ public class LevelRenderer implements Screen, InputProcessor {
         debugCompleteBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                levelScreen.setComplete(true);
 //                main.getLevelSelectorScreen().incrementLastCompleted();
-                main.changeScreen(Screens.WINSCREEN);
+                winLevel();
             }
         });
 
         debugLoseBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(Screens.LOSESCREEN);
+                loseLevel();
             }
         });
 
@@ -218,6 +217,19 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     }
 
+    public void winLevel() {
+        levelScreen.setComplete(true);
+        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+        main.resetLevel(levelIdx);
+        main.changeScreen(Screens.WINSCREEN);
+    }
+
+    public void loseLevel() {
+        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+        main.resetLevel(levelIdx);
+        main.changeScreen(Screens.LOSESCREEN);
+    }
+
     // Scene2D
     private void setupMainTable() {
         mainTable = new Table();
@@ -225,19 +237,21 @@ public class LevelRenderer implements Screen, InputProcessor {
         mainTable.setDebug(Scene2DUtils.scene2DDebugEnabled);
         mainTable.top().left();
 
-        Texture texture = new Texture(Gdx.files.internal("textures/pause.png"));
-        TextureRegion textureRegion = new TextureRegion(texture);
-        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
+        mainTable.add(Scene2DUtils.makeLabel("Esc to Pause!", 30)).pad(10);
 
-        ImageButton imageButton = new ImageButton(textureRegionDrawable);
-        mainTable.add(imageButton).width(100).height(100);
+//        Texture texture = new Texture(Gdx.files.internal("textures/pause.png"));
+//        TextureRegion textureRegion = new TextureRegion(texture);
+//        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
 
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                isPaused = true;
-            }
-        });
+//        ImageButton imageButton = new ImageButton(textureRegionDrawable);
+//        mainTable.add(imageButton).width(100).height(100);
+
+//        imageButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                isPaused = true;
+//            }
+//        });
 
         stage.addActor(mainTable);
     }
