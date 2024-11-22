@@ -14,6 +14,8 @@ public class Bird extends Drawable {
     private int dp;
     private int type;
 
+    private boolean powerUsed;
+
     public Bird(Body body, float w, float h, int type){
         super(body, w, h);
 
@@ -31,7 +33,7 @@ public class Bird extends Drawable {
             dp = 75;
         }
         if (type == 3) {
-            sprite = new Sprite(new Texture("Images/Bomb.png"));
+            sprite = new Sprite(new Texture("Images/Silver.png"));
             dp = 100;
         }
         sprite.setSize(w, h);
@@ -56,4 +58,18 @@ public class Bird extends Drawable {
     }
 
     public int getDp(){return dp;}
+
+    public void power(){
+        if (type == 2 && !powerUsed){
+            powerUsed = true;
+            body.setLinearVelocity(body.getLinearVelocity().x*3, body.getLinearVelocity().y);
+            dp = 100;
+        }
+        else if (type == 3 && !powerUsed){
+            powerUsed = true;
+            body.setLinearVelocity(0, -50);
+            body.setTransform(body.getPosition(), -90);
+            dp = 125;
+        }
+    }
 }

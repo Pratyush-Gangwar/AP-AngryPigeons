@@ -46,7 +46,7 @@ public class Main extends Game {
         levelScreenList = new ArrayList<>();
         levelInfoList = new ArrayList<>();
 
-        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,2,1))));
+        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,2,3))));
         levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3))));
 
 //        LevelScreen levelScreen1 = new LevelScreen("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,3,1)));

@@ -24,10 +24,10 @@ public class Pig extends Drawable {
             hp = 50;
         }
         if (type == 2) {
-            hp = 100;
+            hp = 125;
         }
         if (type == 3) {
-            hp = 150;
+            hp = 200;
         }
 
         body.setUserData(this);

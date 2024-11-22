@@ -393,6 +393,9 @@ public class LevelScreen implements Screen{
 
             currentBirdPos = new Vector3((float) (ssPosition.x + distance * -Math.cos(angle)), (float) (ssPosition.y + distance * -Math.sin(angle)), angle);
         }
+        else {
+            currentBird.power();
+        }
     }
 
     public void touchDragged(int screenX, int screenY, int pointer) {
