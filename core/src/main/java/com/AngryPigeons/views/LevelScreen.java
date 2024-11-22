@@ -187,13 +187,55 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds2){bird.update();}
 //        for (Bird bird:birds3){bird.update();}
 
-        for (Material ice: iceBlocks){ice.update();}
-        for (Material wood: woodBlocks){wood.update();}
-        for (Material stone: stoneBlocks){stone.update();}
+        for (Material ice: iceBlocks){
+            if (ice.isDead()){continue;}
+            if ((ice.getHp()<=0)||(ice.getBody().getPosition().y<0)){
+                ice.dispose(world);
+                continue;
+            }
+            ice.update();
+        }
+        for (Material wood: woodBlocks){
+            if (wood.isDead()){continue;}
+            if ((wood.getHp()<=0)||(wood.getBody().getPosition().y<0)){
+                wood.dispose(world);
+                continue;
+            }
+            wood.update();
+        }
+        for (Material stone: stoneBlocks){
+            if (stone.isDead()){continue;}
+            if ((stone.getHp()<=0)||(stone.getBody().getPosition().y<0)) {
+                stone.dispose(world);
+                continue;
+            }
+            stone.update();
+        }
 
-        for (Pig largePig:largePigs){largePig.update();}
-        for (Pig pig:mediumPigs){pig.update();}
-        for (Pig smallPig:smallPigs){smallPig.update();}
+        for (Pig largePig:largePigs){
+            if (largePig.isDead()){continue;}
+            if ((largePig.getHp()<=0)||(largePig.getBody().getPosition().y<0)){
+                largePig.dispose(world);
+                continue;
+            }
+            largePig.update();
+        }
+        for (Pig mediumPig:mediumPigs){
+            if (mediumPig.isDead()){continue;}
+            if ((mediumPig.getHp()<=0)||(mediumPig.getBody().getPosition().y<0)){
+                mediumPig.dispose(world);
+                continue;
+            }
+            mediumPig.update();
+        }
+        for (Pig smallPig:smallPigs){
+            if (smallPig.isDead()){continue;}
+            if ((smallPig.getHp()<=0)||(smallPig.getBody().getPosition().y<0)){
+                smallPig.dispose(world);
+                continue;
+            }
+            smallPig.update();
+        }
 
 //        System.out.println(currentBird.getBody().getPosition());
         if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
@@ -220,13 +262,37 @@ public class LevelScreen implements Screen{
 
         currentBird.render(batch);
 
-        for (Material ice: iceBlocks){ice.render(batch);}
-        for (Material wood: woodBlocks){wood.render(batch);}
-        for (Material stone: stoneBlocks){stone.render(batch);}
+        for (Material ice: iceBlocks){
+            if (!ice.isDead()){
+                ice.render(batch);
+            }
+        }
+        for (Material wood: woodBlocks){
+            if (!wood.isDead()){
+                wood.render(batch);
+            }
+        }
+        for (Material stone: stoneBlocks){
+            if (!stone.isDead()){
+                stone.render(batch);
+            }
+        }
 
-        for (Pig largePig: largePigs){largePig.render(batch);}
-        for (Pig mediumPig: mediumPigs){mediumPig.render(batch);}
-        for (Pig smallPig: smallPigs){smallPig.render(batch);}
+        for (Pig largePig: largePigs){
+            if (!largePig.isDead()){
+                largePig.render(batch);
+            }
+        }
+        for (Pig mediumPig: mediumPigs){
+            if (!mediumPig.isDead()){
+                mediumPig.render(batch);
+            }
+        }
+        for (Pig smallPig: smallPigs){
+            if (!smallPig.isDead()){
+                smallPig.render(batch);
+            }
+        }
 
 //        tmr.setView(camera);
         tmr.render();

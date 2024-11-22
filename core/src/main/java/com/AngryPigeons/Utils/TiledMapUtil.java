@@ -154,15 +154,23 @@ public class TiledMapUtil {
             body = world.createBody(def);
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
-            fixtureDef.density = 1f;
+            if (type == 1) {
+                fixtureDef.density = 1f;
+            }
+            if (type == 2) {
+                fixtureDef.density = 2f;
+            }
+            if (type == 3) {
+                fixtureDef.density = 3f;
+            }
             body.createFixture(fixtureDef);
             shape.dispose();
 
 //            body.setUserData("pig");
 
-            pigs.add(new Pig(body, 2* shape.getRadius()*PPM, 2* shape.getRadius()*PPM));
+            pigs.add(new Pig(body, 2* shape.getRadius()*PPM, 2* shape.getRadius()*PPM, type));
 
-            System.out.println(body.getPosition());
+//            System.out.println(body.getPosition());
 
 //            System.out.println("r = "+shape.getRadius()+" "+object.getProperties().get("x")+" x "+(float) object.getProperties().get("y"));
         }
