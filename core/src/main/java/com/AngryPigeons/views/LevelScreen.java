@@ -74,6 +74,8 @@ public class LevelScreen implements Screen{
     ArrayList<Pig> mediumPigs;
     ArrayList<Pig> largePigs;
 
+    boolean win;
+
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) {
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
@@ -228,7 +230,7 @@ public class LevelScreen implements Screen{
             stone.update();
         }
 
-        boolean flag = false;
+        win = true;
 
         for (Pig largePig:largePigs){
             if (largePig.isDead()){continue;}
@@ -236,7 +238,7 @@ public class LevelScreen implements Screen{
                 largePig.dispose(world);
                 continue;
             }
-            flag = true;
+            win = false;
             largePig.update();
         }
         for (Pig mediumPig:mediumPigs){
@@ -245,7 +247,7 @@ public class LevelScreen implements Screen{
                 mediumPig.dispose(world);
                 continue;
             }
-            flag = true;
+            win = false;
             mediumPig.update();
         }
         for (Pig smallPig:smallPigs){
@@ -254,11 +256,11 @@ public class LevelScreen implements Screen{
                 smallPig.dispose(world);
                 continue;
             }
-            flag = true;
+            win = false;
             smallPig.update();
         }
 
-        if (!flag){
+        if (win){
             Gdx.input.setInputProcessor(levelRenderer.getStage());
             levelRenderer.winLevel();
         }
@@ -273,6 +275,9 @@ public class LevelScreen implements Screen{
             if (birdPointer<birds.size()) {
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
+            }
+            else if (!win){
+                levelRenderer.loseLevel();
             }
         }
 

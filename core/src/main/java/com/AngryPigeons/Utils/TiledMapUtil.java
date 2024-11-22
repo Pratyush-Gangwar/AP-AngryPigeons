@@ -90,6 +90,7 @@ public class TiledMapUtil {
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
             fixtureDef.density = 50f;
+            fixtureDef.friction = 0.6f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
@@ -118,12 +119,15 @@ public class TiledMapUtil {
             fixtureDef.shape = shape;
             if (type == 1) {
                 fixtureDef.density = 1f;
+                fixtureDef.friction = 0.2f;
             }
             if (type == 2) {
                 fixtureDef.density = 5f;
+                fixtureDef.friction = 0.3f;
             }
             if (type == 3){
                 fixtureDef.density = 7f;
+                fixtureDef.friction = 0.5f;
             }
             body.createFixture(fixtureDef);
             shape.dispose();
@@ -163,6 +167,7 @@ public class TiledMapUtil {
             if (type == 3) {
                 fixtureDef.density = 3f;
             }
+            fixtureDef.friction = 0.5f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
@@ -196,6 +201,7 @@ public class TiledMapUtil {
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
             fixtureDef.density = 7f;
+            fixtureDef.friction = 0.3f;
             body.createFixture(fixtureDef);
             shape.dispose();
 
