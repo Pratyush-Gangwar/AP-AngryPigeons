@@ -37,6 +37,7 @@ public class LevelScreen implements Screen{
     // Scene2D integration start
     private LevelRenderer levelRenderer;
     private boolean isComplete;
+    private boolean wasShown;
     // Scene2D integration end
 
     private OrthographicCamera camera;
@@ -74,10 +75,11 @@ public class LevelScreen implements Screen{
     ArrayList<Pig> largePigs;
 
     // ~~~ Scene2D integration start ~~~
-    public LevelScreen(String tileMapPath, ArrayList<Integer> birds) {
-        map = new TmxMapLoader().load(tileMapPath);
-        this.birds = birds;
-        isComplete = false;
+    public LevelScreen(LevelInfo levelInfo) {
+        this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
+        this.birds = levelInfo.getBirds();
+        this.isComplete = false;
+        this.wasShown = false;
     }
 
     public void setLevelRenderer(LevelRenderer levelRenderer) {
@@ -110,6 +112,10 @@ public class LevelScreen implements Screen{
         this.isComplete = isComplete;
     }
 
+    public boolean wasShown() {
+        return wasShown;
+    }
+
     public void update(float delta){
 
         // only step through physics simulation if not paused.
@@ -126,6 +132,8 @@ public class LevelScreen implements Screen{
 
     @Override
     public void show(){
+        this.wasShown = true;
+
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 

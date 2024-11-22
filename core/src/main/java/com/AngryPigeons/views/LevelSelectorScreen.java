@@ -22,12 +22,12 @@ public class LevelSelectorScreen implements Screen {
     private Table table;
 
     private boolean wasHidden;
-    private int lastCompleted;
+//    private int lastCompleted;
 
     public LevelSelectorScreen(Main main) {
         this.main = main;
         wasHidden = false;
-        lastCompleted = -1;
+//        lastCompleted = -1;
 
         stage = new Stage( new ScreenViewport() );
 
@@ -40,19 +40,35 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
-        int toComplete = lastCompleted + 1;
+//        int toComplete = lastCompleted + 1;
+        LevelScreen lastLevelScreen = main.getLevelScreenList().getLast();
+        boolean isLastLevelComplete = lastLevelScreen.isComplete();
+
+        System.out.println(isLastLevelComplete);
+
+        if (!isLastLevelComplete) {
+            return;
+        }
 
         // all these buttons have already been rendered. we just need to re-enable them
-        int numLevelButtons = main.getLevelScreenList().size();
+        // int numLevelButtons = main.getLevelScreenList().size();
+        int numLevelButtons = main.getLevelInfoList().size();
+        int nextLevelIdx = main.getLevelScreenList().size();
 
-        System.out.println(toComplete);
+        System.out.println(numLevelButtons + " " + nextLevelIdx);
 
-        if (toComplete < numLevelButtons) {
-            Actor actor = table.getChild(toComplete);
+        if (nextLevelIdx >= numLevelButtons) {
+            return;
+        }
+
+//        System.out.println(nextLevelIdx);
+
+//        if (nextLevelIdx < numLevelButtons) {
+            Actor actor = table.getChild(nextLevelIdx);
             TextButton levelButton = (TextButton) actor;
             levelButton.setColor(new Color(37f, 150f, 190f, 1f));
             levelButton.setTouchable(Touchable.enabled);
-        }
+//        }
     }
 
     @Override
@@ -64,19 +80,29 @@ public class LevelSelectorScreen implements Screen {
             return;
         }
 
-        for(int i = 0; i < main.getLevelScreenList().size(); i++) {
+        int numLevelButtons = main.getLevelInfoList().size();
+        int numLevelScreens = main.getLevelScreenList().size();
 
-            final int iCopy = i; // lambda functions can only access local variables if they are final
+        for(int i = 0; i < numLevelButtons /*main.getLevelScreenList().size()*/; i++) {
 
-            LevelScreen levelScreen = main.getLevelScreenList().get(i);
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
 
 
-            if (!levelScreen.isComplete() && i != lastCompleted + 1) {
+//            LevelRenderer levelRenderer = main.getLevelRendererList().get(i);
+//            LevelScreen levelScreen = levelRenderer.getLevelScreen();
+//            LevelScreen levelScreen = main.getLevelScreenList().get(i);
+
+            if (i != 0 && i >= numLevelScreens) {
                 levelButton.setColor(Color.GRAY); // change color
                 levelButton.setTouchable(Touchable.disabled);
             }
 
+//            if (!levelScreen.isComplete()  && i != lastCompleted + 1) {
+//                levelButton.setColor(Color.GRAY); // change color
+//                levelButton.setTouchable(Touchable.disabled);
+//            }
+
+            final int iCopy = i; // lambda functions can only access local variables if they are final
             levelButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -140,9 +166,9 @@ public class LevelSelectorScreen implements Screen {
         return stage;
     }
 
-    public void incrementLastCompleted() {
-        lastCompleted++;
-    }
+//    public void incrementLastCompleted() {
+//        lastCompleted++;
+//    }
 
     private void levelSelectHandler(int levelIndex) {
 
@@ -157,8 +183,14 @@ public class LevelSelectorScreen implements Screen {
                 // when you win/lose a level and return to the level selector screen, the previously paused fade-out animation is resumed
                 // when you pass null to this.hide(), it disables the fade-out mechanism and so the above problem doesn't occur
 
+                int choice = (Integer) object;
+                if (choice == 1) {
+                    main.newLevel(levelIndex);
+                }
+
+
                 this.hide(null);
-                main.changeLevel(levelIndex);
+//                main.changeLevel(levelIndex);
             }
         };
 

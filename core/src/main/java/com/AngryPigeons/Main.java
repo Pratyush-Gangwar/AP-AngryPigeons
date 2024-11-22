@@ -20,8 +20,11 @@ public class Main extends Game {
     private WinScreen winScreen;
     private LoseScreen loseScreen;
 
-    private List<LevelRenderer> levelRendererList;
+    private LevelRenderer levelRenderer;
+
+//    private List<LevelRenderer> levelRendererList;
     private List<LevelScreen> levelScreenList;
+    private List<LevelInfo> levelInfoList;
 
     @Override
     public void create() {
@@ -36,14 +39,23 @@ public class Main extends Game {
 
         homeScreen = new HomeScreen(this);
         levelSelectorScreen = new LevelSelectorScreen(this);
-        levelRendererList = new ArrayList<>();
+        levelRenderer = new LevelRenderer(this);
+
+//        levelRendererList = new ArrayList<>();
         levelScreenList = new ArrayList<>();
+        levelInfoList = new ArrayList<>();
 
-        LevelScreen levelScreen1 = new LevelScreen("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,3,1)));
-        levelScreenList.add(levelScreen1);
+        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,3,1))));
+        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3))));
 
-        LevelScreen levelScreen2 = new LevelScreen("Maps/AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3)));
-        levelScreenList.add(levelScreen2);
+//        LevelScreen levelScreen1 = new LevelScreen("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,3,1)));
+//        LevelScreen levelScreen1 = new LevelScreen(levelInfoList.get(0));
+//        levelScreenList.add(levelScreen1);
+
+
+//        LevelScreen levelScreen2 = new LevelScreen("Maps/AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3)));
+//        levelScreenList.add(levelScreen2);
+
 
         this.changeScreen(Screens.HOMESCREEN);
     }
@@ -93,23 +105,52 @@ public class Main extends Game {
         }
     }
 
-    public void changeLevel(int index) {
-
-        LevelRenderer levelRenderer;
-        LevelScreen levelScreen = levelScreenList.get(index);
-
+    public void newLevel(int index) {
+        LevelScreen levelScreen = new LevelScreen(levelInfoList.get(index));
+        //        levelScreenList.add(levelScreen);
         try {
-            levelRenderer = levelRendererList.get(index);
+            levelScreenList.set(index, levelScreen);
         } catch (IndexOutOfBoundsException e) {
-            levelRenderer = new LevelRenderer(this, levelScreen);
-            levelRendererList.add(levelRenderer);
+            levelScreenList.add(levelScreen);
         }
 
+
+//        LevelRenderer levelRenderer = new LevelRenderer(this, levelScreen);
+
+//        try {
+//            levelRendererList.set(index, levelRenderer);
+//        } catch (IndexOutOfBoundsException e) {
+//            levelRendererList.add(levelRenderer);
+//        }
+
+        levelRenderer.setLevelScreen(levelScreen);
         levelScreen.setLevelRenderer(levelRenderer);
 
         this.setScreen(levelRenderer);
         Gdx.input.setInputProcessor(levelRenderer.getStage());
     }
+
+    public void loadLevel(int index) {
+
+    }
+
+//    public void changeLevel(int index) {
+//
+//        LevelRenderer levelRenderer;
+//        LevelScreen levelScreen = levelScreenList.get(index);
+//
+//        try {
+//            levelRenderer = levelRendererList.get(index);
+//        } catch (IndexOutOfBoundsException e) {
+//            levelRenderer = new LevelRenderer(this, levelScreen);
+//            levelRendererList.add(levelRenderer);
+//        }
+//
+//        levelScreen.setLevelRenderer(levelRenderer);
+//
+//        this.setScreen(levelRenderer);
+//        Gdx.input.setInputProcessor(levelRenderer.getStage());
+//    }
 
     @Override
     public void render() {
@@ -123,4 +164,12 @@ public class Main extends Game {
     public List<LevelScreen> getLevelScreenList() {
         return levelScreenList;
     }
+
+    public List<LevelInfo> getLevelInfoList() {
+        return levelInfoList;
+    }
+
+//    public List<LevelRenderer> getLevelRendererList() {
+//        return levelRendererList;
+//    }
 }

@@ -30,10 +30,10 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     private LevelScreen levelScreen;
 
-    public LevelRenderer(Main main, LevelScreen levelScreen) {
+    public LevelRenderer(Main main /*, LevelScreen levelScreen*/) {
         // Scene2D
         this.main = main;
-        this.levelScreen = levelScreen;
+//        this.levelScreen = levelScreen;
         this.isPaused = false;
         this.wasHidden = false;
 
@@ -47,16 +47,18 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     }
 
-    // Box2D
     @Override
     public void show(){
+        // Scene2D
         if (wasHidden) {
             wasHidden = false;
             isPaused = false;
-            return;
         }
 
-        levelScreen.show();
+        // Box2D
+        if (!levelScreen.wasShown()) {
+            levelScreen.show();
+        }
     }
 
     @Override
@@ -186,7 +188,7 @@ public class LevelRenderer implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 levelScreen.setComplete(true);
-                main.getLevelSelectorScreen().incrementLastCompleted();
+//                main.getLevelSelectorScreen().incrementLastCompleted();
                 main.changeScreen(Screens.WINSCREEN);
             }
         });
@@ -269,6 +271,14 @@ public class LevelRenderer implements Screen, InputProcessor {
     // Scene2D
     public Stage getStage() {
         return stage;
+    }
+
+    public LevelScreen getLevelScreen() {
+        return levelScreen;
+    }
+
+    public void setLevelScreen(LevelScreen levelScreen) {
+        this.levelScreen = levelScreen;
     }
 
     public boolean isPaused() {
