@@ -1,6 +1,7 @@
 package com.AngryPigeons.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,14 @@ public class WinScreen implements Screen {
 
     @Override
     public void render(float v) {
+
+//        InputProcessor ip = Gdx.input.getInputProcessor();
+//        System.out.println("Home: " + ip.equals(main.getHomeScreen().getStage()));
+//        System.out.println("Level Selector: "  + ip.equals(main.getLevelSelectorScreen().getStage()));
+//        System.out.println("Win Screen: " + ip.equals(main.getWinScreen().getStage()));
+//        System.out.println("Lose Screen: " + ip.equals(main.getLoseScreen().getStage()));
+//        System.out.println("LevelRenderer: " + ip.equals(main.getLevelRenderer().getStage()));
+
         duration += v;
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
@@ -45,7 +54,6 @@ public class WinScreen implements Screen {
         if (duration >= 10.0f) {
             main.changeScreen(Screens.LEVELSELECTORSCREEN);
         }
-
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }

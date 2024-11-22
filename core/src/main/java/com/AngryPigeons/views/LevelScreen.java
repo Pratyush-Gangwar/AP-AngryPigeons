@@ -36,7 +36,7 @@ public class LevelScreen implements Screen{
 
     // Scene2D integration start
     private LevelRenderer levelRenderer;
-    private boolean isComplete;
+    private boolean isComplete; // has level been won at least once?
     private boolean wasShown;
     // Scene2D integration end
 
@@ -261,8 +261,8 @@ public class LevelScreen implements Screen{
         }
 
         if (win){
-            Gdx.input.setInputProcessor(levelRenderer.getStage());
             levelRenderer.winLevel();
+            return; // don't do anything more
         }
 
 //        System.out.println(currentBird.getBody().getPosition());
@@ -276,8 +276,11 @@ public class LevelScreen implements Screen{
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
             }
+
+            // birds exhausted
             else if (!win){
                 levelRenderer.loseLevel();
+                return; // don't do anything more
             }
         }
 
