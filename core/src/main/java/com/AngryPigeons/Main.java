@@ -91,9 +91,11 @@ public class Main extends Game {
             if (winScreen == null) {
                 winScreen = new WinScreen(this);
             }
+
             this.setScreen(winScreen);
-            System.out.println("WOW");
             Gdx.input.setInputProcessor(winScreen.getStage());
+
+//            System.out.println("setScreen(WIN) " + Gdx.input.getInputProcessor().equals(winScreen.getStage()));
         }
 
         else if (screen == Screens.LOSESCREEN) {
@@ -119,6 +121,7 @@ public class Main extends Game {
     }
 
     public void playNewLevel(int index) {
+//        System.out.println("play new level called");
         LevelScreen levelScreen = resetLevel(index);
 
 //        LevelRenderer levelRenderer = new LevelRenderer(this, levelScreen);
@@ -173,6 +176,22 @@ public class Main extends Game {
 
     public List<LevelInfo> getLevelInfoList() {
         return levelInfoList;
+    }
+
+    public HomeScreen getHomeScreen() {
+        return homeScreen;
+    }
+
+    public WinScreen getWinScreen() {
+        return winScreen;
+    }
+
+    public LoseScreen getLoseScreen() {
+        return loseScreen;
+    }
+
+    public LevelRenderer getLevelRenderer() {
+        return levelRenderer;
     }
 
 //    public List<LevelRenderer> getLevelRendererList() {

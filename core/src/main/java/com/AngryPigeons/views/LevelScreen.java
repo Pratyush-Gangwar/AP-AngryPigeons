@@ -36,7 +36,7 @@ public class LevelScreen implements Screen{
 
     // Scene2D integration start
     private LevelRenderer levelRenderer;
-    private boolean isComplete;
+    private boolean isComplete; // has level been won at least once?
     private boolean wasShown;
     // Scene2D integration end
 
@@ -259,8 +259,8 @@ public class LevelScreen implements Screen{
         }
 
         if (!flag){
-            Gdx.input.setInputProcessor(levelRenderer.getStage());
             levelRenderer.winLevel();
+            return; // don't do anything more
         }
 
 //        System.out.println(currentBird.getBody().getPosition());

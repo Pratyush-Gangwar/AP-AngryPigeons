@@ -27,8 +27,10 @@ public class LevelRenderer implements Screen, InputProcessor {
     private Table pauseMenuTable;
     private boolean isPaused;
     private boolean wasHidden;
+    private boolean hasGameEnded;
 
     private LevelScreen levelScreen;
+//    private int renderID = 1;
 
     public LevelRenderer(Main main /*, LevelScreen levelScreen*/) {
         // Scene2D
@@ -36,6 +38,7 @@ public class LevelRenderer implements Screen, InputProcessor {
 //        this.levelScreen = levelScreen;
         this.isPaused = false;
         this.wasHidden = false;
+        this.hasGameEnded = false;
 
         musicDialog = null;
         exitDialog = null;
@@ -49,6 +52,10 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     @Override
     public void show(){
+
+        // if we don't reset this boolean, then LevelRenderer.render() will keep quitting early.
+        hasGameEnded = false;
+
         // Scene2D
         if (wasHidden) {
             wasHidden = false;
@@ -63,6 +70,8 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     @Override
     public void render(float v) {
+//        System.out.println("level renderer rendered() "  + renderID);
+
         // Scene2D
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -86,7 +95,26 @@ public class LevelRenderer implements Screen, InputProcessor {
         // Box2D
         // must render game before pause menu
         // renderGame(v);
+
+//        System.out.println("Before LR calls LS render()");
         levelScreen.render(v);
+//        System.out.println("After LR calls LS render(). Val of isPaused: " + isPaused);
+
+        // ~~~ Why is hasGameEnded necessary? ~~~
+        // Assume we didn't have this boolean variable
+        // levelRenderer.render() calls levelScreen.render()
+        // If the win/lose condition is met, then levelScreen.render() calls levelRenderer.winLevel()/loseLevel()
+        // Both of them call main.changeLevel() which sets the input processor to the win/lose screen
+        // After that, levelRenderer.win()/lose() returns and so does levelRenderer.render()
+        // Now, we're back in levelScreen.render()
+        // If isPaused is true, the input processor (which was set to win/lose screen) is now set to LevelRenderer
+        // if isPaused is false, the input processor is now set to LevelScreen
+
+        // Therefore, we need a third state (i.e, hasGameEnded) to indicate that the input processor set by winLevel()
+        // or loseLevel() is not to be modified.
+        if (hasGameEnded) {
+            return;
+        }
 
         // Scene2D
         stage.act(Gdx.graphics.getDeltaTime());
@@ -94,10 +122,12 @@ public class LevelRenderer implements Screen, InputProcessor {
 
         if (!isPaused) {
             if (!stage.getViewport().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).isZero()) {
+//                System.out.println("LR 1");
                 Gdx.input.setInputProcessor(this);
             }
         }
         else {
+//                System.out.println("LR 2 " + renderID);
             Gdx.input.setInputProcessor(stage);
         }
     }
@@ -222,13 +252,27 @@ public class LevelRenderer implements Screen, InputProcessor {
     }
 
     public void winLevel() {
-        levelScreen.setComplete(true);
+        // reset level will erase all state data - Box2D and isCompleted
+        // so we must set the isCompleted attribute after resetting the level
+//        System.out.println("winlevel()");
+
+//        isPaused = true;
+        hasGameEnded = true;
+
+//        System.out.println("isPaused set to true");
+
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-        main.resetLevel(levelIdx);
+        LevelScreen resetLevel = main.resetLevel(levelIdx);
+        resetLevel.setComplete(true);
+
         main.changeScreen(Screens.WINSCREEN);
+//        System.out.println("win level end");
     }
 
     public void loseLevel() {
+//        isPaused = true;
+        hasGameEnded = true;
+
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
         main.resetLevel(levelIdx);
         main.changeScreen(Screens.LOSESCREEN);
