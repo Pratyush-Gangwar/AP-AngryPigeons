@@ -37,6 +37,7 @@ public class LevelScreen implements Screen{
     // Scene2D integration start
     private LevelRenderer levelRenderer;
     private boolean isComplete;
+    private boolean wasShown;
     // Scene2D integration end
 
     private OrthographicCamera camera;
@@ -74,10 +75,11 @@ public class LevelScreen implements Screen{
     ArrayList<Pig> largePigs;
 
     // ~~~ Scene2D integration start ~~~
-    public LevelScreen(String tileMapPath, ArrayList<Integer> birds) {
-        map = new TmxMapLoader().load(tileMapPath);
-        this.birds = birds;
-        isComplete = false;
+    public LevelScreen(LevelInfo levelInfo) {
+        this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
+        this.birds = levelInfo.getBirds();
+        this.isComplete = false;
+        this.wasShown = false;
     }
 
     public void setLevelRenderer(LevelRenderer levelRenderer) {
@@ -110,6 +112,18 @@ public class LevelScreen implements Screen{
         this.isComplete = isComplete;
     }
 
+    public boolean wasShown() {
+        return wasShown;
+    }
+
+    public Bird getCurrentBird() {
+        return currentBird;
+    }
+
+    public boolean isSsPulled() {
+        return ssPulled;
+    }
+
     public void update(float delta){
 
         // only step through physics simulation if not paused.
@@ -126,6 +140,8 @@ public class LevelScreen implements Screen{
 
     @Override
     public void show(){
+        this.wasShown = true;
+
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
@@ -238,8 +254,12 @@ public class LevelScreen implements Screen{
         }
 
 //        System.out.println(currentBird.getBody().getPosition());
+
+        // We delete the bird if its velocity is less than a certain magnitude
+        // At this magnitude, the bird has almost stopped moving
+        // But all birds apart from the current bird have a velocity of 0.
+        // So, we need a boolean (isWaiting) to differentiate between the one flying bird and the others birds which haven't been launched
         if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
-            currentBird.setStopped(true);
             if (birdPointer<birds.size()) {
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));

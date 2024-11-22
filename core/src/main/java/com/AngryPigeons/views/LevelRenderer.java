@@ -30,10 +30,10 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     private LevelScreen levelScreen;
 
-    public LevelRenderer(Main main, LevelScreen levelScreen) {
+    public LevelRenderer(Main main /*, LevelScreen levelScreen*/) {
         // Scene2D
         this.main = main;
-        this.levelScreen = levelScreen;
+//        this.levelScreen = levelScreen;
         this.isPaused = false;
         this.wasHidden = false;
 
@@ -47,16 +47,18 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     }
 
-    // Box2D
     @Override
     public void show(){
+        // Scene2D
         if (wasHidden) {
             wasHidden = false;
             isPaused = false;
-            return;
         }
 
-        levelScreen.show();
+        // Box2D
+        if (!levelScreen.wasShown()) {
+            levelScreen.show();
+        }
     }
 
     @Override
@@ -66,7 +68,11 @@ public class LevelRenderer implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_BLEND); // needed to render transparent backgrounds
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        // Cannot pause if a bird is flying
+        // Cannot pause if a bird has landed but hasn't disappeared yet
+        // Cannot pause if you've pulled the slingshot
+        // Can only pause if there's a bird on the slingshot and you haven't pulled it
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && levelScreen.getCurrentBird().isWaiting() && !levelScreen.isSsPulled()) {
             isPaused = !isPaused;
         }
 
@@ -185,16 +191,15 @@ public class LevelRenderer implements Screen, InputProcessor {
         debugCompleteBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                levelScreen.setComplete(true);
-                main.getLevelSelectorScreen().incrementLastCompleted();
-                main.changeScreen(Screens.WINSCREEN);
+//                main.getLevelSelectorScreen().incrementLastCompleted();
+                winLevel();
             }
         });
 
         debugLoseBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(Screens.LOSESCREEN);
+                loseLevel();
             }
         });
 
@@ -216,6 +221,19 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     }
 
+    public void winLevel() {
+        levelScreen.setComplete(true);
+        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+        main.resetLevel(levelIdx);
+        main.changeScreen(Screens.WINSCREEN);
+    }
+
+    public void loseLevel() {
+        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+        main.resetLevel(levelIdx);
+        main.changeScreen(Screens.LOSESCREEN);
+    }
+
     // Scene2D
     private void setupMainTable() {
         mainTable = new Table();
@@ -223,19 +241,21 @@ public class LevelRenderer implements Screen, InputProcessor {
         mainTable.setDebug(Scene2DUtils.scene2DDebugEnabled);
         mainTable.top().left();
 
-        Texture texture = new Texture(Gdx.files.internal("textures/pause.png"));
-        TextureRegion textureRegion = new TextureRegion(texture);
-        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
+        mainTable.add(Scene2DUtils.makeLabel("Esc to Pause!", 30)).pad(10);
 
-        ImageButton imageButton = new ImageButton(textureRegionDrawable);
-        mainTable.add(imageButton).width(100).height(100);
+//        Texture texture = new Texture(Gdx.files.internal("textures/pause.png"));
+//        TextureRegion textureRegion = new TextureRegion(texture);
+//        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
 
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                isPaused = true;
-            }
-        });
+//        ImageButton imageButton = new ImageButton(textureRegionDrawable);
+//        mainTable.add(imageButton).width(100).height(100);
+
+//        imageButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                isPaused = true;
+//            }
+//        });
 
         stage.addActor(mainTable);
     }
@@ -269,6 +289,14 @@ public class LevelRenderer implements Screen, InputProcessor {
     // Scene2D
     public Stage getStage() {
         return stage;
+    }
+
+    public LevelScreen getLevelScreen() {
+        return levelScreen;
+    }
+
+    public void setLevelScreen(LevelScreen levelScreen) {
+        this.levelScreen = levelScreen;
     }
 
     public boolean isPaused() {
