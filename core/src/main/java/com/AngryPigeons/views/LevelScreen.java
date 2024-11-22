@@ -276,8 +276,11 @@ public class LevelScreen implements Screen{
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
             }
+
+            // birds exhausted
             else if (!win){
                 levelRenderer.loseLevel();
+                return; // don't do anything more
             }
         }
 

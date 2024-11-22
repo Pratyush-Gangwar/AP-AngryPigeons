@@ -256,10 +256,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         // so we must set the isCompleted attribute after resetting the level
 //        System.out.println("winlevel()");
 
-//        isPaused = true;
         hasGameEnded = true;
-
-//        System.out.println("isPaused set to true");
 
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
         LevelScreen resetLevel = main.resetLevel(levelIdx);
@@ -270,7 +267,6 @@ public class LevelRenderer implements Screen, InputProcessor {
     }
 
     public void loseLevel() {
-//        isPaused = true;
         hasGameEnded = true;
 
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);

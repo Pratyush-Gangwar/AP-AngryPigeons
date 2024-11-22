@@ -44,7 +44,7 @@ public class LevelSelectorScreen implements Screen {
         LevelScreen lastLevelScreen = main.getLevelScreenList().getLast();
         boolean isLastLevelComplete = lastLevelScreen.isComplete();
 
-        System.out.println(isLastLevelComplete);
+//        System.out.println(isLastLevelComplete);
 
         if (!isLastLevelComplete) {
             return;
