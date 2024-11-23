@@ -21,8 +21,6 @@ public class SavedLevel {
     private List<SavedKillable> mediumPigs;
     private List<SavedKillable> largePigs;
 
-    private transient LevelScreen levelScreen;
-
     // default constructor needed for GSON
     public SavedLevel() {
         this.iceBlocks = new ArrayList<>();
@@ -34,16 +32,9 @@ public class SavedLevel {
         this.largePigs = new ArrayList<>();
 
         this.birdPointer = 0;
-        this.levelScreen = null;
     }
 
-    public SavedLevel(LevelScreen levelScreen) {
-        this();
-        this.levelScreen = levelScreen;
-        sync();
-    }
-
-    public void sync() {
+    public void sync(LevelScreen levelScreen) {
         this.isComplete = levelScreen.isComplete();
         this.birdPointer = levelScreen.getBirdPointer();
 
@@ -64,11 +55,12 @@ public class SavedLevel {
 
             if (i < savedKillableList.size()) {
                 savedKillable = savedKillableList.get(i);
-                savedKillable.sync();
             } else {
-                savedKillable = new SavedKillable(killable);
+                savedKillable = new SavedKillable( /*killable*/ );
                 savedKillableList.add(savedKillable);
             }
+
+            savedKillable.sync(killable);
         }
     }
 
@@ -84,11 +76,6 @@ public class SavedLevel {
     }
 
     public void load(LevelScreen levelScreen) {
-        // since levelScreen is transient, this attribute was set to null upon deserialization
-        this.levelScreen = levelScreen;
-
-        System.out.println(iceBlocks);
-
         levelScreen.setComplete(isComplete);
         levelScreen.setBirdPointer(birdPointer);
 

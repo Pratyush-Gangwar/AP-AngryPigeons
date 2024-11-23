@@ -9,8 +9,6 @@ public class SavedBody {
     private Vector2 linearVelocity;
     private Vector2 position;
 
-    private transient Body body;
-
     // default constructor needed for GSON
     public SavedBody() {
         this.angle = 0;
@@ -19,12 +17,7 @@ public class SavedBody {
         this.position = null;
     }
 
-    public SavedBody(Body body) {
-        this.body = body;
-        sync();
-    }
-
-    public void sync() {
+    public void sync(Body body) {
         this.angle = body.getAngle();
         this.angularVelocity = body.getAngularVelocity();
         this.linearVelocity = body.getLinearVelocity();
@@ -32,9 +25,6 @@ public class SavedBody {
     }
 
     public void load(Body body) {
-        // since body is transient, this attribute was set to null upon deserialization
-        this.body = body;
-
         body.setAngularVelocity(angularVelocity);
         body.setLinearVelocity(linearVelocity);
         body.setTransform(position, angle);

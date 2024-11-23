@@ -188,9 +188,11 @@ public class LevelSelectorScreen implements Screen {
                     main.playNewLevel(levelIndex);
                 }
 
+                else if (choice == 2) {
+                    main.loadLevel(levelIndex);
+                }
 
                 this.hide(null);
-//                main.changeLevel(levelIndex);
             }
         };
 

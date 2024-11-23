@@ -24,7 +24,6 @@ public class Main extends Game {
 
     private LevelRenderer levelRenderer;
 
-//    private List<LevelRenderer> levelRendererList;
     private List<LevelScreen> levelScreenList;
     private List<LevelInfo> levelInfoList;
 
@@ -112,7 +111,7 @@ public class Main extends Game {
         }
     }
 
-    public LevelScreen resetLevel(int index) {
+    public LevelScreen resetExistingLevelOrCreateNewLevel(int index) {
         LevelScreen levelScreen = new LevelScreen(levelInfoList.get(index));
         //        levelScreenList.add(levelScreen);
         try {
@@ -125,17 +124,7 @@ public class Main extends Game {
     }
 
     public void playNewLevel(int index) {
-//        System.out.println("play new level called");
-        LevelScreen levelScreen = resetLevel(index);
-
-//        LevelRenderer levelRenderer = new LevelRenderer(this, levelScreen);
-
-//        try {
-//            levelRendererList.set(index, levelRenderer);
-//        } catch (IndexOutOfBoundsException e) {
-//            levelRendererList.add(levelRenderer);
-//        }
-
+        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
         levelRenderer.setLevelScreen(levelScreen);
 
         this.setScreen(levelRenderer);
@@ -144,25 +133,20 @@ public class Main extends Game {
 
     public void loadLevel(int index) {
 
-    }
+        // if this is a new level, then it hasn't been added to the levelScreenList
+        // it also hasn't been added to the savedLevelList
+        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
 
-//    public void changeLevel(int index) {
-//
-//        LevelRenderer levelRenderer;
-//        LevelScreen levelScreen = levelScreenList.get(index);
-//
-//        try {
-//            levelRenderer = levelRendererList.get(index);
-//        } catch (IndexOutOfBoundsException e) {
-//            levelRenderer = new LevelRenderer(this, levelScreen);
-//            levelRendererList.add(levelRenderer);
-//        }
-//
-//        levelScreen.setLevelRenderer(levelRenderer);
-//
-//        this.setScreen(levelRenderer);
-//        Gdx.input.setInputProcessor(levelRenderer.getStage());
-//    }
+        if (index >= Storage.getInstance().getSavedLevelList().size()) {
+            return;
+        }
+
+        levelScreen.load();
+        levelRenderer.setLevelScreen(levelScreen);
+
+        this.setScreen(levelRenderer);
+        Gdx.input.setInputProcessor(levelRenderer.getStage());
+    }
 
     @Override
     public void render() {
@@ -197,7 +181,4 @@ public class Main extends Game {
         return levelRenderer;
     }
 
-//    public List<LevelRenderer> getLevelRendererList() {
-//        return levelRendererList;
-//    }
 }

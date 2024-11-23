@@ -59,14 +59,14 @@ public class LevelScreen implements Screen{
 
     private SlingShot slingShot;
     private Vector2 ssPosition;
-    private Bird currentBird;
-    private Vector3 currentBirdPos;
     private boolean ssPulled;
     private float distance;
 
 //    ArrayList<Bird> birds1, birds2, birds3;
     private ArrayList<Integer> birds;
     private int birdPointer;
+    private Bird currentBird;
+    private Vector3 currentBirdPos;
 
     private ArrayList<Pig> smallPigs;
     private ArrayList<Pig> mediumPigs;
@@ -86,6 +86,9 @@ public class LevelScreen implements Screen{
         this.wasShown = false;
         this.timeSinceEnd = 0.0f;
         this.levelRenderer = LevelRenderer.getInstance();
+        this.birdPointer = 0;
+
+        createLevel();
     }
 
     public void sleepBodies() {
@@ -104,66 +107,6 @@ public class LevelScreen implements Screen{
         for(Body body : bodies) {
             body.setAwake(true);
         }
-    }
-
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(boolean isComplete) {
-        this.isComplete = isComplete;
-    }
-
-    public boolean wasShown() {
-        return wasShown;
-    }
-
-    public Bird getCurrentBird() {
-        return currentBird;
-    }
-
-    public boolean isSsPulled() {
-        return ssPulled;
-    }
-
-    public boolean isWin() {
-        return win;
-    }
-
-    public boolean isLose() {
-        return lose;
-    }
-
-    public int getBirdPointer() {
-        return birdPointer;
-    }
-
-    public ArrayList<Pig> getSmallPigs() {
-        return smallPigs;
-    }
-
-    public ArrayList<Pig> getMediumPigs() {
-        return mediumPigs;
-    }
-
-    public ArrayList<Pig> getLargePigs() {
-        return largePigs;
-    }
-
-    public ArrayList<Material> getIceBlocks() {
-        return iceBlocks;
-    }
-
-    public ArrayList<Material> getWoodBlocks() {
-        return woodBlocks;
-    }
-
-    public ArrayList<Material> getStoneBlocks() {
-        return stoneBlocks;
-    }
-
-    public void setBirdPointer(int birdPointer) {
-        this.birdPointer = birdPointer;
     }
 
     public void update(float delta){
@@ -191,9 +134,6 @@ public class LevelScreen implements Screen{
         camera.setToOrtho(false, w/SCALE, h/SCALE);
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
 
-        world = new World(new Vector2(0, -9.8f), false);
-        world.setContactListener(new LevelContactListener());
-
         b2dr = new Box2DDebugRenderer();
 
         batch = new SpriteBatch();
@@ -205,9 +145,16 @@ public class LevelScreen implements Screen{
         tmr = new OrthogonalTiledMapRenderer(map);
         tmr.setView(camera);
 
-        // ~~~ Serialization ~~~~
-        birdPointer = 0;
-        isComplete = false;
+//        TiledMapUtil.parseBoundary(world, map.getLayers().get("boundary").getObjects(), true);
+
+//        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
+//        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
+//        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
+    }
+
+    public void createLevel() {
+        world = new World(new Vector2(0, -9.8f), false);
+        world.setContactListener(new LevelContactListener());
 
         iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
         woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
@@ -217,38 +164,37 @@ public class LevelScreen implements Screen{
         mediumPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2);
         smallPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1);
 
-        Storage.getInstance().loadLevel(this);
-
-        // if new level, birdPointer is 0
-        // if the level was deserialized, subtract one from birdPointer
-        if (birdPointer == 0) {
-            currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(),
-                birds.get( birdPointer++ ));
-        } else {
-            currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(),
-                birds.get( birdPointer - 1 ));
-        }
-
-        // ~~~ Serialization End ~~~
+        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(),
+            birds.get(birdPointer++));
+        currentBirdPos = new Vector3();
 
         TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
-//        TiledMapUtil.parseBoundary(world, map.getLayers().get("boundary").getObjects(), true);
-
-//        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
-//        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
-//        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
-
-
-        currentBirdPos = new Vector3();
-        ssPulled = false;
 
         slingShot = TiledMapUtil.parseSlingShot(world, map.getLayers().get("sling-shot").getObjects(), true);
         assert slingShot != null;
         ssPosition = slingShot.getBody().getPosition();
+        ssPulled = false;
     }
 
-//    @Override
+    public void load() {
+        // before deserialization and just after tile map reading, all materials and pigs have isDead set to false
+        // after deserialization, materials and pigs which had died in the previous session now have isDead set to true
+        // so, they won't be drawn by drawKillable() method which only checks the value of isDead()
+
+        // but they will still remain in the Box2D world (as evidenced by the debugRenderer) because updatePig() and
+        // updateMaterial() first checks if the object is dead. If so, it continues. If not, it checks if the HP is
+        // less than zero, and then disposes the object while setting isDead to true
+
+        // therefore, we must remove them from the Box2D world while deserializing
+        // this is done in SavedKillable.load() method
+
+        Storage.getInstance().loadLevelFromMemory(this);
+        System.out.println(birdPointer);
+    }
+
+    @Override
     public void render(float delta){
+        System.out.println(currentBird.getDp());
         update(Gdx.graphics.getDeltaTime());
 
         //Rendering
@@ -462,4 +408,66 @@ public class LevelScreen implements Screen{
             currentBird.setWaiting(false);
         }
     }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean isComplete) {
+        this.isComplete = isComplete;
+    }
+
+    public boolean wasShown() {
+        return wasShown;
+    }
+
+    public Bird getCurrentBird() {
+        return currentBird;
+    }
+
+    public boolean isSsPulled() {
+        return ssPulled;
+    }
+
+    public boolean isWin() {
+        return win;
+    }
+
+    public boolean isLose() {
+        return lose;
+    }
+
+    public int getBirdPointer() {
+        return birdPointer;
+    }
+
+    public ArrayList<Pig> getSmallPigs() {
+        return smallPigs;
+    }
+
+    public ArrayList<Pig> getMediumPigs() {
+        return mediumPigs;
+    }
+
+    public ArrayList<Pig> getLargePigs() {
+        return largePigs;
+    }
+
+    public ArrayList<Material> getIceBlocks() {
+        return iceBlocks;
+    }
+
+    public ArrayList<Material> getWoodBlocks() {
+        return woodBlocks;
+    }
+
+    public ArrayList<Material> getStoneBlocks() {
+        return stoneBlocks;
+    }
+
+    public void setBirdPointer(int birdPointer) {
+        this.birdPointer = birdPointer;
+    }
+
 }
+

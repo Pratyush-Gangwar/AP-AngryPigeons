@@ -24,11 +24,12 @@ public class LevelRenderer implements Screen, InputProcessor {
     private Table mainTable;
     private Dialog musicDialog;
     private Dialog exitDialog;
-
     private Table pauseMenuTable;
+
     private boolean isPaused;
     private boolean wasHidden;
     private boolean hasGameEnded;
+//    private boolean loadLevel;
 
     private static LevelRenderer instance;
 
@@ -291,7 +292,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         saveBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Storage.getInstance().saveLevel(levelScreen);
+                Storage.getInstance().saveLevelInMemory(levelScreen);
             }
         });
 
@@ -305,7 +306,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         hasGameEnded = true;
 
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-        LevelScreen resetLevel = main.resetLevel(levelIdx);
+        LevelScreen resetLevel = main.resetExistingLevelOrCreateNewLevel(levelIdx);
         resetLevel.setComplete(true);
         main.changeScreen(Screens.WINSCREEN);
 //        System.out.println("win level end");
@@ -315,7 +316,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         hasGameEnded = true;
 
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-        main.resetLevel(levelIdx);
+        main.resetExistingLevelOrCreateNewLevel(levelIdx);
         main.changeScreen(Screens.LOSESCREEN);
     }
 
@@ -374,10 +375,6 @@ public class LevelRenderer implements Screen, InputProcessor {
     // Scene2D
     public Stage getStage() {
         return stage;
-    }
-
-    public LevelScreen getLevelScreen() {
-        return levelScreen;
     }
 
     public void setLevelScreen(LevelScreen levelScreen) {
