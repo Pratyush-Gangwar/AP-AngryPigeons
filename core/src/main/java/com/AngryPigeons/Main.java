@@ -153,6 +153,13 @@ public class Main extends Game {
         super.render(); // won't run without it
     }
 
+    // called when game window is closed
+    @Override
+    public void dispose() {
+        Storage.getInstance().writeToDisk();
+        Gdx.app.exit();
+    }
+
     public LevelSelectorScreen getLevelSelectorScreen() {
         return levelSelectorScreen;
     }
