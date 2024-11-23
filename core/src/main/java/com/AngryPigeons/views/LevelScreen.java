@@ -189,12 +189,14 @@ public class LevelScreen implements Screen{
         // this is done in SavedKillable.load() method
 
         Storage.getInstance().loadLevelFromMemory(this);
-        System.out.println(birdPointer);
+        world.destroyBody(currentBird.getBody());
+        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer-1));
+//        System.out.println("Pointer "+birdPointer);
     }
 
     @Override
     public void render(float delta){
-        System.out.println(currentBird.getDp());
+//        System.out.println(currentBird.getDp());
         update(Gdx.graphics.getDeltaTime());
 
         //Rendering
