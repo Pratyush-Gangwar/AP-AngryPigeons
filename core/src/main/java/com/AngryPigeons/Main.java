@@ -148,7 +148,6 @@ public class Main extends Game {
     @Override
     public void dispose() {
         Storage.getInstance().writeToDisk();
-        Gdx.app.exit();
     }
 
     public LevelSelectorScreen getLevelSelectorScreen() {

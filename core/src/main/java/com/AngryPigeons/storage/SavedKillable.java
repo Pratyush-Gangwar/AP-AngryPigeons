@@ -30,7 +30,10 @@ public class SavedKillable {
     public void load(Killable killable) {
         Body body = killable.getBody();
 
-        killable.setHp(this.hp);
+        // when the Box2D world is rendered, there is a slight gap between all the objects.
+        // So, the objects fall down a bit. So if, before loading, the HP of a material was low, then the
+        // collision from falling might destroy the material. So, we just need to add some more HP.
+        killable.setHp(this.hp + 20);
         killable.setDead(this.dead);
         savedBody.load(body);
 

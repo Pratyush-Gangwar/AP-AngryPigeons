@@ -81,6 +81,20 @@ public class Scene2DUtils {
         return dialog;
     }
 
+    public static Dialog makeGameSavedWindow() {
+        Dialog dialog = new Dialog("Save game", Scene2DUtils.skin) {
+            @Override
+            protected void result(Object object) {
+
+            }
+        };
+
+        dialog.text("Game has been saved");
+        dialog.button("OK");
+
+        return dialog;
+    }
+
     public static Dialog makeMusicControlWindow() {
         Dialog dialog = new Dialog("Music", Scene2DUtils.skin) {
             @Override

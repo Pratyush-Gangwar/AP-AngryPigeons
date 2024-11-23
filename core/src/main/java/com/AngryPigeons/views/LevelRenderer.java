@@ -24,6 +24,7 @@ public class LevelRenderer implements Screen, InputProcessor {
     private Table mainTable;
     private Dialog musicDialog;
     private Dialog exitDialog;
+    private Dialog saveDialog;
     private Table pauseMenuTable;
 
     private boolean isPaused;
@@ -54,6 +55,7 @@ public class LevelRenderer implements Screen, InputProcessor {
 
         musicDialog = null;
         exitDialog = null;
+        saveDialog = null;
 
         stage = new Stage( new ScreenViewport() );
 
@@ -185,6 +187,10 @@ public class LevelRenderer implements Screen, InputProcessor {
             exitDialog.setPosition((Gdx.graphics.getWidth() - exitDialog.getWidth())/2, (Gdx.graphics.getHeight() - exitDialog.getHeight())/2);
         }
 
+        if (saveDialog != null) {
+            saveDialog.setPosition((Gdx.graphics.getWidth() - saveDialog.getWidth())/2, (Gdx.graphics.getHeight() - saveDialog.getHeight())/2);
+        }
+
         // Box2D
         levelScreen.resize(width, height);
     }
@@ -293,6 +299,10 @@ public class LevelRenderer implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 Storage.getInstance().saveLevelInMemory(levelScreen);
+
+                saveDialog = Scene2DUtils.makeGameSavedWindow();
+                saveDialog.show(stage);
+
             }
         });
 
