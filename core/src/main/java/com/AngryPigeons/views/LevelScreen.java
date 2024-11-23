@@ -136,6 +136,34 @@ public class LevelScreen implements Screen{
         return lose;
     }
 
+    public int getBirdPointer() {
+        return birdPointer;
+    }
+
+    public ArrayList<Pig> getSmallPigs() {
+        return smallPigs;
+    }
+
+    public ArrayList<Pig> getMediumPigs() {
+        return mediumPigs;
+    }
+
+    public ArrayList<Pig> getLargePigs() {
+        return largePigs;
+    }
+
+    public ArrayList<Material> getIceBlocks() {
+        return iceBlocks;
+    }
+
+    public ArrayList<Material> getWoodBlocks() {
+        return woodBlocks;
+    }
+
+    public ArrayList<Material> getStoneBlocks() {
+        return stoneBlocks;
+    }
+
     public void update(float delta){
 
         // only step through physics simulation if not paused.

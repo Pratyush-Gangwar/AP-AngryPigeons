@@ -8,10 +8,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
-public class Material extends Drawable {
+public class Material extends Killable {
 
-    private int hp;
-    private boolean dead;
     public Material(Body body, float w, float h, int type){
         super(body, w, h);
 
@@ -42,17 +40,9 @@ public class Material extends Drawable {
         sprite.setRotation((float) Math.toDegrees(body.getAngle()));
     }
 
-    public void damage(int dp){
-        hp -= dp;
-    }
-
     public void dispose(World world){
         world.destroyBody(this.body);
         sprite.getTexture().dispose();
         dead = true;
     }
-
-    public boolean isDead(){return dead;}
-
-    public int getHp() {return hp;}
 }
