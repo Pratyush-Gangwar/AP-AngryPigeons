@@ -9,7 +9,7 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class Bird extends Drawable {
 
-    private boolean waiting;
+    private boolean waiting; // true if it hasn't hopped on the slingshot yet
 
     private int dp;
     private int type;

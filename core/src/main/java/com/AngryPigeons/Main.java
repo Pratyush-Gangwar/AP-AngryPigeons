@@ -40,7 +40,8 @@ public class Main extends Game {
 
         homeScreen = new HomeScreen(this);
         levelSelectorScreen = new LevelSelectorScreen(this);
-        levelRenderer = new LevelRenderer(this);
+        levelRenderer = LevelRenderer.getInstance();
+        levelRenderer.setMain(this);
 
 //        levelRendererList = new ArrayList<>();
         levelScreenList = new ArrayList<>();
@@ -133,7 +134,6 @@ public class Main extends Game {
 //        }
 
         levelRenderer.setLevelScreen(levelScreen);
-        levelScreen.setLevelRenderer(levelRenderer);
 
         this.setScreen(levelRenderer);
         Gdx.input.setInputProcessor(levelRenderer.getStage());

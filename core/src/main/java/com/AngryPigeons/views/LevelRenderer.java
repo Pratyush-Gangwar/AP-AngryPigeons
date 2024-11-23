@@ -29,12 +29,22 @@ public class LevelRenderer implements Screen, InputProcessor {
     private boolean wasHidden;
     private boolean hasGameEnded;
 
+    private static LevelRenderer instance;
+
     private LevelScreen levelScreen;
 //    private int renderID = 1;
 
-    public LevelRenderer(Main main /*, LevelScreen levelScreen*/) {
+    public static LevelRenderer getInstance() {
+        if (LevelRenderer.instance == null) {
+            LevelRenderer.instance = new LevelRenderer();
+        }
+
+        return LevelRenderer.instance;
+    }
+
+    private LevelRenderer( /*Main main , LevelScreen levelScreen*/) {
         // Scene2D
-        this.main = main;
+//        this.main = main;
 //        this.levelScreen = levelScreen;
         this.isPaused = false;
         this.wasHidden = false;
@@ -48,6 +58,10 @@ public class LevelRenderer implements Screen, InputProcessor {
         setupPauseMenu();
         setupMainTable();
 
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
     }
 
     @Override

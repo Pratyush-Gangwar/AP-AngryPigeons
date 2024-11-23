@@ -85,10 +85,7 @@ public class LevelScreen implements Screen{
         this.isComplete = false;
         this.wasShown = false;
         this.timeSinceEnd = 0.0f;
-    }
-
-    public void setLevelRenderer(LevelRenderer levelRenderer) {
-        this.levelRenderer = levelRenderer;
+        this.levelRenderer = LevelRenderer.getInstance();
     }
 
     public void sleepBodies() {
