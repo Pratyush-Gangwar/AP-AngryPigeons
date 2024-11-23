@@ -16,7 +16,7 @@ public class Material extends Killable {
         sprite = new Sprite();
 
         if (type == 1) {
-            hp = 50;
+            hp = 75;
             sprite = new Sprite(new Texture("Images/Ice2.png"),0 ,0 , (int)(w), (int)(h));
 
         }
