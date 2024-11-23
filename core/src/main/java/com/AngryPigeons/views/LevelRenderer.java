@@ -114,8 +114,12 @@ public class LevelRenderer implements Screen, InputProcessor {
         // Cannot pause if a bird is flying
         // Cannot pause if a bird has landed but hasn't disappeared yet
         // Cannot pause if you've pulled the slingshot
+        // Cannot pause if win/lose condition has been met
         // Can only pause if there's a bird on the slingshot and you haven't pulled it
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && levelScreen.getCurrentBird().isWaiting() && !levelScreen.isSsPulled()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
+            && levelScreen.getCurrentBird().isWaiting()
+            && !levelScreen.isSsPulled()
+            && !levelScreen.isWin() && !levelScreen.isLose()) {
             isPaused = !isPaused;
         }
 

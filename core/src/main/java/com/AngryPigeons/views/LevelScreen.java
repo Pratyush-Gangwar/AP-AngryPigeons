@@ -75,6 +75,8 @@ public class LevelScreen implements Screen{
     private ArrayList<Pig> largePigs;
 
     private boolean win;
+    private boolean lose;
+
     private float timeSinceEnd;
     private static float waitTime = 5.0f;
 
@@ -124,6 +126,14 @@ public class LevelScreen implements Screen{
 
     public boolean isSsPulled() {
         return ssPulled;
+    }
+
+    public boolean isWin() {
+        return win;
+    }
+
+    public boolean isLose() {
+        return lose;
     }
 
     public void update(float delta){
@@ -283,6 +293,7 @@ public class LevelScreen implements Screen{
 
             // birds exhausted
             else if (!win){
+                lose = true;
                 timeSinceEnd += delta;
 
                 if (timeSinceEnd >= waitTime) {
