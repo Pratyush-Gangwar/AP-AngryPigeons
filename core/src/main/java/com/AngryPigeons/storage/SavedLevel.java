@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SavedLevel {
+
+    // When winLevel() or loseLevel() is called, resetExistingLevelOrCreateNewLevel() creates a fresh level
+    // then, isComplete is set to true for this fresh level (only in winLevel())
+    // however, we don't call saveLevelInMemory() for this fresh level since a fresh level doesn't have any progress
+    // instead, we merely disable loading for this savedLevel
+    private boolean loadingDisabled;
     private boolean isComplete;
 
     private List<SavedKillable> iceBlocks;
@@ -30,6 +36,7 @@ public class SavedLevel {
         this.largePigs = new ArrayList<>();
 
         this.birdPointer = 0;
+        this.loadingDisabled = false;
     }
 
     public void save(LevelScreen levelScreen) {
@@ -84,5 +91,21 @@ public class SavedLevel {
         syncOut(levelScreen.getSmallPigs(), smallPigs);
         syncOut(levelScreen.getMediumPigs(), mediumPigs);
         syncOut(levelScreen.getLargePigs(), largePigs);
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public boolean isLoadingDisabled() {
+        return loadingDisabled;
+    }
+
+    public void setLoadingDisabled(boolean loadingDisabled) {
+        this.loadingDisabled = loadingDisabled;
+    }
+
+    public void setComplete(boolean isComplete) {
+        this.isComplete = isComplete;
     }
 }

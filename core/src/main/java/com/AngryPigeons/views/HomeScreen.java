@@ -13,6 +13,27 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Main;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
+// ~~~ Which attributes to serialize? ~~~
+// - main: NO
+//	- set once in Main and never changed during run-time
+//
+//- stage: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- table: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- musicDialog: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- exitDialog: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- wasHidden: NO
+//	- this attribute does change during run-time, there is no need to save this
+//	- when the UI is relaunched, this screen wasn't hidden and so should be false
+//	- it is set to false in the constructor
+
 
 public class HomeScreen implements Screen {
 

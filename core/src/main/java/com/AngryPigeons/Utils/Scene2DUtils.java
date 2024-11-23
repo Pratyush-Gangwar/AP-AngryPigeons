@@ -13,6 +13,25 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
+// ~~~ Which attributes to serialize? ~~~
+//- backgroundTexture: NO
+//	- set once in Main and never changed during run-time
+//
+//- skin: NO
+//	- set once in Main and never changed during run-time
+//
+//- buttonWidth: NO
+//	- set once in Scene2DUtils and never changed during run-time
+//
+//- paddingSpace: NO
+//	- set once in Scene2DUtils and never changed during run-time
+//
+//- scene2DDebugEnabled: NO
+//	- set once in Scene2DUtils and never changed during run-time
+//
+//- music: NO
+//	- set once in Main and never changed during run-time
+
 public class Scene2DUtils {
     private static Texture backgroundTexture;
     public static Skin skin;

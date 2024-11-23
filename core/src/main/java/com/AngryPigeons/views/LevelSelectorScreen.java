@@ -1,6 +1,8 @@
 package com.AngryPigeons.views;
 
 import com.AngryPigeons.Main;
+import com.AngryPigeons.storage.SavedLevel;
+import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -14,6 +16,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Utils.Scene2DUtils;
+
+import java.util.List;
+
+// ~~~ Which attributes to serialize? ~~~
+// - main: NO
+//	- set once in Main and never changed during run-time
+//
+//- stage: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- table: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- background: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- wasHidden: NO
+//	- this attribute does change during run-time, there is no need to save this
+//	- when the UI is relaunched, this screen wasn't hidden and so should be false
+//	- it is set to false in the constructor
 
 public class LevelSelectorScreen implements Screen {
 
@@ -76,14 +98,26 @@ public class LevelSelectorScreen implements Screen {
         }
 
         int numLevelButtons = main.getLevelInfoList().size();
-        int numLevelScreens = main.getLevelScreenList().size();
+        int numEnabled;
+
+        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
+
+        // on first run, no levels are saved and the list is empty
+        if (!savedLevelList.isEmpty()) {
+            SavedLevel lastLevel = savedLevelList.getLast();
+            int numSavedLevels = savedLevelList.size();
+
+            // if the last level is complete, enable the next one
+            // otherwise, enable only till the last one
+            numEnabled  = ( lastLevel.isComplete() ? numSavedLevels + 1 : numSavedLevels );
+        } else {
+            numEnabled = 1;
+        }
 
         for(int i = 0; i < numLevelButtons; i++) {
-
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
 
-
-            if (i != 0 && i >= numLevelScreens) {
+            if (i != 0 && i >= numEnabled) {
                 levelButton.setColor(Color.GRAY); // change color
                 levelButton.setTouchable(Touchable.disabled);
             }

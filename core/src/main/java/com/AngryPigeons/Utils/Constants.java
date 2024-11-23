@@ -1,5 +1,8 @@
 package com.AngryPigeons.Utils;
 
+// ~~~ Which attributes to serialize? ~~~
+// - NO attributes at all
+
 public final class Constants {
     public static final float PPM = 32;
     public static final int WORLD_WIDTH = 1280;

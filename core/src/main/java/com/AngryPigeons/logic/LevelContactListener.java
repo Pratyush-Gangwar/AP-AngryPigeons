@@ -7,6 +7,9 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import static com.AngryPigeons.Utils.Constants.STD_DP;
 
+// ~~~ Which attributes to serialize? ~~~
+// - NO attributes at all
+
 public class LevelContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {

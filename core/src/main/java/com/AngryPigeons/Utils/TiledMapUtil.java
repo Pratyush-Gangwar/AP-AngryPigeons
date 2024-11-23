@@ -17,6 +17,9 @@ import java.util.ArrayList;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
+// ~~~ Which attributes to serialize? ~~~
+// - NO attributes at all
+
 public class TiledMapUtil {
 
     public static SlingShot parseSlingShot(World world, MapObjects objects, boolean isStatic) {

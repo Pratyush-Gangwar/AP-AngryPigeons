@@ -14,6 +14,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
+// ~~~ Which attributes to serialize? ~~~
+// - main: NO
+//	- set once in Main and never changed during run-time
+//
+//- stage: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- table: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- background: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- duration: NO
+//	- this does change during run-time
+//	- but you cannot save the game while this screen is being display
+//	- when the screen is shown again, this is set to 0
+
 public class LoseScreen implements Screen {
 
     private Main main;

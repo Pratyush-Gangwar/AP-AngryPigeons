@@ -15,6 +15,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryPigeons.Main;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
+// ~~~ Which attributes to serialize? ~~~
+// - main: NO
+//	- set once in Main and never changed during run-time
+//
+//- stage: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- table: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- background: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- duration: NO
+//	- this does change during run-time
+//	- but you cannot save the game while this screen is being display
+//	- when the screen is shown again, this is set to 0
+
 public class WinScreen implements Screen {
 
     private Main main;
@@ -38,14 +56,6 @@ public class WinScreen implements Screen {
 
     @Override
     public void render(float v) {
-
-//        InputProcessor ip = Gdx.input.getInputProcessor();
-//        System.out.println("Home: " + ip.equals(main.getHomeScreen().getStage()));
-//        System.out.println("Level Selector: "  + ip.equals(main.getLevelSelectorScreen().getStage()));
-//        System.out.println("Win Screen: " + ip.equals(main.getWinScreen().getStage()));
-//        System.out.println("Lose Screen: " + ip.equals(main.getLoseScreen().getStage()));
-//        System.out.println("LevelRenderer: " + ip.equals(main.getLevelRenderer().getStage()));
-
         duration += v;
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);

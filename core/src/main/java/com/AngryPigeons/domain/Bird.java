@@ -7,6 +7,31 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
+// ~~~ Which attributes should be serialized? ~~~
+//- waiting: NO
+//	- If the bird is not flying, waiting is set to true by the constructor
+//
+//	- If the bird is flying, waiting is false
+//    - but you save the game only after the bird stops flying
+//	- when it stops flying waiting is still false but this bird object is irrelevant because
+//		- the bird pointer has moved forward
+//		- this bird has been disposed
+//
+//- dp: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- type: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- powerUsed: NO
+//	- If the bird is not flying, powerUsed is set to false by the constructor
+//
+//	- If the bird is flying, only then powerUsed can be changed
+//	- but you save the game only after the bird stops flying
+//	- when it stops flying, powerUsed may be true or false but this bird object is irrelevant because
+//		- the bird pointer has moved forward
+//		- this bird has been disposed
+
 public class Bird extends Drawable {
 
     private boolean waiting; // true if it hasn't hopped on the slingshot yet

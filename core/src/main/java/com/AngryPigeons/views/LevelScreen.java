@@ -28,6 +28,91 @@ import java.util.List;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
+// ~~~ Which attributes to serialize? ~~~
+//- SCALE: NO
+//	- final constant
+//
+//- levelRenderer: NO
+//	- singleton set in constructor
+//	- same for all levelscreen objects
+//
+//- isComplete: YES
+//	- needed to calculate number of levels in levelSelectorScreen
+//
+//- wasShown: NO
+//	- when the UI restarts, no levelScreen has been shown
+//	- and hence this should be false
+//	- set to false by constructor
+//
+//- camera: NO
+//	- when UI restarts, it should be recreated
+//
+//- viewport: NO
+//	- when UI restarts, it should be recreated
+//
+//- tmr: NO
+//	- when UI restarts, it should be recreated
+//- map: NO
+//	- when UI restarts, it should be recreated
+//
+//- batch: NO
+//	- when UI restarts, it should be recreated
+//
+//- shapeRenderer: NO
+//	- when UI restarts, it should be recreated
+//
+//- background_tex: NO
+//	- when UI restarts, it should be recreated
+//
+//- iceBlocks, woodBlocks, stoneBlocks: YES
+//	- when UI restarts, the objects in the lists are same
+//	- but the attributes are different
+//
+//- slingShot: NO
+//	- created once in constructor and doesn't change during run-time
+//
+//- ssPosition: NO
+//	- only changes when the sling shot is being pulled
+//	- but you can't save the game in that state
+//	- after slingshot is pulled, it resets
+//
+//- currentBird: NO
+//	- depends on birdPointer which is already serialized
+//
+//- currentBirdPos: NO
+//	- only changes during flight
+//	- when it stops flying, this bird object is irrelevant because
+//		- the bird pointer has moved forward
+//		- this bird has been disposed
+//
+//- ssPulled: NO
+//	- only changes when the sling shot is being pulled
+//	- but you can't save the game in that state
+//	- after slingshot is pulled, it resets
+//
+//- distance: NO
+//	- only changes when the sling shot is being pulled
+//	- but you can't save the game in that state
+//	- after slingshot is pulled, it resets
+//
+//- birds: NO
+//	- merely an integer list
+//
+//- birdPointer: YES
+//	- need to know which bird is going to fly
+//
+//- smallPigs, mediumPigs, largePigs: YES
+//	- when UI restarts, the objects in the lists are same
+//	- but the attributes are different
+//
+//- win, lose, timeSinceEnd : NO
+//	- when the win/lose condition is met, these are true
+//	- but you can't save the game in this state
+//	- so, they go back to being false when the level is reset
+//
+//- waitTime:
+//	- final float
+
 public class LevelScreen implements Screen{
 
     private final float SCALE = 1.0f;

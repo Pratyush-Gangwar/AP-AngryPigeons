@@ -1,6 +1,7 @@
 package com.AngryPigeons.views;
 
 import com.AngryPigeons.Main;
+import com.AngryPigeons.storage.SavedLevel;
 import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,6 +17,46 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.AngryPigeons.Utils.Scene2DUtils;
+
+// ~~~ Which attributes to serialize? ~~~
+// - main: NO
+//	- set once in Main and never changed during run-time
+//
+//- stage: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- mainTable: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- musicDialog: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- exitDialog: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- pauseTable: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- isPaused: NO
+//	- this attribute does change during run-time, there is no need to save this
+//	- when the UI is relaunched, the game wasn't paused and so should be false
+//	- it is set to false in the constructor
+//
+//- wasHidden: NO
+//	- this attribute does change during run-time, there is no need to save this
+//	- when the UI is relaunched, this screen wasn't hidden and so should be false
+//	- it is set to false in the constructor
+//
+//- hasGameEnded: NO
+//	- this attribute does change during run-time, there is no need to save this
+//	- when the UI is relaunched, this game hasn't ended and so should be false
+//	- it is set to false in the constructor
+//
+//- levelScreen: NO
+//	- this attribute does change during run-time, there is no need to save this
+//	- it merely reflects the active level
+//	- when the user selects another level, this attribute will be assigned a value
+//
 
 public class LevelRenderer implements Screen, InputProcessor {
     // Scene2D
@@ -108,7 +149,6 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     @Override
     public void render(float v) {
-//        System.out.println("level renderer rendered() "  + renderID);
 
         // Scene2D
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
@@ -137,11 +177,8 @@ public class LevelRenderer implements Screen, InputProcessor {
 
         // Box2D
         // must render game before pause menu
-        // renderGame(v);
 
-//        System.out.println("Before LR calls LS render()");
         levelScreen.render(v);
-//        System.out.println("After LR calls LS render(). Val of isPaused: " + isPaused);
 
         // ~~~ Why is hasGameEnded necessary? ~~~
         // Assume we didn't have this boolean variable
@@ -165,12 +202,10 @@ public class LevelRenderer implements Screen, InputProcessor {
 
         if (!isPaused) {
             if (!stage.getViewport().unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).isZero()) {
-//                System.out.println("LR 1");
                 Gdx.input.setInputProcessor(this);
             }
         }
         else {
-//                System.out.println("LR 2 " + renderID);
             Gdx.input.setInputProcessor(stage);
         }
     }
@@ -309,24 +344,60 @@ public class LevelRenderer implements Screen, InputProcessor {
     }
 
     public void winLevel() {
-        // reset level will erase all state data - Box2D and isCompleted
-        // so we must set the isCompleted attribute after resetting the level
-//        System.out.println("winlevel()");
+
+        // Once you win a level, you lose your previous save. You cannot do 'Load Game' on that level.
+        // Note, we are not syncing resetLevel with savedLevel. savedLevel stores the previous save.
+        // We do not need to sync them as we show case-by-case below.
+
+        // Also note that we do not call resetExistingLevelOrCreateNewLevel() here.
+        // There is no need to because when playNewLevel() or loadLevel() is called, they call resetExistingLevelOrCreateNewLevel()
+        // to get fresh copies of that level
+
+        // Also note that we do not set isComplete of the LevelScreen here but of savedLevel
+        // This is because LevelScreen is merely transient, in-memory storage whereas savedLevel is permanent
+
+        // CASE 1
+        // Since loadingDisabled is true, the user cannot use 'Load Game' for this level in this session
+        // They can only use 'New Game'. resetExistingLevelOrCreateNewLevel() will associate LevelRenderer with a fresh
+        // copy of that level.
+
+        // If they do not 'Save Level' during this new game, loadingDisabled will remain false and the user won't be
+        // able to use 'Load Level' (because there is no save to load).
+
+        // If they use 'Save Level' during the new game, loadingDisabled will be set to true and savedLevel will
+        // contain the new save.
+
+        // CASE 2
+        // Assume that they have just won the level. Then, the game is exited and restarted.
+        // Since loadingDisabled is true, the user cannot use 'Load Game' for this level even in this new session
+        // They can only use 'New Game'. resetExistingLevelOrCreateNewLevel() will associate LevelRenderer with a fresh
+        // copy of that level.
+
+        // If they do not 'Save Level' during this new game, loadingDisabled will remain false and the user won't be
+        // able to use 'Load Level' (because there is no save to load).
+
+        // If they use 'Save Level' during the new game, loadingDisabled will be set to true and savedLevel will
+        // contain the new save.
 
         hasGameEnded = true;
 
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-        LevelScreen resetLevel = main.resetExistingLevelOrCreateNewLevel(levelIdx);
-        resetLevel.setComplete(true);
+        SavedLevel savedLevel = Storage.getInstance().getOrCreateSavedLevel(levelIdx);
+        savedLevel.setLoadingDisabled(true);
+        savedLevel.setComplete(true);
+
         main.changeScreen(Screens.WINSCREEN);
-//        System.out.println("win level end");
     }
 
     public void loseLevel() {
-        hasGameEnded = true;
 
-        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-        main.resetExistingLevelOrCreateNewLevel(levelIdx);
+        // When you lose a level, you do not lose your previous save. That is, loadingDisabled remains false
+
+        // Also note that we do not call resetExistingLevelOrCreateNewLevel() here.
+        // There is no need to because when playNewLevel() or loadLevel() is called, they call resetExistingLevelOrCreateNewLevel()
+        // to get fresh copies of that level
+
+        hasGameEnded = true;
         main.changeScreen(Screens.LOSESCREEN);
     }
 

@@ -33,7 +33,7 @@ public class SavedKillable {
         // when the Box2D world is rendered, there is a slight gap between all the objects.
         // So, the objects fall down a bit. So if, before loading, the HP of a material was low, then the
         // collision from falling might destroy the material. So, we just need to add some more HP.
-        killable.setHp(this.hp + 20);
+        killable.setHp(this.hp + 30);
         killable.setDead(this.dead);
         savedBody.load(body);
 

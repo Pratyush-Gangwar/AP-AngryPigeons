@@ -72,11 +72,8 @@ public class Storage {
         System.out.println("All levels saved");
     }
 
-    public void saveLevelInMemory(LevelScreen levelScreen) {
+    public SavedLevel getOrCreateSavedLevel(int levelIdx) {
         SavedLevel savedLevel;
-
-        List<LevelScreen> levelScreenList = main.getLevelScreenList();
-        int levelIdx = levelScreenList.indexOf(levelScreen);
 
         if (levelIdx < savedLevelList.size()) {
             savedLevel = savedLevelList.get(levelIdx);
@@ -85,7 +82,19 @@ public class Storage {
             savedLevelList.add(savedLevel);
         }
 
+        return savedLevel;
+    }
+
+    public void saveLevelInMemory(LevelScreen levelScreen) {
+
+        List<LevelScreen> levelScreenList = main.getLevelScreenList();
+        int levelIdx = levelScreenList.indexOf(levelScreen);
+
+        SavedLevel savedLevel = getOrCreateSavedLevel(levelIdx);
         savedLevel.save(levelScreen);
+
+        // if you're trying to save a level, then you should be able to load it
+        savedLevel.setLoadingDisabled(false);
 
         System.out.println("Level " + levelIdx + " saved");
     }

@@ -2,6 +2,13 @@ package com.AngryPigeons.views;
 
 import java.util.ArrayList;
 
+// ~~~ Which attributes to serialize? ~~~
+// - birds: NO
+//	- set once in constructor and doesn't change during run-time
+//
+//- tileMapPath: NO
+//	- set once in constructor and doesn't change during run-time
+
 public class LevelInfo {
     private ArrayList<Integer> birds;
     private String tileMapPath;

@@ -3,6 +3,13 @@ package com.AngryPigeons.domain;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
+// ~~~ Which attributes to serialize? ~~~
+//- hp: YES
+//	- changes during run-time
+//
+//- dead: YES
+//	- changes during run-time
+
 public abstract class Killable extends Drawable {
     protected int hp;
     protected boolean dead;

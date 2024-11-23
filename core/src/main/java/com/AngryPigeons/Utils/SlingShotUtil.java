@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 import static com.AngryPigeons.Utils.Constants.PPM;
 
+// ~~~ Which attributes to serialize? ~~~
+// - NO attributes at all
 
 public class SlingShotUtil {
 
