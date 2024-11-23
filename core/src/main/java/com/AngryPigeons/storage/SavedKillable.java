@@ -1,6 +1,7 @@
 package com.AngryPigeons.storage;
 
 import com.AngryPigeons.domain.Killable;
+import com.badlogic.gdx.physics.box2d.Body;
 
 public class SavedKillable {
     private SavedBody savedBody;
@@ -8,6 +9,14 @@ public class SavedKillable {
     private boolean dead;
 
     private transient Killable killable;
+
+    // default constructor needed for GSON
+    public SavedKillable() {
+        this.savedBody = null;
+        this.hp = 0;
+        this.dead = false;
+        this.killable = null;
+    }
 
     public SavedKillable(Killable killable) {
         this.killable = killable;
@@ -26,27 +35,19 @@ public class SavedKillable {
         this.dead = killable.isDead();
     }
 
-    public SavedBody getSavedBody() {
-        return savedBody;
+    public void load(Killable killable) {
+        // since killable is transient, this attribute was set to null upon deserialization
+        this.killable = killable;
+        Body body = killable.getBody();
+
+        killable.setHp(this.hp);
+        killable.setDead(this.dead);
+        savedBody.load(body);
+
+        if (this.dead) {
+            killable.dispose(body.getWorld());
+        }
+
     }
 
-    public void setSavedBody(SavedBody savedBody) {
-        this.savedBody = savedBody;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public boolean isDead() {
-        return dead;
-    }
-
-    public void setDead(boolean dead) {
-        this.dead = dead;
-    }
 }
