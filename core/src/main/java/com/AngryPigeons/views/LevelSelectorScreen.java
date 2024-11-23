@@ -61,26 +61,28 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
-        LevelScreen lastLevelScreen = main.getLevelScreenList().getLast();
-        boolean isLastLevelComplete = lastLevelScreen.isComplete();
+        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
 
-        if (!isLastLevelComplete) {
+        // on first run, no levels are saved and the list is empty
+        if (savedLevelList.isEmpty()) {
             return;
         }
 
-        // all these buttons have already been rendered. we just need to re-enable them
-        // int numLevelButtons = main.getLevelScreenList().size();
-        int numLevelButtons = main.getLevelInfoList().size();
-        int nextLevelIdx = main.getLevelScreenList().size();
+        // if the last level is complete, enable the next one
+        // otherwise, enable only till the last one
+        SavedLevel lastLevel = savedLevelList.getLast();
+        if (!lastLevel.isComplete()) {
+            return;
+        }
 
-        System.out.println(numLevelButtons + " " + nextLevelIdx);
+        int nextLevelIdx = savedLevelList.size();
+        int numLevelButtons = main.getLevelInfoList().size();
 
         if (nextLevelIdx >= numLevelButtons) {
             return;
         }
 
-//        System.out.println(nextLevelIdx);
-
+        // all these buttons have already been rendered. we just need to re-enable them
         Actor actor = table.getChild(nextLevelIdx);
         TextButton levelButton = (TextButton) actor;
         levelButton.setColor(new Color(37f, 150f, 190f, 1f));
@@ -111,8 +113,11 @@ public class LevelSelectorScreen implements Screen {
             // otherwise, enable only till the last one
             numEnabled  = ( lastLevel.isComplete() ? numSavedLevels + 1 : numSavedLevels );
         } else {
+            System.out.println("here");
             numEnabled = 1;
         }
+
+        System.out.println(numEnabled);
 
         for(int i = 0; i < numLevelButtons; i++) {
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);

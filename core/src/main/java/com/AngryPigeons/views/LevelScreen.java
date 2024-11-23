@@ -138,24 +138,19 @@ public class LevelScreen implements Screen{
     private Texture background_tex;;
     private Texture cross_hair;
 
-    private ArrayList<Material> iceBlocks;
-    private ArrayList<Material> woodBlocks;
-    private ArrayList<Material> stoneBlocks;
+    private List<Material> materialList;
 
     private SlingShot slingShot;
     private Vector2 ssPosition;
     private boolean ssPulled;
     private float distance;
 
-//    ArrayList<Bird> birds1, birds2, birds3;
-    private ArrayList<Integer> birds;
+    private List<Integer> birds;
     private int birdPointer;
     private Bird currentBird;
     private Vector3 currentBirdPos;
 
-    private ArrayList<Pig> smallPigs;
-    private ArrayList<Pig> mediumPigs;
-    private ArrayList<Pig> largePigs;
+    private List<Pig> pigList;
 
     private boolean win;
     private boolean lose;
@@ -178,6 +173,41 @@ public class LevelScreen implements Screen{
         this.birdPointer = 0;
 
         createLevel();
+    }
+
+    public void createLevel() {
+        world = new World(new Vector2(0, -9.8f), false);
+        world.setContactListener(new LevelContactListener());
+
+
+
+//        iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
+//        woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
+//        stoneBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3);
+
+        this.materialList = new ArrayList<>();
+        materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1));
+        materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2));
+        materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3));
+
+//        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
+//        mediumPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2);
+//        smallPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1);
+
+        this.pigList = new ArrayList<>();
+        pigList.addAll(TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3));
+        pigList.addAll( TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2));
+        pigList.addAll(TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1));
+
+        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
+        currentBirdPos = new Vector3();
+
+        TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
+
+        slingShot = TiledMapUtil.parseSlingShot(world, map.getLayers().get("sling-shot").getObjects(), true);
+        assert slingShot != null;
+        ssPosition = slingShot.getBody().getPosition();
+        ssPulled = false;
     }
 
     public void sleepBodies() {
@@ -241,30 +271,6 @@ public class LevelScreen implements Screen{
 //        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
     }
 
-    public void createLevel() {
-        world = new World(new Vector2(0, -9.8f), false);
-        world.setContactListener(new LevelContactListener());
-
-        iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
-        woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
-        stoneBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3);
-
-        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
-        mediumPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2);
-        smallPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1);
-
-        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(),
-            birds.get(birdPointer++));
-        currentBirdPos = new Vector3();
-
-        TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
-
-        slingShot = TiledMapUtil.parseSlingShot(world, map.getLayers().get("sling-shot").getObjects(), true);
-        assert slingShot != null;
-        ssPosition = slingShot.getBody().getPosition();
-        ssPulled = false;
-    }
-
     public void load() {
         // before deserialization and just after tile map reading, all materials and pigs have isDead set to false
         // after deserialization, materials and pigs which had died in the previous session now have isDead set to true
@@ -302,15 +308,11 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds2){bird.update();}
 //        for (Bird bird:birds3){bird.update();}
 
-        updateMaterials(iceBlocks);
-        updateMaterials(woodBlocks);
-        updateMaterials(stoneBlocks);
+        updateMaterials(materialList);
 
         win = true;
 
-        updatePigs(largePigs);
-        updatePigs(mediumPigs);
-        updatePigs(smallPigs);
+        updatePigs(pigList);
 
         if (win){
             timeSinceEnd += delta;
@@ -363,13 +365,8 @@ public class LevelScreen implements Screen{
 
         currentBird.render(batch);
 
-        drawKillables(iceBlocks);
-        drawKillables(woodBlocks);
-        drawKillables(stoneBlocks);
-
-        drawKillables(largePigs);
-        drawKillables(mediumPigs);
-        drawKillables(smallPigs);
+        drawKillables(materialList);
+        drawKillables(pigList);
 
 //        tmr.setView(camera);
         tmr.render();
@@ -536,28 +533,37 @@ public class LevelScreen implements Screen{
         return birdPointer;
     }
 
-    public ArrayList<Pig> getSmallPigs() {
-        return smallPigs;
+//    public ArrayList<Pig> getSmallPigs() {
+//        return smallPigs;
+//    }
+//
+//    public ArrayList<Pig> getMediumPigs() {
+//        return mediumPigs;
+//    }
+//
+//    public ArrayList<Pig> getLargePigs() {
+//        return largePigs;
+//    }
+//
+//    public ArrayList<Material> getIceBlocks() {
+//        return iceBlocks;
+//    }
+//
+//    public ArrayList<Material> getWoodBlocks() {
+//        return woodBlocks;
+//    }
+//
+//    public ArrayList<Material> getStoneBlocks() {
+//        return stoneBlocks;
+//    }
+
+
+    public List<Material> getMaterialList() {
+        return materialList;
     }
 
-    public ArrayList<Pig> getMediumPigs() {
-        return mediumPigs;
-    }
-
-    public ArrayList<Pig> getLargePigs() {
-        return largePigs;
-    }
-
-    public ArrayList<Material> getIceBlocks() {
-        return iceBlocks;
-    }
-
-    public ArrayList<Material> getWoodBlocks() {
-        return woodBlocks;
-    }
-
-    public ArrayList<Material> getStoneBlocks() {
-        return stoneBlocks;
+    public List<Pig> getPigList() {
+        return pigList;
     }
 
     public void setBirdPointer(int birdPointer) {
