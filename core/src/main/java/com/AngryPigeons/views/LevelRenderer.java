@@ -63,6 +63,26 @@ public class LevelRenderer implements Screen, InputProcessor {
         }
 
         // Box2D
+        // ~~~ What if we didn't have wasShown boolean ~~~
+        // When Main is constructed, LevelRenderer is constructed. wasHidden is set to false
+
+        // Users plays Level 1. levelScreen1 is created and assigned to LevelRenderer
+        // Main.changeScreen() calls Game.setScreen() which calls LevelRenderer.show()
+        // Since wasHidden is false, levelScreen is shown
+
+        // Now, user completes the level and returns to the home screen.
+        // LevelRenderer.hide() is called and wasHidden is set to true
+
+        // Now, user plays level 2. levelScreen2 is created and assigned to LevelRenderer
+        // LevelRenderer.show() is called
+        // Since wasHidden, LevelRender.show() exits early and levelScreen2.show() is not called
+        // So, the Box2D world for levelScreen2 is not constructed
+
+        // One solution would be to always call LevelScreen.show() regardless of wasHidden
+        // But if you call show() on a LevelScreen that already had show() called in the past, then the Box2D world
+        // will be double rendered
+
+        // So, we need a wasShown attribute
         if (!levelScreen.wasShown()) {
             levelScreen.show();
         }

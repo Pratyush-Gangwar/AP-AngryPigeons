@@ -37,7 +37,7 @@ public class LevelScreen implements Screen{
     // Scene2D integration start
     private LevelRenderer levelRenderer;
     private boolean isComplete; // has level been won at least once?
-    private boolean wasShown;
+    private boolean wasShown; // show() creates the Box2D world
     // Scene2D integration end
 
     private OrthographicCamera camera;
@@ -55,26 +55,28 @@ public class LevelScreen implements Screen{
     private Texture background_tex;;
     private Texture cross_hair;
 
-    ArrayList<Material> iceBlocks;
-    ArrayList<Material> woodBlocks;
-    ArrayList<Material> stoneBlocks;
+    private ArrayList<Material> iceBlocks;
+    private ArrayList<Material> woodBlocks;
+    private ArrayList<Material> stoneBlocks;
 
-    SlingShot slingShot;
-    Vector2 ssPosition;
-    Bird currentBird;
-    Vector3 currentBirdPos;
-    boolean ssPulled;
-    float distance;
+    private SlingShot slingShot;
+    private Vector2 ssPosition;
+    private Bird currentBird;
+    private Vector3 currentBirdPos;
+    private boolean ssPulled;
+    private float distance;
 
 //    ArrayList<Bird> birds1, birds2, birds3;
-    ArrayList<Integer> birds;
-    int birdPointer;
+    private ArrayList<Integer> birds;
+    private int birdPointer;
 
-    ArrayList<Pig> smallPigs;
-    ArrayList<Pig> mediumPigs;
-    ArrayList<Pig> largePigs;
+    private ArrayList<Pig> smallPigs;
+    private ArrayList<Pig> mediumPigs;
+    private ArrayList<Pig> largePigs;
 
-    boolean win;
+    private boolean win;
+    private float timeSinceEnd;
+    private static float waitTime = 5.0f;
 
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) {
@@ -82,6 +84,7 @@ public class LevelScreen implements Screen{
         this.birds = levelInfo.getBirds();
         this.isComplete = false;
         this.wasShown = false;
+        this.timeSinceEnd = 0.0f;
     }
 
     public void setLevelRenderer(LevelRenderer levelRenderer) {
@@ -261,8 +264,12 @@ public class LevelScreen implements Screen{
         }
 
         if (win){
-            levelRenderer.winLevel();
-            return; // don't do anything more
+            timeSinceEnd += delta;
+
+            if (timeSinceEnd >= waitTime) {
+                levelRenderer.winLevel();
+                return; // don't do anything more
+            }
         }
 
 //        System.out.println(currentBird.getBody().getPosition());
@@ -279,8 +286,12 @@ public class LevelScreen implements Screen{
 
             // birds exhausted
             else if (!win){
-                levelRenderer.loseLevel();
-                return; // don't do anything more
+                timeSinceEnd += delta;
+
+                if (timeSinceEnd >= waitTime) {
+                    levelRenderer.loseLevel();
+                    return; // don't do anything more
+                }
             }
         }
 
