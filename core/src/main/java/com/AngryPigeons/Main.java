@@ -1,5 +1,6 @@
 package com.AngryPigeons;
 
+import com.AngryPigeons.storage.Storage;
 import com.AngryPigeons.views.LevelInfo;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -42,6 +43,8 @@ public class Main extends Game {
         levelSelectorScreen = new LevelSelectorScreen(this);
         levelRenderer = LevelRenderer.getInstance();
         levelRenderer.setMain(this);
+
+        Storage.getInstance().setMain(this);
 
 //        levelRendererList = new ArrayList<>();
         levelScreenList = new ArrayList<>();

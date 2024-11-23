@@ -1,6 +1,7 @@
 package com.AngryPigeons.views;
 
 import com.AngryPigeons.Main;
+import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -284,6 +285,13 @@ public class LevelRenderer implements Screen, InputProcessor {
             public void changed(ChangeEvent event, Actor actor) {
                 musicDialog = Scene2DUtils.makeMusicControlWindow();
                 musicDialog.show(stage);
+            }
+        });
+
+        saveBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Storage.getInstance().saveLevel(levelScreen);
             }
         });
 

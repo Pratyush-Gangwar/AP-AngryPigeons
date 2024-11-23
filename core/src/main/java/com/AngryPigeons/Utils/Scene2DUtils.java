@@ -1,5 +1,6 @@
 package com.AngryPigeons.Utils;
 
+import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
@@ -68,6 +69,7 @@ public class Scene2DUtils {
                 Integer option = (Integer) object;
 
                 if (option == 1) {
+                    Storage.getInstance().saveAllLevels();
                     Gdx.app.exit();
                 }
             }
