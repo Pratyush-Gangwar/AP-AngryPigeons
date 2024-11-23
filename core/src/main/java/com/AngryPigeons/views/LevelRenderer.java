@@ -130,6 +130,7 @@ public class LevelRenderer implements Screen, InputProcessor {
             levelScreen.sleepBodies(); // pause physics for all bodies
         } else {
             pauseMenuTable.remove();
+            levelScreen.wakeBodies();
         }
 
         // Box2D
@@ -261,7 +262,6 @@ public class LevelRenderer implements Screen, InputProcessor {
         debugCompleteBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                main.getLevelSelectorScreen().incrementLastCompleted();
                 winLevel();
             }
         });

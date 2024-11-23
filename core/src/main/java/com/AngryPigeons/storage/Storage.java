@@ -85,7 +85,7 @@ public class Storage {
             savedLevelList.add(savedLevel);
         }
 
-        savedLevel.sync(levelScreen);
+        savedLevel.save(levelScreen);
 
         System.out.println("Level " + levelIdx + " saved");
     }

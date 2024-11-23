@@ -27,7 +27,6 @@ public class LevelSelectorScreen implements Screen {
     public LevelSelectorScreen(Main main) {
         this.main = main;
         wasHidden = false;
-//        lastCompleted = -1;
 
         stage = new Stage( new ScreenViewport() );
 
@@ -40,11 +39,8 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
-//        int toComplete = lastCompleted + 1;
         LevelScreen lastLevelScreen = main.getLevelScreenList().getLast();
         boolean isLastLevelComplete = lastLevelScreen.isComplete();
-
-//        System.out.println(isLastLevelComplete);
 
         if (!isLastLevelComplete) {
             return;
@@ -63,12 +59,11 @@ public class LevelSelectorScreen implements Screen {
 
 //        System.out.println(nextLevelIdx);
 
-//        if (nextLevelIdx < numLevelButtons) {
-            Actor actor = table.getChild(nextLevelIdx);
-            TextButton levelButton = (TextButton) actor;
-            levelButton.setColor(new Color(37f, 150f, 190f, 1f));
-            levelButton.setTouchable(Touchable.enabled);
-//        }
+        Actor actor = table.getChild(nextLevelIdx);
+        TextButton levelButton = (TextButton) actor;
+        levelButton.setColor(new Color(37f, 150f, 190f, 1f));
+        levelButton.setTouchable(Touchable.enabled);
+
     }
 
     @Override
@@ -83,24 +78,16 @@ public class LevelSelectorScreen implements Screen {
         int numLevelButtons = main.getLevelInfoList().size();
         int numLevelScreens = main.getLevelScreenList().size();
 
-        for(int i = 0; i < numLevelButtons /*main.getLevelScreenList().size()*/; i++) {
+        for(int i = 0; i < numLevelButtons; i++) {
 
             TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
 
-
-//            LevelRenderer levelRenderer = main.getLevelRendererList().get(i);
-//            LevelScreen levelScreen = levelRenderer.getLevelScreen();
-//            LevelScreen levelScreen = main.getLevelScreenList().get(i);
 
             if (i != 0 && i >= numLevelScreens) {
                 levelButton.setColor(Color.GRAY); // change color
                 levelButton.setTouchable(Touchable.disabled);
             }
 
-//            if (!levelScreen.isComplete()  && i != lastCompleted + 1) {
-//                levelButton.setColor(Color.GRAY); // change color
-//                levelButton.setTouchable(Touchable.disabled);
-//            }
 
             final int iCopy = i; // lambda functions can only access local variables if they are final
             levelButton.addListener(new ChangeListener() {

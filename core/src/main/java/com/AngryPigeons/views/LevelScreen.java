@@ -78,6 +78,10 @@ public class LevelScreen implements Screen{
     private float timeSinceEnd;
     private static float waitTime = 5.0f;
 
+    // createLevel() and show() separate two aspects of the Level
+    // createLevel() instantiates the Box2D physics related objects
+    // show() instantiates the objects needed to render the physics objects made in createLevel()
+
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) {
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
@@ -196,6 +200,8 @@ public class LevelScreen implements Screen{
 
     @Override
     public void render(float delta){
+        // ~~~ Updating positions ~~~
+
 //        System.out.println(currentBird.getDp());
         update(Gdx.graphics.getDeltaTime());
 
@@ -256,6 +262,8 @@ public class LevelScreen implements Screen{
 
 //        batch.setProjectionMatrix(camera.projection);
 //        batch.setTransformMatrix(camera.view);
+
+        // ~~~ Drawing objects ~~~
 
         batch.begin();
 //        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING

@@ -1,8 +1,6 @@
 package com.AngryPigeons.storage;
 
 import com.AngryPigeons.domain.Killable;
-import com.AngryPigeons.domain.Material;
-import com.AngryPigeons.domain.Pig;
 import com.AngryPigeons.views.LevelScreen;
 
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class SavedLevel {
         this.birdPointer = 0;
     }
 
-    public void sync(LevelScreen levelScreen) {
+    public void save(LevelScreen levelScreen) {
         this.isComplete = levelScreen.isComplete();
         this.birdPointer = levelScreen.getBirdPointer();
 
@@ -60,7 +58,7 @@ public class SavedLevel {
                 savedKillableList.add(savedKillable);
             }
 
-            savedKillable.sync(killable);
+            savedKillable.save(killable);
         }
     }
 

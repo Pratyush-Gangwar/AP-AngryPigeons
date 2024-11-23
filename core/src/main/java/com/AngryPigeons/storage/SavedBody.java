@@ -17,7 +17,7 @@ public class SavedBody {
         this.position = null;
     }
 
-    public void sync(Body body) {
+    public void save(Body body) {
         this.angle = body.getAngle();
         this.angularVelocity = body.getAngularVelocity();
         this.linearVelocity = body.getLinearVelocity();

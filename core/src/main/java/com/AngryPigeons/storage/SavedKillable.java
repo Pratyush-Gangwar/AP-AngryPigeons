@@ -15,13 +15,13 @@ public class SavedKillable {
         this.dead = false;
     }
 
-    public void sync(Killable killable) {
+    public void save(Killable killable) {
 
         if (this.savedBody == null) {
             this.savedBody = new SavedBody();
         }
 
-        this.savedBody.sync(killable.getBody());
+        this.savedBody.save(killable.getBody());
 
         this.hp = killable.getHp();
         this.dead = killable.isDead();
