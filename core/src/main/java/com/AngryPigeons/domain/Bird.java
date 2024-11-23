@@ -44,11 +44,6 @@ public class Bird extends Drawable {
         body.setAngularDamping(0.1f);
     }
 
-    public void update(){
-        sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2);
-        sprite.setRotation((float) Math.toDegrees(body.getAngle()));
-    }
-
     public boolean isWaiting() {
         return waiting;
     }

@@ -33,16 +33,4 @@ public class Material extends Killable {
         sprite.setOriginCenter();
         body.setUserData(this);
     }
-
-    @Override
-    public void update(){
-        sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2);
-        sprite.setRotation((float) Math.toDegrees(body.getAngle()));
-    }
-
-    public void dispose(World world){
-        world.destroyBody(this.body);
-        sprite.getTexture().dispose();
-        dead = true;
-    }
 }

@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 
+import static com.AngryPigeons.Utils.Constants.PPM;
+
 public abstract class Drawable {
     protected Body body;
     protected Sprite sprite;
@@ -16,7 +18,10 @@ public abstract class Drawable {
         this.h = h;
     }
 
-    public abstract void update();
+    public void update(){
+        sprite.setPosition((body.getPosition().x*PPM)-w/2, (body.getPosition().y*PPM)-h/2);
+        sprite.setRotation((float) Math.toDegrees(body.getAngle()));
+    }
 
 
     public void render(SpriteBatch batch){

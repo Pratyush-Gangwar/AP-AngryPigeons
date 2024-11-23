@@ -1,6 +1,7 @@
 package com.AngryPigeons.domain;
 
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class Killable extends Drawable {
     protected int hp;
@@ -24,5 +25,11 @@ public abstract class Killable extends Drawable {
 
     public void setDead(boolean dead) {
         this.dead = dead;
+    }
+
+    public void dispose(World world){
+        world.destroyBody(this.body);
+        sprite.getTexture().dispose();
+        dead = true;
     }
 }

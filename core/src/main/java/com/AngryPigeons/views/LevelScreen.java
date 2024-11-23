@@ -263,15 +263,15 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds2){bird.update();}
 //        for (Bird bird:birds3){bird.update();}
 
-        renderMaterial(iceBlocks);
-        renderMaterial(woodBlocks);
-        renderMaterial(stoneBlocks);
+        updateMaterials(iceBlocks);
+        updateMaterials(woodBlocks);
+        updateMaterials(stoneBlocks);
 
         win = true;
 
-        renderPig(largePigs);
-        renderPig(mediumPigs);
-        renderPig(smallPigs);
+        updatePigs(largePigs);
+        updatePigs(mediumPigs);
+        updatePigs(smallPigs);
 
         if (win){
             timeSinceEnd += delta;
@@ -322,13 +322,13 @@ public class LevelScreen implements Screen{
 
         currentBird.render(batch);
 
-        drawKillable(iceBlocks);
-        drawKillable(woodBlocks);
-        drawKillable(stoneBlocks);
+        drawKillables(iceBlocks);
+        drawKillables(woodBlocks);
+        drawKillables(stoneBlocks);
 
-        drawKillable(largePigs);
-        drawKillable(mediumPigs);
-        drawKillable(smallPigs);
+        drawKillables(largePigs);
+        drawKillables(mediumPigs);
+        drawKillables(smallPigs);
 
 //        tmr.setView(camera);
         tmr.render();
@@ -346,7 +346,7 @@ public class LevelScreen implements Screen{
 //        System.out.println(ssPosition);
     }
 
-    private void renderMaterial(List<Material> materialList) {
+    private void updateMaterials(List<Material> materialList) {
         for(Material material : materialList) {
             if (material.isDead()) {
                 continue;
@@ -361,7 +361,7 @@ public class LevelScreen implements Screen{
         }
     }
 
-    private void renderPig(List<Pig> pigList) {
+    private void updatePigs(List<Pig> pigList) {
         for(Pig pig : pigList) {
             if (pig.isDead()) {
                 continue;
@@ -377,7 +377,7 @@ public class LevelScreen implements Screen{
         }
     }
 
-    private void drawKillable(List<? extends  Killable> killableList) {
+    private void drawKillables(List<? extends  Killable> killableList) {
         for(Killable killable : killableList) {
             if (!killable.isDead()) {
                 killable.render(batch);
