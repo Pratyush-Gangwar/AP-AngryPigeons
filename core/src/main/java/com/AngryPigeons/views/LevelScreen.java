@@ -1,13 +1,11 @@
 package com.AngryPigeons.views;
 
 import com.AngryPigeons.Utils.SlingShotUtil;
-import com.AngryPigeons.domain.Bird;
-import com.AngryPigeons.domain.Material;
-import com.AngryPigeons.domain.Pig;
-import com.AngryPigeons.domain.SlingShot;
+import com.AngryPigeons.domain.*;
 import com.AngryPigeons.Utils.Constants;
 import com.AngryPigeons.Utils.TiledMapUtil;
 import com.AngryPigeons.logic.LevelContactListener;
+import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -164,6 +162,10 @@ public class LevelScreen implements Screen{
         return stoneBlocks;
     }
 
+    public void setBirdPointer(int birdPointer) {
+        this.birdPointer = birdPointer;
+    }
+
     public void update(float delta){
 
         // only step through physics simulation if not paused.
@@ -203,16 +205,9 @@ public class LevelScreen implements Screen{
         tmr = new OrthogonalTiledMapRenderer(map);
         tmr.setView(camera);
 
-        TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
-//        TiledMapUtil.parseBoundary(world, map.getLayers().get("boundary").getObjects(), true);
-
-//        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
-//        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
-//        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
+        // ~~~ Serialization ~~~~
         birdPointer = 0;
-        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
-        currentBirdPos = new Vector3();
-        ssPulled = false;
+        isComplete = false;
 
         iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
         woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
@@ -221,6 +216,31 @@ public class LevelScreen implements Screen{
         largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
         mediumPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2);
         smallPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1);
+
+        Storage.getInstance().loadLevel(this);
+
+        // if new level, birdPointer is 0
+        // if the level was deserialized, subtract one from birdPointer
+        if (birdPointer == 0) {
+            currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(),
+                birds.get( birdPointer++ ));
+        } else {
+            currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(),
+                birds.get( birdPointer - 1 ));
+        }
+
+        // ~~~ Serialization End ~~~
+
+        TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
+//        TiledMapUtil.parseBoundary(world, map.getLayers().get("boundary").getObjects(), true);
+
+//        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
+//        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
+//        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
+
+
+        currentBirdPos = new Vector3();
+        ssPulled = false;
 
         slingShot = TiledMapUtil.parseSlingShot(world, map.getLayers().get("sling-shot").getObjects(), true);
         assert slingShot != null;
@@ -243,60 +263,15 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds2){bird.update();}
 //        for (Bird bird:birds3){bird.update();}
 
-        for (Material ice: iceBlocks){
-            if (ice.isDead()){continue;}
-            if ((ice.getHp()<=0)||(ice.getBody().getPosition().y<0)){
-                ice.dispose(world);
-                continue;
-            }
-            ice.update();
-        }
-        for (Material wood: woodBlocks){
-            if (wood.isDead()){continue;}
-            if ((wood.getHp()<=0)||(wood.getBody().getPosition().y<0)){
-                wood.dispose(world);
-                continue;
-            }
-            wood.update();
-        }
-        for (Material stone: stoneBlocks){
-            if (stone.isDead()){continue;}
-            if ((stone.getHp()<=0)||(stone.getBody().getPosition().y<0)) {
-                stone.dispose(world);
-                continue;
-            }
-            stone.update();
-        }
+        renderMaterial(iceBlocks);
+        renderMaterial(woodBlocks);
+        renderMaterial(stoneBlocks);
 
         win = true;
 
-        for (Pig largePig:largePigs){
-            if (largePig.isDead()){continue;}
-            if ((largePig.getHp()<=0)||(largePig.getBody().getPosition().y<0)){
-                largePig.dispose(world);
-                continue;
-            }
-            win = false;
-            largePig.update();
-        }
-        for (Pig mediumPig:mediumPigs){
-            if (mediumPig.isDead()){continue;}
-            if ((mediumPig.getHp()<=0)||(mediumPig.getBody().getPosition().y<0)){
-                mediumPig.dispose(world);
-                continue;
-            }
-            win = false;
-            mediumPig.update();
-        }
-        for (Pig smallPig:smallPigs){
-            if (smallPig.isDead()){continue;}
-            if ((smallPig.getHp()<=0)||(smallPig.getBody().getPosition().y<0)){
-                smallPig.dispose(world);
-                continue;
-            }
-            win = false;
-            smallPig.update();
-        }
+        renderPig(largePigs);
+        renderPig(mediumPigs);
+        renderPig(smallPigs);
 
         if (win){
             timeSinceEnd += delta;
@@ -347,37 +322,13 @@ public class LevelScreen implements Screen{
 
         currentBird.render(batch);
 
-        for (Material ice: iceBlocks){
-            if (!ice.isDead()){
-                ice.render(batch);
-            }
-        }
-        for (Material wood: woodBlocks){
-            if (!wood.isDead()){
-                wood.render(batch);
-            }
-        }
-        for (Material stone: stoneBlocks){
-            if (!stone.isDead()){
-                stone.render(batch);
-            }
-        }
+        drawKillable(iceBlocks);
+        drawKillable(woodBlocks);
+        drawKillable(stoneBlocks);
 
-        for (Pig largePig: largePigs){
-            if (!largePig.isDead()){
-                largePig.render(batch);
-            }
-        }
-        for (Pig mediumPig: mediumPigs){
-            if (!mediumPig.isDead()){
-                mediumPig.render(batch);
-            }
-        }
-        for (Pig smallPig: smallPigs){
-            if (!smallPig.isDead()){
-                smallPig.render(batch);
-            }
-        }
+        drawKillable(largePigs);
+        drawKillable(mediumPigs);
+        drawKillable(smallPigs);
 
 //        tmr.setView(camera);
         tmr.render();
@@ -393,6 +344,45 @@ public class LevelScreen implements Screen{
 
 //        System.out.println(currentBird.getBody().getPosition());
 //        System.out.println(ssPosition);
+    }
+
+    private void renderMaterial(List<Material> materialList) {
+        for(Material material : materialList) {
+            if (material.isDead()) {
+                continue;
+            }
+
+            if (material.getHp() <= 0 || material.getBody().getPosition().y < 0) {
+                material.dispose(world);
+                continue;
+            }
+
+            material.update();
+        }
+    }
+
+    private void renderPig(List<Pig> pigList) {
+        for(Pig pig : pigList) {
+            if (pig.isDead()) {
+                continue;
+            }
+
+            if (pig.getHp() <= 0 || pig.getBody().getPosition().y < 0) {
+                pig.dispose(world);
+                continue;
+            }
+
+            win = false;
+            pig.update();
+        }
+    }
+
+    private void drawKillable(List<? extends  Killable> killableList) {
+        for(Killable killable : killableList) {
+            if (!killable.isDead()) {
+                killable.render(batch);
+            }
+        }
     }
 
     public void inputUpdate(float delta){

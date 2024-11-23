@@ -17,4 +17,12 @@ public abstract class Killable extends Drawable {
     public void damage(int dp){
         hp -= dp;;
     }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
 }

@@ -307,7 +307,6 @@ public class LevelRenderer implements Screen, InputProcessor {
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
         LevelScreen resetLevel = main.resetLevel(levelIdx);
         resetLevel.setComplete(true);
-
         main.changeScreen(Screens.WINSCREEN);
 //        System.out.println("win level end");
     }
