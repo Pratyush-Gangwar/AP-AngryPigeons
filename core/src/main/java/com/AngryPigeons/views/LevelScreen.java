@@ -119,7 +119,6 @@ public class LevelScreen implements Screen{
 
     // Scene2D integration start
     private LevelRenderer levelRenderer;
-    private boolean isComplete; // has level been won at least once?
     private boolean wasShown; // show() creates the Box2D world
     // Scene2D integration end
 
@@ -166,7 +165,6 @@ public class LevelScreen implements Screen{
     public LevelScreen(LevelInfo levelInfo) {
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
         this.birds = levelInfo.getBirds();
-        this.isComplete = false;
         this.wasShown = false;
         this.timeSinceEnd = 0.0f;
         this.levelRenderer = LevelRenderer.getInstance();
@@ -179,20 +177,10 @@ public class LevelScreen implements Screen{
         world = new World(new Vector2(0, -9.8f), false);
         world.setContactListener(new LevelContactListener());
 
-
-
-//        iceBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1);
-//        woodBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2);
-//        stoneBlocks = TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3);
-
         this.materialList = new ArrayList<>();
         materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1));
         materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2));
         materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3));
-
-//        largePigs = TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3);
-//        mediumPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2);
-//        smallPigs = TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1);
 
         this.pigList = new ArrayList<>();
         pigList.addAll(TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3));
@@ -501,13 +489,6 @@ public class LevelScreen implements Screen{
         }
     }
 
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(boolean isComplete) {
-        this.isComplete = isComplete;
-    }
 
     public boolean wasShown() {
         return wasShown;
@@ -532,31 +513,6 @@ public class LevelScreen implements Screen{
     public int getBirdPointer() {
         return birdPointer;
     }
-
-//    public ArrayList<Pig> getSmallPigs() {
-//        return smallPigs;
-//    }
-//
-//    public ArrayList<Pig> getMediumPigs() {
-//        return mediumPigs;
-//    }
-//
-//    public ArrayList<Pig> getLargePigs() {
-//        return largePigs;
-//    }
-//
-//    public ArrayList<Material> getIceBlocks() {
-//        return iceBlocks;
-//    }
-//
-//    public ArrayList<Material> getWoodBlocks() {
-//        return woodBlocks;
-//    }
-//
-//    public ArrayList<Material> getStoneBlocks() {
-//        return stoneBlocks;
-//    }
-
 
     public List<Material> getMaterialList() {
         return materialList;

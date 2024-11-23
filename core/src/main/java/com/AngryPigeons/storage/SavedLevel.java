@@ -13,7 +13,7 @@ public class SavedLevel {
     // however, we don't call saveLevelInMemory() for this fresh level since a fresh level doesn't have any progress
     // instead, we merely disable loading for this savedLevel
     private boolean loadingDisabled;
-    private boolean isComplete;
+    private boolean isComplete; // has level been won at least once?
 
     private int birdPointer;
 
@@ -30,7 +30,6 @@ public class SavedLevel {
     }
 
     public void save(LevelScreen levelScreen) {
-        this.isComplete = levelScreen.isComplete();
         this.birdPointer = levelScreen.getBirdPointer();
 
         syncIn(savedMaterialList, levelScreen.getMaterialList());
@@ -66,7 +65,6 @@ public class SavedLevel {
     }
 
     public void load(LevelScreen levelScreen) {
-        levelScreen.setComplete(isComplete);
         levelScreen.setBirdPointer(birdPointer);
 
         syncOut(levelScreen.getMaterialList(), savedMaterialList);
