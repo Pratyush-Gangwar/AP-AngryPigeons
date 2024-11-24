@@ -31,11 +31,6 @@ import java.util.List;
 //
 //- background: NO
 //	- set once in constructor and doesn't change during run-time
-//
-//- wasHidden: NO
-//	- this attribute does change during run-time, there is no need to save this
-//	- when the UI is relaunched, this screen wasn't hidden and so should be false
-//	- it is set to false in the constructor
 
 public class LevelSelectorScreen implements Screen {
 
@@ -43,61 +38,62 @@ public class LevelSelectorScreen implements Screen {
     private Stage stage;
     private Table table;
 
-    private boolean wasHidden;
-//    private int lastCompleted;
-
     public LevelSelectorScreen(Main main) {
         this.main = main;
-        wasHidden = false;
-
         stage = new Stage( new ScreenViewport() );
+        setupTable();
+    }
 
+    @Override
+    public void show() {
+        updateLevelStatus();
+    }
+
+    @Override
+    public void render(float v) {
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+        // stage.clear();
+        System.out.println("Level selector hidden");
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    private void setupTable() {
         table = new Table();
         table.setFillParent(true);
         table.setDebug(Scene2DUtils.scene2DDebugEnabled);
         stage.addActor(table);
 
         Scene2DUtils.setBackgroundOfTable(table);
-    }
-
-    private void updateLevelStatus() {
-        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
-
-        // on first run, no levels are saved and the list is empty
-        if (savedLevelList.isEmpty()) {
-            return;
-        }
-
-        // if the last level is complete, enable the next one
-        // otherwise, enable only till the last one
-        SavedLevel lastLevel = savedLevelList.getLast();
-        if (!lastLevel.isComplete()) {
-            return;
-        }
-
-        int nextLevelIdx = savedLevelList.size();
-        int numLevelButtons = main.getLevelInfoList().size();
-
-        if (nextLevelIdx >= numLevelButtons) {
-            return;
-        }
-
-        // all these buttons have already been rendered. we just need to re-enable them
-        Actor actor = table.getChild(nextLevelIdx);
-        TextButton levelButton = (TextButton) actor;
-        levelButton.setColor(new Color(37f, 150f, 190f, 1f));
-        levelButton.setTouchable(Touchable.enabled);
-
-    }
-
-    @Override
-    public void show() {
-
-        if (wasHidden) {
-            wasHidden = false;
-            updateLevelStatus();
-            return;
-        }
 
         int numLevelButtons = main.getLevelInfoList().size();
         int numEnabled;
@@ -153,48 +149,35 @@ public class LevelSelectorScreen implements Screen {
         });
     }
 
-    @Override
-    public void render(float v) {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+    private void updateLevelStatus() {
+        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
+
+        // on first run, no levels are saved and the list is empty
+        if (savedLevelList.isEmpty()) {
+            return;
+        }
+
+        // if the last level is complete, enable the next one
+        // otherwise, enable only till the last one
+        SavedLevel lastLevel = savedLevelList.getLast();
+        if (!lastLevel.isComplete()) {
+            return;
+        }
+
+        int nextLevelIdx = savedLevelList.size();
+        int numLevelButtons = main.getLevelInfoList().size();
+
+        if (nextLevelIdx >= numLevelButtons) {
+            return;
+        }
+
+        // all these buttons have already been rendered. we just need to re-enable them
+        Actor actor = table.getChild(nextLevelIdx);
+        TextButton levelButton = (TextButton) actor;
+        levelButton.setColor(new Color(37f, 150f, 190f, 1f));
+        levelButton.setTouchable(Touchable.enabled);
+
     }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        // stage.clear();
-        System.out.println("Level selector hidden");
-        wasHidden = true;
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-//    public void incrementLastCompleted() {
-//        lastCompleted++;
-//    }
 
     private void levelSelectHandler(int levelIndex) {
 

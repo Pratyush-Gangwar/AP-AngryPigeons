@@ -28,12 +28,6 @@ import com.AngryPigeons.Utils.Scene2DUtils;
 //
 //- exitDialog: NO
 //	- set once in constructor and doesn't change during run-time
-//
-//- wasHidden: NO
-//	- this attribute does change during run-time, there is no need to save this
-//	- when the UI is relaunched, this screen wasn't hidden and so should be false
-//	- it is set to false in the constructor
-
 
 public class HomeScreen implements Screen {
 
@@ -43,36 +37,77 @@ public class HomeScreen implements Screen {
     private Dialog musicDialog;
     private Dialog exitDialog;
 
-    private boolean wasHidden; // to prevent multiple rendering
-
     public HomeScreen(Main main) {
         System.out.println("Constructed home");
 
         this.main = main;
-        wasHidden = false;
 
         musicDialog = null;
         exitDialog = null;
 
         stage = new Stage( new ScreenViewport() ); // stage controls all GUI elements
-
-        table = new Table();
-        table.setFillParent(true); // table same size as screen
-        table.setDebug(Scene2DUtils.scene2DDebugEnabled);
-        stage.addActor(table); // add table to stage
-
-        Scene2DUtils.setBackgroundOfTable(table);
+        setupTable();
     }
 
     @Override
-    public void show() {
+    public void show() {}
 
-        // if .setScreen(HomeScreen) was called and HomeScreen was previously hidden, then don't execute this
-        // method again. Otherwise, elements will be rendered twice!
-        if (wasHidden) {
-            wasHidden = false;
-            return;
+    @Override
+    public void render(float v) {
+        // always clear screen before rendering
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // draw the stage - properties of the stage were set up in constructor and when .show() was initially called
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // ensure the stage resizes appropriate
+        stage.getViewport().update(width, height, true);
+
+        // before user clicks on music or exit button, both of these are null
+        // resize with screen
+        if (musicDialog != null) {
+            musicDialog.setPosition((Gdx.graphics.getWidth() - musicDialog.getWidth())/2, (Gdx.graphics.getHeight() - musicDialog.getHeight())/2);
         }
+
+        if (exitDialog != null) {
+            exitDialog.setPosition((Gdx.graphics.getWidth() - exitDialog.getWidth())/2, (Gdx.graphics.getHeight() - exitDialog.getHeight())/2);
+        }
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+        System.out.println("Home hide");
+    }
+
+    @Override
+    public void dispose() {
+        System.out.println("Home disposed");
+        stage.dispose();
+    }
+
+    private void setupTable() {
+        table = new Table();
+        table.setFillParent(true); // table same size as screen
+        table.setDebug(Scene2DUtils.scene2DDebugEnabled);
+
+        Scene2DUtils.setBackgroundOfTable(table);
+        stage.addActor(table); // add table to stage
 
         // expandY() makes sure that the Label and Button have space between them
         table.add(Scene2DUtils.makeLabel("Angry Pigeons", 150)).expandY();
@@ -117,57 +152,6 @@ public class HomeScreen implements Screen {
             }
         });
 
-    }
-
-    @Override
-    public void render(float v) {
-        // always clear screen before rendering
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // draw the stage - properties of the stage were set up in constructor and when .show() was initially called
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        // ensure the stage resizes appropriate
-        stage.getViewport().update(width, height, true);
-
-        // before user clicks on music or exit button, both of these are null
-        // resize with screen
-        if (musicDialog != null) {
-            musicDialog.setPosition((Gdx.graphics.getWidth() - musicDialog.getWidth())/2, (Gdx.graphics.getHeight() - musicDialog.getHeight())/2);
-        }
-
-        if (exitDialog != null) {
-            exitDialog.setPosition((Gdx.graphics.getWidth() - exitDialog.getWidth())/2, (Gdx.graphics.getHeight() - exitDialog.getHeight())/2);
-        }
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        System.out.println("Home hide");
-        wasHidden = true;
-    }
-
-    @Override
-    public void dispose() {
-        System.out.println("Home disposed");
-
-        stage.dispose();
     }
 
     public Stage getStage() {

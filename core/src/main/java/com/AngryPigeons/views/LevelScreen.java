@@ -119,7 +119,6 @@ public class LevelScreen implements Screen{
 
     // Scene2D integration start
     private LevelRenderer levelRenderer;
-    private boolean wasShown; // show() creates the Box2D world
     // Scene2D integration end
 
     private OrthographicCamera camera;
@@ -165,15 +164,15 @@ public class LevelScreen implements Screen{
     public LevelScreen(LevelInfo levelInfo) {
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
         this.birds = levelInfo.getBirds();
-        this.wasShown = false;
         this.timeSinceEnd = 0.0f;
         this.levelRenderer = LevelRenderer.getInstance();
         this.birdPointer = 0;
 
         createLevel();
+        createRenderers();
     }
 
-    public void createLevel() {
+    private void createLevel() {
         world = new World(new Vector2(0, -9.8f), false);
         world.setContactListener(new LevelContactListener());
 
@@ -196,6 +195,26 @@ public class LevelScreen implements Screen{
         assert slingShot != null;
         ssPosition = slingShot.getBody().getPosition();
         ssPulled = false;
+    }
+
+    private void createRenderers() {
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, w/SCALE, h/SCALE);
+        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
+
+        b2dr = new Box2DDebugRenderer();
+
+        batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
+
+        background_tex = new Texture("Images/BG.png");
+        cross_hair = new Texture("Images/images.png");
+
+        tmr = new OrthogonalTiledMapRenderer(map);
+        tmr.setView(camera);
     }
 
     public void sleepBodies() {
@@ -231,33 +250,7 @@ public class LevelScreen implements Screen{
     // ~~~ Scene2D integration end ~~~
 
     @Override
-    public void show(){
-        this.wasShown = true;
-
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, w/SCALE, h/SCALE);
-        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
-
-        b2dr = new Box2DDebugRenderer();
-
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-
-        background_tex = new Texture("Images/BG.png");
-        cross_hair = new Texture("Images/images.png");
-
-        tmr = new OrthogonalTiledMapRenderer(map);
-        tmr.setView(camera);
-
-//        TiledMapUtil.parseBoundary(world, map.getLayers().get("boundary").getObjects(), true);
-
-//        birds1 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons1").getObjects(), 1);
-//        birds2 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons2").getObjects(), 2);
-//        birds3 = TiledMapUtil.parseBird(world, map.getLayers().get("pigeons3").getObjects(), 3);
-    }
+    public void show(){}
 
     public void load() {
         // before deserialization and just after tile map reading, all materials and pigs have isDead set to false
@@ -489,10 +482,6 @@ public class LevelScreen implements Screen{
         }
     }
 
-
-    public boolean wasShown() {
-        return wasShown;
-    }
 
     public Bird getCurrentBird() {
         return currentBird;

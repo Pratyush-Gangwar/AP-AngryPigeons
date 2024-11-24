@@ -42,13 +42,6 @@ public class Main extends Game {
         music.setVolume(0.5f);
         music.play();
 
-        homeScreen = new HomeScreen(this);
-        levelSelectorScreen = new LevelSelectorScreen(this);
-        levelRenderer = LevelRenderer.getInstance();
-        levelRenderer.setMain(this);
-
-        Storage.getInstance().setMain(this);
-
         // ~~~ Why must we make levelScreenList have the same length as savedLevelList ~~~
         // Assume we didn't make them the same length.
 
@@ -79,6 +72,17 @@ public class Main extends Game {
         levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,2,3))));
         levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3))));
         levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap3.tmx", new ArrayList<>(List.of(1,2,1,3))));
+
+        Storage.getInstance().setMain(this);
+
+        homeScreen = new HomeScreen(this);
+
+        // since levelSelectorScreen needs levelInfoList, we must define that first
+        levelSelectorScreen = new LevelSelectorScreen(this);
+
+        levelRenderer = LevelRenderer.getInstance();
+        levelRenderer.setMain(this);
+
 
         this.changeScreen(Screens.HOMESCREEN);
     }
@@ -153,20 +157,22 @@ public class Main extends Game {
 
     public void loadLevel(int index) {
 
-        // create a new level (add/set into levelScreenList) and load the savedLevel into it
-        // we don't want to load into an existing levelScreen because it has its own box2D world and camera/viewport states
-        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
         List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
 
         // level wasn't saved
+        // this is likely a new level that the user just unlocked
         if (index >= savedLevelList.size()) {
             return;
         }
 
+        // the user won this level and lost their save
         if (savedLevelList.get(index).isLoadingDisabled()) {
             return;
         }
 
+        // create a new level (add/set into levelScreenList) and load the savedLevel into it
+        // we don't want to load into an existing levelScreen because it has its own box2D world and camera/viewport states
+        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
         levelScreen.load();
         levelRenderer.setLevelScreen(levelScreen);
 

@@ -71,12 +71,10 @@ public class LevelRenderer implements Screen, InputProcessor {
     private boolean isPaused;
     private boolean wasHidden;
     private boolean hasGameEnded;
-//    private boolean loadLevel;
 
     private static LevelRenderer instance;
 
     private LevelScreen levelScreen;
-//    private int renderID = 1;
 
     public static LevelRenderer getInstance() {
         if (LevelRenderer.instance == null) {
@@ -88,8 +86,6 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     private LevelRenderer( /*Main main , LevelScreen levelScreen*/) {
         // Scene2D
-//        this.main = main;
-//        this.levelScreen = levelScreen;
         this.isPaused = false;
         this.wasHidden = false;
         this.hasGameEnded = false;
@@ -126,25 +122,16 @@ public class LevelRenderer implements Screen, InputProcessor {
         // When Main is constructed, LevelRenderer is constructed. wasHidden is set to false
 
         // Users plays Level 1. levelScreen1 is created and assigned to LevelRenderer
+        // The constructor of that level creates the box2D objects and the renderers
         // Main.changeScreen() calls Game.setScreen() which calls LevelRenderer.show()
-        // Since wasHidden is false, levelScreen is shown
+        // We don't call LevelScreen.show() because it is empty
 
         // Now, user completes the level and returns to the home screen.
         // LevelRenderer.hide() is called and wasHidden is set to true
 
         // Now, user plays level 2. levelScreen2 is created and assigned to LevelRenderer
+        // The constructor of that level creates the box2D objects and the renderers
         // LevelRenderer.show() is called
-        // Since wasHidden, LevelRender.show() exits early and levelScreen2.show() is not called
-        // So, the Box2D world for levelScreen2 is not constructed
-
-        // One solution would be to always call LevelScreen.show() regardless of wasHidden
-        // But if you call show() on a LevelScreen that already had show() called in the past, then the Box2D world
-        // will be double rendered
-
-        // So, we need a wasShown attribute
-        if (!levelScreen.wasShown()) {
-            levelScreen.show();
-        }
     }
 
     @Override
