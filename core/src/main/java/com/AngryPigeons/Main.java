@@ -22,6 +22,8 @@ public class Main extends Game {
     private List<LevelScreen> levelScreenList;
     private List<LevelInfo> levelInfoList;
 
+    // After the Main constructor is called and before create() is called, Gdx is initialized
+    // Therefore, we cannot move the below code into a constructor because Scene2DUtils uses Gdx methods
     @Override
     public void create() {
         Scene2DUtils.setBackgroundTexture("textures/main2.jpg");
@@ -65,7 +67,6 @@ public class Main extends Game {
         levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap3.tmx", new ArrayList<>(List.of(1,2,1,3))));
 
         Storage.getInstance().setMain(this);
-
         LevelRenderer.getInstance().setMain(this);
 
         this.changeScreen(Screens.HOMESCREEN);

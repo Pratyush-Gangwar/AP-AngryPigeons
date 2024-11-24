@@ -117,10 +117,6 @@ public class LevelScreen implements Screen{
 
     private final float SCALE = 1.0f;
 
-    // Scene2D integration start
-    private LevelRenderer levelRenderer;
-    // Scene2D integration end
-
     private OrthographicCamera camera;
     private Viewport viewport;
 
@@ -165,7 +161,6 @@ public class LevelScreen implements Screen{
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
         this.birds = levelInfo.getBirds();
         this.timeSinceEnd = 0.0f;
-        this.levelRenderer = LevelRenderer.getInstance();
         this.birdPointer = 0;
 
         createLevel();
@@ -236,6 +231,7 @@ public class LevelScreen implements Screen{
     }
 
     public void update(float delta){
+        LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
         // only step through physics simulation if not paused.
         if (!levelRenderer.isPaused()) {
@@ -289,11 +285,11 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds2){bird.update();}
 //        for (Bird bird:birds3){bird.update();}
 
-        updateMaterials(materialList);
-
         win = true;
-
+        updateMaterials(materialList);
         updatePigs(pigList);
+
+        LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
         if (win){
             timeSinceEnd += delta;
