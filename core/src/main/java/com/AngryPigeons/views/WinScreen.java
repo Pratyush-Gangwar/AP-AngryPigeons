@@ -42,7 +42,17 @@ public class WinScreen implements Screen {
     private Texture background;
     private float duration;
 
-    public WinScreen(Main main) {
+    private static WinScreen instance;
+
+    public static WinScreen getInstance(Main main) {
+        if (WinScreen.instance == null) {
+            WinScreen.instance = new WinScreen(main);
+        }
+
+        return WinScreen.instance;
+    }
+
+    private WinScreen(Main main) {
         this.main = main;
         this.stage = new Stage();
         background = new Texture(Gdx.files.internal("textures/win.jpg"));

@@ -37,7 +37,17 @@ public class HomeScreen implements Screen {
     private Dialog musicDialog;
     private Dialog exitDialog;
 
-    public HomeScreen(Main main) {
+    private static HomeScreen instance;
+
+    public static HomeScreen getInstance(Main main) {
+        if (HomeScreen.instance == null) {
+            HomeScreen.instance = new HomeScreen(main);
+        }
+
+        return HomeScreen.instance;
+    }
+
+    private HomeScreen(Main main) {
         System.out.println("Constructed home");
 
         this.main = main;

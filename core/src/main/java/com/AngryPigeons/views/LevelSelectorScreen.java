@@ -38,7 +38,17 @@ public class LevelSelectorScreen implements Screen {
     private Stage stage;
     private Table table;
 
-    public LevelSelectorScreen(Main main) {
+    private static LevelSelectorScreen instance;
+
+    public static LevelSelectorScreen getInstance(Main main) {
+        if (LevelSelectorScreen.instance == null) {
+            LevelSelectorScreen.instance = new LevelSelectorScreen(main);
+        }
+
+        return LevelSelectorScreen.instance;
+    }
+
+    private LevelSelectorScreen(Main main) {
         this.main = main;
         stage = new Stage( new ScreenViewport() );
         setupTable();

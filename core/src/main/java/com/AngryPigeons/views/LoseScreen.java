@@ -41,7 +41,17 @@ public class LoseScreen implements Screen {
     private Texture background;
     private float duration;
 
-    public LoseScreen(Main main) {
+    private static LoseScreen instance;
+
+    public static LoseScreen getInstance(Main main) {
+        if (LoseScreen.instance == null) {
+            LoseScreen.instance = new LoseScreen(main);
+        }
+
+        return LoseScreen.instance;
+    }
+
+    private LoseScreen(Main main) {
         this.main = main;
         this.stage = new Stage();
         background = new Texture(Gdx.files.internal("textures/lose.jpg"));

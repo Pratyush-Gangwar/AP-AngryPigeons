@@ -19,15 +19,6 @@ import java.util.List;
 
 // Scene2D entirely
 public class Main extends Game {
-
-    // Only one instance of these classes is ever available
-    private HomeScreen homeScreen;
-    private LevelSelectorScreen levelSelectorScreen;
-    private WinScreen winScreen;
-    private LoseScreen loseScreen;
-
-    private LevelRenderer levelRenderer;
-
     private List<LevelScreen> levelScreenList;
     private List<LevelInfo> levelInfoList;
 
@@ -75,58 +66,42 @@ public class Main extends Game {
 
         Storage.getInstance().setMain(this);
 
-        homeScreen = new HomeScreen(this);
-
-        // since levelSelectorScreen needs levelInfoList, we must define that first
-        levelSelectorScreen = new LevelSelectorScreen(this);
-
-        levelRenderer = LevelRenderer.getInstance();
-        levelRenderer.setMain(this);
-
+        LevelRenderer.getInstance().setMain(this);
 
         this.changeScreen(Screens.HOMESCREEN);
     }
 
 
-    // .setScreen() calls .hide() on the current screen and .show() on the argument screen
+    // 1. Game.setScreen() calls hide() on the current screen and show() on the argument screen.
+    // 2. When switching screens, must update input processor to current screen.
+    // 3. All screens except LevelScreens are singleton classes.
+    // Each of these classes contain a static reference to their sole instance.
+    // And because of that, these instances are not garbage collected and remain active throughout the program duration
     public void changeScreen(Screens screen) {
 
-        // when switching screens, must update input processor to current screen
         if (screen == Screens.HOMESCREEN) {
-
-            // created only if not null - ensures only one instance is ever there
-            if (homeScreen == null) {
-                homeScreen = new HomeScreen(this);
-            }
+            HomeScreen homeScreen = HomeScreen.getInstance(this);
 
             this.setScreen(homeScreen);
             Gdx.input.setInputProcessor(homeScreen.getStage());
         }
 
         else if (screen == Screens.LEVELSELECTORSCREEN) {
-            if (levelSelectorScreen == null) {
-                levelSelectorScreen = new LevelSelectorScreen(this);
-            }
+            LevelSelectorScreen levelSelectorScreen = LevelSelectorScreen.getInstance(this);
 
             this.setScreen(levelSelectorScreen);
             Gdx.input.setInputProcessor(levelSelectorScreen.getStage());
         }
 
         else if (screen == Screens.WINSCREEN) {
-            if (winScreen == null) {
-                winScreen = new WinScreen(this);
-            }
+            WinScreen winScreen = WinScreen.getInstance(this);
 
             this.setScreen(winScreen);
             Gdx.input.setInputProcessor(winScreen.getStage());
-
-//            System.out.println("setScreen(WIN) " + Gdx.input.getInputProcessor().equals(winScreen.getStage()));
         }
 
         else if (screen == Screens.LOSESCREEN) {
-            if (loseScreen == null) {
-                loseScreen = new LoseScreen(this);
-            }
+            LoseScreen loseScreen = LoseScreen.getInstance(this);
 
             this.setScreen(loseScreen);
             Gdx.input.setInputProcessor(loseScreen.getStage());
@@ -146,6 +121,8 @@ public class Main extends Game {
     }
 
     public void playNewLevel(int index) {
+        LevelRenderer levelRenderer = LevelRenderer.getInstance();
+
         LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
         levelRenderer.setLevelScreen(levelScreen);
 
@@ -174,8 +151,9 @@ public class Main extends Game {
         // we don't want to load into an existing levelScreen because it has its own box2D world and camera/viewport states
         LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
         levelScreen.load();
-        levelRenderer.setLevelScreen(levelScreen);
 
+        LevelRenderer levelRenderer = LevelRenderer.getInstance();
+        levelRenderer.setLevelScreen(levelScreen);
         this.setScreen(levelRenderer);
 
         // when switching screens, must update input processor to current screen
@@ -193,10 +171,6 @@ public class Main extends Game {
         Storage.getInstance().writeToDisk();
     }
 
-    public LevelSelectorScreen getLevelSelectorScreen() {
-        return levelSelectorScreen;
-    }
-
     public List<LevelScreen> getLevelScreenList() {
         return levelScreenList;
     }
@@ -204,21 +178,4 @@ public class Main extends Game {
     public List<LevelInfo> getLevelInfoList() {
         return levelInfoList;
     }
-
-    public HomeScreen getHomeScreen() {
-        return homeScreen;
-    }
-
-    public WinScreen getWinScreen() {
-        return winScreen;
-    }
-
-    public LoseScreen getLoseScreen() {
-        return loseScreen;
-    }
-
-    public LevelRenderer getLevelRenderer() {
-        return levelRenderer;
-    }
-
 }
