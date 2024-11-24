@@ -31,19 +31,7 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 // ~~~ Which attributes to serialize? ~~~
 //- SCALE: NO
 //	- final constant
-//
-//- levelRenderer: NO
-//	- singleton set in constructor
-//	- same for all levelscreen objects
-//
-//- isComplete: YES
-//	- needed to calculate number of levels in levelSelectorScreen
-//
-//- wasShown: NO
-//	- when the UI restarts, no levelScreen has been shown
-//	- and hence this should be false
-//	- set to false by constructor
-//
+
 //- camera: NO
 //	- when UI restarts, it should be recreated
 //
@@ -152,9 +140,9 @@ public class LevelScreen implements Screen{
     private float timeSinceEnd;
     private static float waitTime = 5.0f;
 
-    // createLevel() and show() separate two aspects of the Level
+    // createLevel() and createRenderers() separate two aspects of the Level
     // createLevel() instantiates the Box2D physics related objects
-    // show() instantiates the objects needed to render the physics objects made in createLevel()
+    // createRenderers() instantiates the objects needed to render the physics objects made in createLevel()
 
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) {
@@ -230,19 +218,6 @@ public class LevelScreen implements Screen{
         }
     }
 
-    public void update(float delta){
-        LevelRenderer levelRenderer = LevelRenderer.getInstance();
-
-        // only step through physics simulation if not paused.
-        if (!levelRenderer.isPaused()) {
-            world.step(1 / 60f, 6, 2);
-            inputUpdate(delta);
-        }
-
-        // camera updated regardless of pause status
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-    }
     // ~~~ Scene2D integration end ~~~
 
     @Override
@@ -268,10 +243,13 @@ public class LevelScreen implements Screen{
 
     @Override
     public void render(float delta){
-        // ~~~ Updating positions ~~~
+        update(delta);
+        draw();
+    }
 
-//        System.out.println(currentBird.getDp());
-        update(Gdx.graphics.getDeltaTime());
+    private void update(float delta) {
+        LevelRenderer levelRenderer = LevelRenderer.getInstance();
+        updatePhysics(Gdx.graphics.getDeltaTime());
 
         //Rendering
 
@@ -288,8 +266,6 @@ public class LevelScreen implements Screen{
         win = true;
         updateMaterials(materialList);
         updatePigs(pigList);
-
-        LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
         if (win){
             timeSinceEnd += delta;
@@ -327,38 +303,30 @@ public class LevelScreen implements Screen{
 //        batch.setProjectionMatrix(camera.projection);
 //        batch.setTransformMatrix(camera.view);
 
-        // ~~~ Drawing objects ~~~
+    }
 
-        batch.begin();
-//        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING
-//        batch.draw(cross_hair, 240,360, crosshairSize, crosshairSize); //DEBUGGING
+    private void inputUpdate(){
+        if (Gdx.input.isTouched(Input.Buttons.LEFT)){
+            if (currentBird.isWaiting()) {
+//            System.out.println("MOUSE PRESSED");
+                ssPulled = true;
+                currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
+            }
+        }
+    }
 
-        batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        slingShot.render(batch);
+    public void updatePhysics(float delta){
+        LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
-//        for (Bird bird:birds1){bird.render(batch);}
-//        for (Bird bird:birds2){bird.render(batch);}
-//        for (Bird bird:birds3){bird.render(batch);}
-
-        currentBird.render(batch);
-
-        drawKillables(materialList);
-        drawKillables(pigList);
-
-//        tmr.setView(camera);
-        tmr.render();
-
-        batch.end();
-
-        if (ssPulled) {
-            SlingShotUtil.drawTrajectory(shapeRenderer, camera, currentBirdPos, distance, world.getGravity());
+        // only step through physics simulation if not paused.
+        if (!levelRenderer.isPaused()) {
+            world.step(1 / 60f, 6, 2);
+            inputUpdate();
         }
 
-
-        b2dr.render(world, camera.combined.scl(PPM));
-
-//        System.out.println(currentBird.getBody().getPosition());
-//        System.out.println(ssPosition);
+        // camera updated regardless of pause status
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
     }
 
     private void updateMaterials(List<Material> materialList) {
@@ -392,20 +360,43 @@ public class LevelScreen implements Screen{
         }
     }
 
+    private void draw() {
+        batch.begin();
+//        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING
+//        batch.draw(cross_hair, 240,360, crosshairSize, crosshairSize); //DEBUGGING
+
+        batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        slingShot.render(batch);
+
+//        for (Bird bird:birds1){bird.render(batch);}
+//        for (Bird bird:birds2){bird.render(batch);}
+//        for (Bird bird:birds3){bird.render(batch);}
+
+        currentBird.render(batch);
+
+        drawKillables(materialList);
+        drawKillables(pigList);
+
+//        tmr.setView(camera);
+        tmr.render();
+
+        batch.end();
+
+        if (ssPulled) {
+            SlingShotUtil.drawTrajectory(shapeRenderer, camera, currentBirdPos, distance, world.getGravity());
+        }
+
+
+        b2dr.render(world, camera.combined.scl(PPM));
+
+//        System.out.println(currentBird.getBody().getPosition());
+//        System.out.println(ssPosition);
+    }
+
     private void drawKillables(List<? extends  Killable> killableList) {
         for(Killable killable : killableList) {
             if (!killable.isDead()) {
                 killable.render(batch);
-            }
-        }
-    }
-
-    public void inputUpdate(float delta){
-        if (Gdx.input.isTouched(Input.Buttons.LEFT)){
-            if (currentBird.isWaiting()) {
-//            System.out.println("MOUSE PRESSED");
-                ssPulled = true;
-                currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
             }
         }
     }

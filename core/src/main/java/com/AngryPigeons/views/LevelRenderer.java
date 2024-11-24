@@ -164,7 +164,6 @@ public class LevelRenderer implements Screen, InputProcessor {
 
         // Box2D
         // must render game before pause menu
-
         levelScreen.render(v);
 
         // ~~~ Why is hasGameEnded necessary? ~~~
