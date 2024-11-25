@@ -1,5 +1,6 @@
 package com.AngryPigeons.domain;
 
+import com.AngryPigeons.exceptions.DrawableNotFoundException;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,14 +18,23 @@ public class Pig extends Killable {
         sprite.setSize(w, h);
         sprite.setOriginCenter();
 
-        if (type == 1) {
-            hp = 50;
+        try {
+            if (type == 1) {
+                hp = 50;
+            }
+            else if (type == 2) {
+                hp = 125;
+            }
+            else if (type == 3) {
+                hp = 200;
+            }
+            else{
+                throw new DrawableNotFoundException("Pig number does not exist");
+            }
         }
-        if (type == 2) {
-            hp = 125;
-        }
-        if (type == 3) {
-            hp = 200;
+        catch (DrawableNotFoundException e){
+            System.out.println(e.getMessage());
+            return;
         }
 
         body.setUserData(this);

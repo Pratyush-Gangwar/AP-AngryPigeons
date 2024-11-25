@@ -1,5 +1,6 @@
 package com.AngryPigeons.domain;
 
+import com.AngryPigeons.exceptions.DrawableNotFoundException;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,18 +16,27 @@ public class Material extends Killable {
 
         sprite = new Sprite();
 
-        if (type == 1) {
-            hp = 75;
-            sprite = new Sprite(new Texture("Images/Ice2.png"),0 ,0 , (int)(w), (int)(h));
+        try {
+            if (type == 1) {
+                hp = 75;
+                sprite = new Sprite(new Texture("Images/Ice2.png"), 0, 0, (int) (w), (int) (h));
 
+            }
+            else if (type == 2) {
+                hp = 150;
+                sprite = new Sprite(new Texture("Images/Wood.jpg"), 0, 0, (int) (w), (int) (h));
+            }
+            else if (type == 3) {
+                hp = 200;
+                sprite = new Sprite(new Texture("Images/1.jpg"), 20, 20, (int) (w), (int) (h));
+            }
+            else {
+                throw new DrawableNotFoundException("Material number does not exist");
+            }
         }
-        if (type == 2) {
-            hp = 150;
-            sprite = new Sprite(new Texture("Images/Wood.jpg"),0 ,0 , (int)(w), (int)(h));
-        }
-        if (type == 3) {
-            hp = 200;
-            sprite = new Sprite(new Texture("Images/1.jpg"),20 ,20 , (int)(w), (int)(h));
+        catch (DrawableNotFoundException e){
+            System.out.println(e.getMessage());
+            return;
         }
 
         sprite.setSize(w, h);

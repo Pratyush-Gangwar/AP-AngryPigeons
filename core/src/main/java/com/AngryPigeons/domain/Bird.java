@@ -1,11 +1,9 @@
 package com.AngryPigeons.domain;
 
+import com.AngryPigeons.exceptions.DrawableNotFoundException;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
-
-import static com.AngryPigeons.Utils.Constants.PPM;
 
 // ~~~ Which attributes should be serialized? ~~~
 //- waiting: NO
@@ -49,17 +47,26 @@ public class Bird extends Drawable {
 
         sprite = new Sprite();
 
-        if (type == 1) {
-            sprite = new Sprite(new Texture("Images/Red.png"));
-            dp = 25;
+        try {
+            if (type == 1) {
+                sprite = new Sprite(new Texture("Images/Red.png"));
+                dp = 25;
+            }
+            else if (type == 2) {
+                sprite = new Sprite(new Texture("Images/Chuck.png"));
+                dp = 75;
+            }
+            else if (type == 3) {
+                sprite = new Sprite(new Texture("Images/Silver.png"));
+                dp = 100;
+            }
+            else {
+                throw new DrawableNotFoundException("Bird number does not exist");
+            }
         }
-        if (type == 2) {
-            sprite = new Sprite(new Texture("Images/Chuck.png"));
-            dp = 75;
-        }
-        if (type == 3) {
-            sprite = new Sprite(new Texture("Images/Silver.png"));
-            dp = 100;
+        catch (DrawableNotFoundException e){
+            System.out.println(e.getMessage());
+            return;
         }
         sprite.setSize(w, h);
         sprite.setOriginCenter();

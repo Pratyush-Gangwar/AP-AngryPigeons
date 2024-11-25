@@ -146,7 +146,13 @@ public class LevelScreen implements Screen{
 
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) {
-        this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
+        try {
+            this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
+        }
+        catch (com.badlogic.gdx.utils.GdxRuntimeException e){
+            System.out.println(e.getMessage());
+            return;
+        }
         this.birds = levelInfo.getBirds();
         this.timeSinceEnd = 0.0f;
         this.birdPointer = 0;
