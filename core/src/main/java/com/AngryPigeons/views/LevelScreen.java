@@ -254,7 +254,7 @@ public class LevelScreen implements Screen{
 
     private void update(float delta) {
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
-        updatePhysics(Gdx.graphics.getDeltaTime());
+        updatePhysics();
 
         //Rendering
 
@@ -269,8 +269,8 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds3){bird.update();}
 
         win = true;
-        updateMaterials(materialList);
-        updatePigs(pigList);
+        updateMaterials();
+        updatePigs();
 
         if (win){
             timeSinceEnd += delta;
@@ -320,7 +320,7 @@ public class LevelScreen implements Screen{
         }
     }
 
-    public void updatePhysics(float delta){
+    private void updatePhysics(){
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
         // only step through physics simulation if not paused.
@@ -334,7 +334,7 @@ public class LevelScreen implements Screen{
         batch.setProjectionMatrix(camera.combined);
     }
 
-    private void updateMaterials(List<Material> materialList) {
+    private void updateMaterials() {
         for(Material material : materialList) {
             if (material.isDead()) {
                 continue;
@@ -349,7 +349,7 @@ public class LevelScreen implements Screen{
         }
     }
 
-    private void updatePigs(List<Pig> pigList) {
+    private void updatePigs() {
         for(Pig pig : pigList) {
             if (pig.isDead()) {
                 continue;
@@ -474,11 +474,6 @@ public class LevelScreen implements Screen{
         }
     }
 
-
-    public Bird getCurrentBird() {
-        return currentBird;
-    }
-
     public boolean isSsPulled() {
         return ssPulled;
     }
@@ -495,16 +490,20 @@ public class LevelScreen implements Screen{
         return birdPointer;
     }
 
+    public void setBirdPointer(int birdPointer) {
+        this.birdPointer = birdPointer;
+    }
+
+    public Bird getCurrentBird() {
+        return currentBird;
+    }
+
     public List<Material> getMaterialList() {
         return materialList;
     }
 
     public List<Pig> getPigList() {
         return pigList;
-    }
-
-    public void setBirdPointer(int birdPointer) {
-        this.birdPointer = birdPointer;
     }
 
 }

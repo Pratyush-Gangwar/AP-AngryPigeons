@@ -84,7 +84,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         return LevelRenderer.instance;
     }
 
-    private LevelRenderer( /*Main main , LevelScreen levelScreen*/) {
+    private LevelRenderer() {
         // Scene2D
         this.isPaused = false;
         this.wasHidden = false;

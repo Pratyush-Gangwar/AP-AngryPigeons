@@ -6,31 +6,60 @@ left to right direction
 
 Game <|-- Main
 
-Screen <|.[norank].  HomeScreen
-Screen <|.[norank]. LevelSelectorScreen
-Screen <|.[norank]. LevelRenderer
-Screen <|.[norank]. LevelScreen
-Screen <|.[norank]. LoseScreen
-Screen <|.[norank]. WinScreen
+Screen <|..  HomeScreen
+Screen <|.. LevelSelectorScreen
+Screen <|.. LevelRenderer
+Screen <|.. LevelScreen
+Screen <|.. LoseScreen
+Screen <|.. WinScreen
 
-Drawable <|-[norank]-  Material
-Drawable <|-[norank]- Slingshot
-Drawable <|-[norank]- Pig
-Drawable <|-[norank]- Bird
+InputProcessor <|.. LevelRenderer
+ContactListener <|.. LevelContactListener
 
-Main *-- HomeScreen
-Main *-- LevelSelectorScreen
-Main *-- WinScreen
-Main *-- LoseScreen
-Main "1" *-- "*" LevelRenderer
+Drawable <|-- Killable
+Killable <|-- Material
+Killable <|-- Pig
+Drawable <|-- Slingshot
+Drawable <|-- Bird
+
+Exception <|-- DrawableNotFoundException
+Exception <|-- TileMapNotFoundException
+
+TileMapNotFoundException <.. LevelScreen : <<throws>>
+DrawableNotFoundException <.. Material : <<throws>>
+DrawableNotFoundException <.. Pig : <<throws>>
+DrawableNotFoundException <.. Bird : <<throws>>
+
 Main "1" *-- "*" LevelScreen
+Main "1" *-- "*" LevelInfo
+'Storage <.. Main
+'LevelRenderer <.. Main
 
-LevelScreen -- LevelRenderer
+Main "1" <-- "1" HomeScreen
+'Scene2DUtils <.. HomeScreen
 
-LevelRenderer "1" *-- "*" Material
-LevelRenderer "1" *-- "*" Pig
-LevelRenderer "1" *-- "*" Bird
-LevelRenderer *-- Slingshot
+Main "1" <-- "1" LevelRenderer
+LevelScreen "1" -- "1" LevelRenderer
+'Storage <.. LevelRenderer
+'Scene2DUtils <.. LevelRenderer
+
+
+'TiledMapUtil <.. LevelScreen
+'Storage <.. LevelScreen
+LevelScreen "1" *-- "*" Material
+LevelScreen "1" *-- "*" Pig
+LevelScreen "1" *-- "*" Bird
+LevelScreen "1" *-- "1" Slingshot
+
+Main "1" <-- "1" LevelSelectorScreen
+Main "1" <-- "1" LoseScreen
+Main "1" <-- "1" WinScreen
+
+Main "1" <-- "1" Storage
+Storage "1" *-- "*" SavedLevel
+
+SavedLevel "1" *-- "*" SavedKillable
+SavedKillable "1" *-- "1" SavedBody
 
 interface Screen {
 +show() : void
@@ -55,22 +84,32 @@ class Game {
 +dispose() : void
 }
 
+class LevelInfo {
+-birds : ArrayList<Integer>
+-tileMapPath : String
+
++LevelInfo(tileMapPath : String, birds : ArrayList<Integer>)
++getBirds() : ArrayList<Integer>
++setBirds(birds : ArrayList<Integer>) : void
++getTileMapPath() : String
++setTileMapPath(tileMapPath : String) : void
+}
+
 class Main {
-- homeScreen : HomeScreen
-- levelSelectorScreen : LevelSelectorScreen
-- winScreen : WinScreen
-- loseScreen : LoseScreen
-- levelRendererList : List<LevelRenderer>
+- levelInfoList : List<LevelInfo>
 - levelScreenList : List<LevelScreen>
 
 +changeScreen(screen : Screens) : void
-+changeLevel(level : int) : void
++resetExistingLevelOrCreateNewLevel(index : int) : void
++playNewLevel(index : int) : void
++loadLevel(index : int) : void
 
-+getLevelSelectorScreen() : LevelScreenScreen
++getLevelInfoList() : List<LevelInfo>
 +getLevelScreenList() : List<LevelScreen>
 
 +create() : void
 +render() : void
++dispose() : void
 }
 
 class HomeScreen {
@@ -79,10 +118,13 @@ class HomeScreen {
 -table : Table
 -musicDialog : Dialog
 -exitDialog : Dialog
--wasHidden : boolean
+-static instance : HomeScreen
 
-+HomeScreen(main : Main)
+-HomeScreen(main : Main)
++static getInstance(main : Main) : HomeScreen
 +getStage() : Stage
+
+-setupTable() : void
 
 +show() : void
 +render( delta : float ) : void
@@ -97,12 +139,14 @@ class LevelSelectorScreen{
 -main : Main
 -stage : Stage
 -table : Table
--wasHidden : boolean
--lastCompleted : int
 
-+LevelSelectorScreen(main : Main)
+-static instance : LevelSelectorScreen
+
+-LevelSelectorScreen(main : Main)
++static getInstance(main : Main) : LevelSelectorScreen
 +getStage() : Stage
-+incrementLastCompleted() : void
+
+-setupTable() : void
 -updateLevelStatus() : void
 -levelSelectHandler() : void
 
@@ -119,9 +163,6 @@ class LevelSelectorScreen{
 class LevelScreen {
 - SCALE : float = 1
 
-- levelRenderer : LevelRenderer
-- isComplete : boolean
-
 - camera : OrthographicCamera
 - viewport : Viewport
 
@@ -134,26 +175,54 @@ class LevelScreen {
 - batch : SpriteBatch
 - background_tex : Texture
 
-- iceBlocks : ArrayList<Material>
-- woodBlocks : ArrayList<Material>
-- stoneBlocks : ArrayList<Material>
+- materialList : List<Material>
 
 - slingShot : SlingShot
+- ssPosition : Vector2
+- ssPulled : boolean
+- distance : float
 
-- birds1 : ArrayList<Bird>
-- birds2 : ArrayList<Bird>
-- birds3 : ArrayList<Bird>
+- birds : List<Bird>
+- birdPointer : int
+- currentBird : Bird
+- currentBirdPos : Vector3
 
-- smallPigs : ArrayList<Pig>
-- mediumPigs : ArrayList<Pig>
-- largePigs : ArrayList<Pig>
+- pigList : List<Pig>
 
-+LevelScreen(tilemapPath : String)
-+setLevelRenderer( levelRenderer : levelRenderer ) : void
+- win : boolean
+- lose : boolean
+
++LevelScreen(levelInfo : LevelInfo)
+-createLevel() : void
+-createRenderers() : void
+
++load() : void
+
 +sleepBodies() : void
 +wakeBodies() : void
+
+-update( delta : float ) : void
+-inputUpdate() : void
+-physicsUpdate() : void
+-updateMaterials() : void
+-updatePigs() : void
+
+-draw() : void
+-drawKillables( killableList : List<? extends  Killable>  ) : void
+
++isSsPulled() : boolean
++isWin() : boolean
++isLose() : boolean
+
 +isComplete() : boolean
 +setComplete( isComplete : boolean ) : void
+
++getBirdPointer() : int
++setBirdPointer(birdPointer : int) : void
+
++getCurrentBird() : Bird
++getMaterialList() : List<Material>
++getPigList() : List<Pig>
 
 +show() : void
 +render( delta : float ) : void
@@ -163,7 +232,9 @@ class LevelScreen {
 +hide() : void
 +dispose() : void
 
-+update( delta : float ) : void
++touchDown(screenX : int, screenY : int, pointer : int, button : int) : void
++touchDragged(screenX : int, screenY : int, pointer : int) : void
++touchUp(screenX : int, screenY : int, pointer : int, button : int) : void
 }
 
 Class LevelRenderer {
@@ -175,15 +246,25 @@ Class LevelRenderer {
 -exitDialog : Dialog
 -wasHidden : boolean
 -isPaused : boolean
--levelScreen : LevelScreen
+-hasGameEnded : boolean
 
-+LevelRenderer(main : Main, levelScreen : LevelScreen)
-+getStage() : Stage
-+isPaused() : boolean
+-levelScreen : LevelScreen
+-static instance : LevelRenderer
+
+-LevelRenderer()
++static getInstance() : void
++setMain(main : Main) : void
 
 -setTransparentBackground() : void
 -setupPauseMenu() : void
 -setupMainTable() : void
+
++winLevel() : void
++loseLevel() : void
+
++getStage() : Stage
++setLevelScreen( levelScreen : LevelScreen ) : void
++isPaused() : boolean
 
 +show() : void
 +render( delta : float ) : void
@@ -192,6 +273,16 @@ Class LevelRenderer {
 +resume() : void
 +hide() : void
 +dispose() : void
+
++touchDown(screenX : int, screenY : int, pointer : int, button : int) : void
++touchDragged(screenX : int, screenY : int, pointer : int) : void
++touchUp(screenX : int, screenY : int, pointer : int, button : int) : void
++touchCancelled(i : int, i1 : int, i2 : int, i3 : int) : boolean
++keyDown(keycode : int) : boolean
++keyUp(keycode : int) : boolean
++keyTyped(character : char) : boolean
++mouseMoved(screenX : int, screenY : int) : boolean
++scrolled(amountX : float, amountY : float) : boolean
 }
 
 class LoseScreen {
@@ -201,7 +292,10 @@ class LoseScreen {
 -background : Texture
 -duration : float
 
-+LoseScreen(main : Main)
+-static instance : LoseScreen
+
+-LoseScreen(main : Main)
++static getInstance(main : Main) : LoseScreen
 +getStage() : Stage
 -setupTable() : void
 
@@ -221,7 +315,10 @@ class WinScreen {
 -background : Texture
 -duration : float
 
-+WinScreen(main : Main)
+-static instance : WinScreen
+
+-WinScreen(main : Main)
++static getInstance(main : Main) : WinScreen
 +getStage() : Stage
 -setupTable() : void
 
@@ -236,10 +333,68 @@ class WinScreen {
 
 enum Screens {
     HOMESCREEN,
-    LEVELRENDERER,
     LEVELSELECTORSCREEN,
     LOSESCREEN,
     WINSCREEN
+}
+
+
+class Storage {
+- gson : Gson
+- main : Main
+- savedLevelList : List<SavedLevel>
+- path : String
+- instance : Storage
+
++ static getInstance() : Storage
++ setMain(main : Main) : void
+- Storage()
++ writeToDisk() : void
++ getOrCreateSavedLevel(levelIdx : int) : SavedLevel
++ saveLevelInMemory(levelScreen : LevelScreen) : void
++ readLevelsFromDisk() : void
++ loadLevelFromMemory(levelScreen : LevelScreen) : void
+- saveFileExists() : boolean
++ getSavedLevelList() : List<SavedLevel>
+}
+
+class SavedLevel {
+- loadingDisabled : boolean
+- isComplete : boolean
+- birdPointer : int
+- savedPigList : List<SavedKillable>
+- savedMaterialList : List<SavedKillable>
+
++ SavedLevel()
++ save(levelScreen : LevelScreen) : void
+- syncIn(savedKillableList : List<SavedKillable>, killableList : List<? extends Killable>) : void
+- syncOut(killableList : List<? extends Killable>, savedKillableList : List<SavedKillable>) : void
++ load(levelScreen : LevelScreen) : void
++ isComplete() : boolean
++ isLoadingDisabled() : boolean
++ setLoadingDisabled(loadingDisabled : boolean) : void
++ setComplete(isComplete : boolean) : void
+}
+
+class SavedKillable {
+-savedBody : SavedBody
+-hp : int
+-dead : boolean
+
++SavedKillable()
++save(killable : Killable) : void
++load(killable : Killable) : void
+}
+
+class SavedBody {
+-angle : float
+-angularVelocity : float
+-linearVelocity : Vector2
+-position : Vector2
+
++SavedBody()
++save(body : Body) : void
++load(body : Body) : void
 }
 
 abstract class Drawable {
@@ -249,27 +404,44 @@ abstract class Drawable {
 - h : float
 
 +Drawable(body : Body, w : float, h : float)
-+abstract render(batch : SpriteBatch)  : void
-+abstract update()  : void
++render(batch : SpriteBatch)  : void
++update()  : void
 
 +getBody() : Body
 +getSprite() : Sprite
 }
 
-class Material {
-+Material(body : Body, w : float, h : float, type : int)
-+update() : void
+abstract class Killable {
+-hp : int
+-dead : boolean
+
++Killable(body : Body, w : float, h : float)
++isDead() : boolean
++getHp() : int
++damage(dp : int) : void
 }
 
-
 class Bird {
+-waiting: boolean
+-dp : int
+-type : int
+-powerUsed : boolean
 +Bird(body : Body, w : float, h : float, type : int)
 +update() : void
+
++isWaiting() : boolean
++setWaiting( waiting : boolean ) : void
+
++getDp() : int
++power() : void
 }
 
 class Pig {
-+Material(body : Body, w : float, h : float)
-+update() : void
++Pig(body : Body, w : float, h : float, type : int)
+}
+
+class Material {
++Material(body : Body, w : float, h : float, type : int)
 }
 
 class Slingshot {
@@ -277,10 +449,29 @@ class Slingshot {
 +update() : void
 }
 
+class LevelContactListener {
++beginContact(contact : Contact) : void
++endContact(contact : Contact) : void
++preSolve(contact : Contact, oldManifold : Manifold) : void
++postSolve(contact : Contact, impulse : ContactImpulse) : void
+}
+
+class TileMapNotFoundException {
++TileMapNotFoundException( message : String )
+}
+
+class DrawableNotFoundException {
++DrawableNotFoundException( message : String )
+}
+
 class Constants {
 +static PPM : float = 32
 +static WORLD_WIDTH : int = 1280
 +static WORLD_HEIGHT : int = 720
++static SS_RADIUS : int = 3
++static MAX_VELOCITY : int = 7
++static STD_DP : int = 10
++static PI : double = 3.14
 }
 
 class Scene2DUtils {
@@ -298,16 +489,24 @@ class Scene2DUtils {
 +static makeLabel(text : String, fontSize : int) : Label
 +static makeExitWindow() : Dialog
 +static makeMusicControlWindow() : Dialog
++static makeGameSavedWindow() : Dialog
 }
 
 class TiledMapUtil {
 +static parseSlingShot(world : World, objects : MapObjects, isStatic : boolean) : SlingShot
 +static parseBoundary(world : World, objects : MapObjects, isStatic : boolean) : void
++static parseFloor(world : World, objects : MapObjects, isStatic : boolean) : void
 +static parseMaterial(world : World, objects : MapObjects, type : int) : ArrayList<Material>
 +static parsePigs(world : World, objects : MapObjects, isStatic : boolean, type : int) : ArrayList<Pig>
 +static parseBird(world : World, objects : MapObjects, type : int) : ArrayList<Bird>
 +static createPolygonShape(polygonObject : PolygonMapObject) : PolygonShape
 -static createChainShape(polyline : PolylineMapObject) : ChainShape
+}
+
+class SlingShotUtil {
++static calculateEuclideanDistance(x1 : float, y1 : float, x2 : float, y2 : float) : float
++static calculateAngle(x1 : float, y1 : float, x2 : float, y2 : float) : float
++static drawTrajectory(shapeRenderer : ShapeRenderer, camera : OrthographicCamera, startPosition : Vector3, distance : float, gravity : Vector2) : void
 }
 
 @enduml
