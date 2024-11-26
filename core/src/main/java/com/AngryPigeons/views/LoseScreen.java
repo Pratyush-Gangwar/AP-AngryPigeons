@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.AngryPigeons.Utils.Scene2DUtils;
 
+import java.util.logging.Level;
+
 // ~~~ Which attributes to serialize? ~~~
 // - main: NO
 //	- set once in Main and never changed during run-time
@@ -120,16 +122,25 @@ public class LoseScreen implements Screen {
         table.setBackground(drawable);
 
         TextButton levelsBtn = new TextButton("Levels", Scene2DUtils.skin);
-//        TextButton restartBtn = new TextButton("Restart", Scene2DUtils.skin);
+        TextButton restartBtn = new TextButton("Restart", Scene2DUtils.skin);
 
-        table.add(levelsBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
-//        table.row();
-//        table.add(restartBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
+        table.add(levelsBtn).width(Scene2DUtils.buttonWidth).padBottom(10);
+        table.row();
+        table.add(restartBtn).width(Scene2DUtils.buttonWidth).padBottom(20);
 
         levelsBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 main.changeScreen(Screens.LEVELSELECTORSCREEN);
+            }
+        });
+
+        restartBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                LevelScreen levelScreen = LevelRenderer.getInstance().getLevelScreen(); // current level
+                int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+                main.playNewLevel(levelIdx);
             }
         });
     }
