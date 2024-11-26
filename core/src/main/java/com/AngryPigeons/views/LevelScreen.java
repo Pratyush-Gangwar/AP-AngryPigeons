@@ -148,8 +148,10 @@ public class LevelScreen implements Screen{
 
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) throws TileMapNotFoundException{
-        if (!(new File(levelInfo.getTileMapPath()).exists())){
-            throw new TileMapNotFoundException("Tile Map Path does not exist");
+        File file = new File(levelInfo.getTileMapPath());
+        System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
+        if (!(file.exists() && file.isFile())){
+            throw new TileMapNotFoundException("Tile Map Path " + levelInfo.getTileMapPath()+" does not exist");
         }
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
         this.birds = levelInfo.getBirds();
