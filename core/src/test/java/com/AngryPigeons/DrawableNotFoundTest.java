@@ -4,9 +4,9 @@ import com.AngryPigeons.domain.Bird;
 import com.AngryPigeons.domain.Material;
 import com.AngryPigeons.domain.Pig;
 import com.AngryPigeons.exceptions.DrawableNotFoundException;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DrawableNotFoundTest {
 

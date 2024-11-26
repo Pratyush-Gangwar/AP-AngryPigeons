@@ -2,11 +2,12 @@ package com.AngryPigeons;
 
 import com.AngryPigeons.views.LevelInfo;
 import com.AngryPigeons.views.LevelScreen;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TileMapNotFoundTest {
     @Test
