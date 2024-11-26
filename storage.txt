@@ -1,0 +1,23 @@
+[
+  {
+    "loadingDisabled": true,
+    "isComplete": true,
+    "birdPointer": 0,
+    "savedPigList": [],
+    "savedMaterialList": []
+  },
+  {
+    "loadingDisabled": true,
+    "isComplete": true,
+    "birdPointer": 0,
+    "savedPigList": [],
+    "savedMaterialList": []
+  },
+  {
+    "loadingDisabled": true,
+    "isComplete": true,
+    "birdPointer": 0,
+    "savedPigList": [],
+    "savedMaterialList": []
+  }
+]

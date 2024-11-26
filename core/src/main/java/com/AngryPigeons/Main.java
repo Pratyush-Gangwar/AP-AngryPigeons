@@ -63,9 +63,9 @@ public class Main extends Game {
 
         levelInfoList = new ArrayList<>();
 
-        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,2,3))));
-        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3))));
-        levelInfoList.add(new LevelInfo("Maps/AP_TestLevelMap3.tmx", new ArrayList<>(List.of(1,2,1,3))));
+        levelInfoList.add(new LevelInfo("assets\\Maps\\AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,2,3))));
+        levelInfoList.add(new LevelInfo("assets\\Maps\\AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3))));
+        levelInfoList.add(new LevelInfo("assets\\Maps\\AP_TestLevelMap3.tmx", new ArrayList<>(List.of(1,2,1,3))));
 
         Storage.getInstance().setMain(this);
         LevelRenderer.getInstance().setMain(this);
@@ -114,15 +114,14 @@ public class Main extends Game {
         LevelScreen levelScreen = null;
         try {
             levelScreen = new LevelScreen(levelInfoList.get(index));
+            try {
+                levelScreenList.set(index, levelScreen);
+            } catch (IndexOutOfBoundsException e) {
+                levelScreenList.add(levelScreen);
+            }
         }
         catch (TileMapNotFoundException e){
             System.out.println(e.getMessage());
-        }
-
-        try {
-            levelScreenList.set(index, levelScreen);
-        } catch (IndexOutOfBoundsException e) {
-            levelScreenList.add(levelScreen);
         }
 
         return levelScreen;
