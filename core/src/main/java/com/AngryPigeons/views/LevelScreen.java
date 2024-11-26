@@ -142,6 +142,8 @@ public class LevelScreen implements Screen{
     private float timeSinceEnd;
     private static float waitTime = 5.0f;
 
+    private float timeStep;
+
     // createLevel() and createRenderers() separate two aspects of the Level
     // createLevel() instantiates the Box2D physics related objects
     // createRenderers() instantiates the objects needed to render the physics objects made in createLevel()
@@ -149,7 +151,6 @@ public class LevelScreen implements Screen{
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) throws TileMapNotFoundException{
         File file = new File(levelInfo.getTileMapPath());
-        System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
         if (!(file.exists() && file.isFile())){
             throw new TileMapNotFoundException("Tile Map Path " + levelInfo.getTileMapPath()+" does not exist");
         }
@@ -185,6 +186,8 @@ public class LevelScreen implements Screen{
         assert slingShot != null;
         ssPosition = slingShot.getBody().getPosition();
         ssPulled = false;
+
+        timeStep = 1/60f;
     }
 
     private void createRenderers() {
@@ -290,6 +293,7 @@ public class LevelScreen implements Screen{
         // But all birds apart from the current bird have a velocity of 0.
         // So, we need a boolean (isWaiting) to differentiate between the one flying bird and the others birds which haven't been launched
         if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
+            timeStep = 1/60f;
             if (birdPointer<birds.size()) {
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
@@ -320,6 +324,11 @@ public class LevelScreen implements Screen{
                 currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
             }
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if (!currentBird.isWaiting()){
+                timeStep = 1/20f;
+            }
+        }
     }
 
     private void updatePhysics(){
@@ -327,7 +336,7 @@ public class LevelScreen implements Screen{
 
         // only step through physics simulation if not paused.
         if (!levelRenderer.isPaused()) {
-            world.step(1 / 60f, 6, 2);
+            world.step(timeStep, 6, 2);
             inputUpdate();
         }
 

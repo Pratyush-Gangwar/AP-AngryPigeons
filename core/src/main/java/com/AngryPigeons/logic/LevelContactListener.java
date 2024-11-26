@@ -84,9 +84,7 @@ public class LevelContactListener implements ContactListener {
             Pig B = (Pig) bodyB.getUserData();
             B.damage(STD_DP);
         }
-
-
-        System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
+//        System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
     }
 
     @Override
