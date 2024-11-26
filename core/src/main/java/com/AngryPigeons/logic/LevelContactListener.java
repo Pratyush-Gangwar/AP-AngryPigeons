@@ -23,9 +23,13 @@ public class LevelContactListener implements ContactListener {
         // Since there are tiny gaps between the structures, they fall a bit and collide
         // This causes them to lose health and for points to be added without any user-induced collision
         // So, we ignore collisions for the first 500 milliseconds
-        LevelScreen levelScreen = LevelRenderer.getInstance().getLevelScreen();
 
-        if (levelScreen.getTimeSinceLaunch() <= timeToWaitAfterLaunch) {
+        // Furthermore, while pulling the slingshot, the current bird might intersect with the floor
+        // that is registered as a collision
+        // we must avoid that
+
+        LevelScreen levelScreen = LevelRenderer.getInstance().getLevelScreen();
+        if (levelScreen.getTimeSinceLaunch() <= timeToWaitAfterLaunch || levelScreen.getCurrentBird().isWaiting()) {
            return;
         }
 
