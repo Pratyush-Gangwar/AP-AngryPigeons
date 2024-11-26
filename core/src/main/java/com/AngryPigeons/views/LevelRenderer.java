@@ -67,6 +67,7 @@ public class LevelRenderer implements Screen, InputProcessor {
     private Dialog exitDialog;
     private Dialog saveDialog;
     private Table pauseMenuTable;
+    private Label scoreLabel;
 
     private boolean isPaused;
     private boolean wasHidden;
@@ -161,6 +162,8 @@ public class LevelRenderer implements Screen, InputProcessor {
             pauseMenuTable.remove();
             levelScreen.wakeBodies();
         }
+
+        scoreLabel.setText("Score: " + (levelScreen != null ? levelScreen.getScore() : 0));
 
         // Box2D
         // must render game before pause menu
@@ -392,9 +395,12 @@ public class LevelRenderer implements Screen, InputProcessor {
         mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.setDebug(Scene2DUtils.scene2DDebugEnabled);
-        mainTable.top().left();
+        mainTable.top();
 
-        mainTable.add(Scene2DUtils.makeLabel("Esc to Pause!", 30)).pad(10);
+        scoreLabel = Scene2DUtils.makeLabel("Score: 0", 30);
+
+        mainTable.add(Scene2DUtils.makeLabel("Esc to Pause!", 30)).pad(10).expandX().left();
+        mainTable.add(scoreLabel).pad(10).expandX().right();
 
 //        Texture texture = new Texture(Gdx.files.internal("textures/pause.png"));
 //        TextureRegion textureRegion = new TextureRegion(texture);
@@ -488,4 +494,8 @@ public class LevelRenderer implements Screen, InputProcessor {
     public boolean mouseMoved(int screenX, int screenY) { return false; } //<- Added
     @Override
     public boolean scrolled(float amountX, float amountY) { return false; } //<- Added
+
+    public LevelScreen getLevelScreen() {
+        return levelScreen;
+    }
 }

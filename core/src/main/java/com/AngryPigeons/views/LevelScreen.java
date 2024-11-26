@@ -107,6 +107,8 @@ public class LevelScreen implements Screen{
 
     private final float SCALE = 1.0f;
 
+    private int score;
+
     private OrthographicCamera camera;
     private Viewport viewport;
 
@@ -139,8 +141,10 @@ public class LevelScreen implements Screen{
     private boolean win;
     private boolean lose;
 
+    private float timeSinceLaunch;
+
     private float timeSinceEnd;
-    private static float waitTime = 5.0f;
+    private final float timeToWaitAfterWinLoseConditionIsMet = 5.0f;
 
     // createLevel() and createRenderers() separate two aspects of the Level
     // createLevel() instantiates the Box2D physics related objects
@@ -157,6 +161,8 @@ public class LevelScreen implements Screen{
         this.birds = levelInfo.getBirds();
         this.timeSinceEnd = 0.0f;
         this.birdPointer = 0;
+        this.score = 0;
+        this.timeSinceLaunch = 0.0f;
 
         createLevel();
         createRenderers();
@@ -250,6 +256,8 @@ public class LevelScreen implements Screen{
 
     @Override
     public void render(float delta){
+        timeSinceLaunch += delta;
+//        System.out.println(timeSinceLaunch);
         update(delta);
         draw();
     }
@@ -277,7 +285,7 @@ public class LevelScreen implements Screen{
         if (win){
             timeSinceEnd += delta;
 
-            if (timeSinceEnd >= waitTime) {
+            if (timeSinceEnd >= timeToWaitAfterWinLoseConditionIsMet) {
                 levelRenderer.winLevel();
                 return; // don't do anything more
             }
@@ -300,7 +308,7 @@ public class LevelScreen implements Screen{
                 lose = true;
                 timeSinceEnd += delta;
 
-                if (timeSinceEnd >= waitTime) {
+                if (timeSinceEnd >= timeToWaitAfterWinLoseConditionIsMet) {
                     levelRenderer.loseLevel();
                     return; // don't do anything more
                 }
@@ -508,5 +516,20 @@ public class LevelScreen implements Screen{
         return pigList;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public float getTimeSinceLaunch() {
+        return timeSinceLaunch;
+    }
+
+    public void setTimeSinceLaunch(float timeSinceLaunch) {
+        this.timeSinceLaunch = timeSinceLaunch;
+    }
 }
 
