@@ -11,31 +11,25 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class Pig extends Killable {
 
-    public Pig(Body body, float w, float h, int type) {
+    public Pig(Body body, float w, float h, int type) throws DrawableNotFoundException {
         super(body, w, h);
+
+        if (type == 1) {
+            hp = 50;
+        }
+        else if (type == 2) {
+            hp = 125;
+        }
+        else if (type == 3) {
+            hp = 200;
+        }
+        else {
+            throw new DrawableNotFoundException("Pig number does not exist");
+        }
 
         sprite = new Sprite(new Texture("Images/LargePig.png"));
         sprite.setSize(w, h);
         sprite.setOriginCenter();
-
-        try {
-            if (type == 1) {
-                hp = 50;
-            }
-            else if (type == 2) {
-                hp = 125;
-            }
-            else if (type == 3) {
-                hp = 200;
-            }
-            else{
-                throw new DrawableNotFoundException("Pig number does not exist");
-            }
-        }
-        catch (DrawableNotFoundException e){
-            System.out.println(e.getMessage());
-            return;
-        }
 
         body.setUserData(this);
         body.setLinearDamping(1.5f);

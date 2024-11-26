@@ -39,7 +39,7 @@ public class Bird extends Drawable {
 
     private boolean powerUsed;
 
-    public Bird(Body body, float w, float h, int type){
+    public Bird(Body body, float w, float h, int type) throws DrawableNotFoundException{
         super(body, w, h);
 
         this.type = type;
@@ -47,26 +47,20 @@ public class Bird extends Drawable {
 
         sprite = new Sprite();
 
-        try {
-            if (type == 1) {
-                sprite = new Sprite(new Texture("Images/Red.png"));
-                dp = 25;
-            }
-            else if (type == 2) {
-                sprite = new Sprite(new Texture("Images/Chuck.png"));
-                dp = 75;
-            }
-            else if (type == 3) {
-                sprite = new Sprite(new Texture("Images/Silver.png"));
-                dp = 100;
-            }
-            else {
-                throw new DrawableNotFoundException("Bird number does not exist");
-            }
+        if (type == 1) {
+            sprite = new Sprite(new Texture("Images/Red.png"));
+            dp = 25;
         }
-        catch (DrawableNotFoundException e){
-            System.out.println(e.getMessage());
-            return;
+        else if (type == 2) {
+            sprite = new Sprite(new Texture("Images/Chuck.png"));
+            dp = 75;
+        }
+        else if (type == 3) {
+            sprite = new Sprite(new Texture("Images/Silver.png"));
+            dp = 100;
+        }
+        else {
+            throw new DrawableNotFoundException("Bird number does not exist");
         }
         sprite.setSize(w, h);
         sprite.setOriginCenter();

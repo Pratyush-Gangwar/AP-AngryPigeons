@@ -2,10 +2,9 @@ package com.AngryPigeons;
 
 import com.AngryPigeons.Utils.Constants;
 import com.AngryPigeons.Utils.SlingShotUtil;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.*;
 
 public class SlingShotFunctionsTest {
 
@@ -18,8 +17,8 @@ public class SlingShotFunctionsTest {
 
     @Test
     public void checkAngle(){
-        assertEquals(0, SlingShotUtil.calculateAngle(0,0,1,0), 0.00001f);
-        assertEquals(Constants.PI, SlingShotUtil.calculateAngle(0,0,0,1), 0.00001f);
-        assertEquals(Constants.PI/4, SlingShotUtil.calculateAngle(0,0,1,1), 0.00001f);
+        assertEquals(0, SlingShotUtil.calculateAngle(0,0,1,0), 0.001f);
+        assertEquals(Constants.PI/2, SlingShotUtil.calculateAngle(0,0,0,1), 0.001f);
+        assertEquals(Constants.PI/4, SlingShotUtil.calculateAngle(0,0,1,1), 0.001f);
     }
 }

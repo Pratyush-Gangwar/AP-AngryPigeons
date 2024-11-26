@@ -1,5 +1,6 @@
 package com.AngryPigeons;
 
+import com.AngryPigeons.exceptions.TileMapNotFoundException;
 import com.AngryPigeons.storage.SavedLevel;
 import com.AngryPigeons.storage.Storage;
 import com.AngryPigeons.views.LevelInfo;
@@ -110,7 +111,13 @@ public class Main extends Game {
     }
 
     public LevelScreen resetExistingLevelOrCreateNewLevel(int index) {
-        LevelScreen levelScreen = new LevelScreen(levelInfoList.get(index));
+        LevelScreen levelScreen = null;
+        try {
+            levelScreen = new LevelScreen(levelInfoList.get(index));
+        }
+        catch (TileMapNotFoundException e){
+            System.out.println(e.getMessage());
+        }
 
         try {
             levelScreenList.set(index, levelScreen);

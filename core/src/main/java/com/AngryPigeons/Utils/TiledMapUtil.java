@@ -4,6 +4,7 @@ import com.AngryPigeons.domain.Bird;
 import com.AngryPigeons.domain.Material;
 import com.AngryPigeons.domain.Pig;
 import com.AngryPigeons.domain.SlingShot;
+import com.AngryPigeons.exceptions.DrawableNotFoundException;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
@@ -136,8 +137,12 @@ public class TiledMapUtil {
             shape.dispose();
 
 //            body.setUserData("material");
-
-            material.add(new Material(body, rect.getWidth(), rect.getHeight(), type));
+            try{
+                material.add(new Material(body, rect.getWidth(), rect.getHeight(), type));
+            }
+            catch (DrawableNotFoundException e){
+                System.out.println(e.getMessage());
+            }
         }
         return material;
     }
@@ -175,9 +180,12 @@ public class TiledMapUtil {
             shape.dispose();
 
 //            body.setUserData("pig");
-
-            pigs.add(new Pig(body, 2* shape.getRadius()*PPM, 2* shape.getRadius()*PPM, type));
-
+            try {
+                pigs.add(new Pig(body, 2 * shape.getRadius() * PPM, 2 * shape.getRadius() * PPM, type));
+            }
+            catch (DrawableNotFoundException e){
+                System.out.println(e.getMessage());
+            }
 //            System.out.println(body.getPosition());
 
 //            System.out.println("r = "+shape.getRadius()+" "+object.getProperties().get("x")+" x "+(float) object.getProperties().get("y"));
@@ -210,7 +218,13 @@ public class TiledMapUtil {
 
 //            body.setUserData("bird");
 
-            bird = (new Bird(body, 2*shape.getRadius()*PPM, 2*shape.getRadius()*PPM, type));
+            try{
+                bird = (new Bird(body, 2*shape.getRadius()*PPM, 2*shape.getRadius()*PPM, type));
+            }
+            catch (DrawableNotFoundException e){
+                System.out.println(e.getMessage());
+                return null;
+            }
             return bird;
         }
         return null;

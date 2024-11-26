@@ -11,32 +11,25 @@ import static com.AngryPigeons.Utils.Constants.PPM;
 
 public class Material extends Killable {
 
-    public Material(Body body, float w, float h, int type){
+    public Material(Body body, float w, float h, int type) throws DrawableNotFoundException{
         super(body, w, h);
 
         sprite = new Sprite();
 
-        try {
-            if (type == 1) {
-                hp = 75;
-                sprite = new Sprite(new Texture("Images/Ice2.png"), 0, 0, (int) (w), (int) (h));
-
-            }
-            else if (type == 2) {
-                hp = 150;
-                sprite = new Sprite(new Texture("Images/Wood.jpg"), 0, 0, (int) (w), (int) (h));
-            }
-            else if (type == 3) {
-                hp = 200;
-                sprite = new Sprite(new Texture("Images/1.jpg"), 20, 20, (int) (w), (int) (h));
-            }
-            else {
-                throw new DrawableNotFoundException("Material number does not exist");
-            }
+        if (type == 1) {
+            hp = 75;
+            sprite = new Sprite(new Texture("Images/Ice2.png"), 0, 0, (int) (w), (int) (h));
         }
-        catch (DrawableNotFoundException e){
-            System.out.println(e.getMessage());
-            return;
+        else if (type == 2) {
+            hp = 150;
+            sprite = new Sprite(new Texture("Images/Wood.jpg"), 0, 0, (int) (w), (int) (h));
+        }
+        else if (type == 3) {
+            hp = 200;
+            sprite = new Sprite(new Texture("Images/1.jpg"), 20, 20, (int) (w), (int) (h));
+        }
+        else {
+            throw new DrawableNotFoundException("Material number does not exist");
         }
 
         sprite.setSize(w, h);

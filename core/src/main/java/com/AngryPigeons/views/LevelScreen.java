@@ -4,6 +4,7 @@ import com.AngryPigeons.Utils.SlingShotUtil;
 import com.AngryPigeons.domain.*;
 import com.AngryPigeons.Utils.Constants;
 import com.AngryPigeons.Utils.TiledMapUtil;
+import com.AngryPigeons.exceptions.TileMapNotFoundException;
 import com.AngryPigeons.logic.LevelContactListener;
 import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,14 +147,11 @@ public class LevelScreen implements Screen{
     // createRenderers() instantiates the objects needed to render the physics objects made in createLevel()
 
     // ~~~ Scene2D integration start ~~~
-    public LevelScreen(LevelInfo levelInfo) {
-        try {
-            this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
+    public LevelScreen(LevelInfo levelInfo) throws TileMapNotFoundException{
+        if (!(new File(levelInfo.getTileMapPath()).exists())){
+            throw new TileMapNotFoundException("Tile Map Path does not exist");
         }
-        catch (com.badlogic.gdx.utils.GdxRuntimeException e){
-            System.out.println(e.getMessage());
-            return;
-        }
+        this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
         this.birds = levelInfo.getBirds();
         this.timeSinceEnd = 0.0f;
         this.birdPointer = 0;
