@@ -12,6 +12,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -28,7 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.AngryPigeons.Utils.Constants.PPM;
+import static com.AngryPigeons.Utils.Constants.*;
 
 // ~~~ Which attributes to serialize? ~~~
 //- SCALE: NO
@@ -142,6 +143,12 @@ public class LevelScreen implements Screen{
     private float timeSinceEnd;
     private static float waitTime = 5.0f;
 
+    private float timeStep;
+
+    private Sprite ffSprite;
+    private int ffAnimationCnt;
+    private int ffAnimationFrame;
+
     // createLevel() and createRenderers() separate two aspects of the Level
     // createLevel() instantiates the Box2D physics related objects
     // createRenderers() instantiates the objects needed to render the physics objects made in createLevel()
@@ -149,7 +156,6 @@ public class LevelScreen implements Screen{
     // ~~~ Scene2D integration start ~~~
     public LevelScreen(LevelInfo levelInfo) throws TileMapNotFoundException{
         File file = new File(levelInfo.getTileMapPath());
-        System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
         if (!(file.exists() && file.isFile())){
             throw new TileMapNotFoundException("Tile Map Path " + levelInfo.getTileMapPath()+" does not exist");
         }
@@ -185,6 +191,13 @@ public class LevelScreen implements Screen{
         assert slingShot != null;
         ssPosition = slingShot.getBody().getPosition();
         ssPulled = false;
+
+        timeStep = 1/60f;
+
+        ffAnimationCnt = 0;
+        ffAnimationFrame = 0;
+        ffSprite = new Sprite(new Texture("Images/FastForwardBlack.png"));
+        ffSprite.setSize(100,100);
     }
 
     private void createRenderers() {
@@ -192,7 +205,7 @@ public class LevelScreen implements Screen{
         float h = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, w/SCALE, h/SCALE);
+        camera.setToOrtho(false, WORLD_WIDTH/SCALE, WORLD_HEIGHT/SCALE);
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
 
         b2dr = new Box2DDebugRenderer();
@@ -283,13 +296,12 @@ public class LevelScreen implements Screen{
             }
         }
 
-//        System.out.println(currentBird.getBody().getPosition());
-
         // We delete the bird if its velocity is less than a certain magnitude
         // At this magnitude, the bird has almost stopped moving
         // But all birds apart from the current bird have a velocity of 0.
         // So, we need a boolean (isWaiting) to differentiate between the one flying bird and the others birds which haven't been launched
         if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
+            timeStep = 1/60f;
             if (birdPointer<birds.size()) {
                 world.destroyBody(currentBird.getBody());
                 currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
@@ -320,6 +332,11 @@ public class LevelScreen implements Screen{
                 currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
             }
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+            if (!currentBird.isWaiting()){
+                timeStep = 1/20f;
+            }
+        }
     }
 
     private void updatePhysics(){
@@ -327,7 +344,7 @@ public class LevelScreen implements Screen{
 
         // only step through physics simulation if not paused.
         if (!levelRenderer.isPaused()) {
-            world.step(1 / 60f, 6, 2);
+            world.step(timeStep, 6, 2);
             inputUpdate();
         }
 
@@ -394,10 +411,29 @@ public class LevelScreen implements Screen{
         }
 
 
-        b2dr.render(world, camera.combined.scl(PPM));
+//        b2dr.render(world, camera.combined.scl(PPM));
 
 //        System.out.println(currentBird.getBody().getPosition());
 //        System.out.println(ssPosition);
+
+        if (timeStep == 1/20f){
+            if (ffAnimationFrame == 0){
+                ffSprite.setPosition(1105, 10);
+            }
+            else if (ffAnimationFrame == 1) {
+                ffSprite.setPosition(1130, 10);
+            } else{
+                ffSprite.setPosition(1155, 10);
+            }
+
+            ffAnimationCnt = (ffAnimationCnt+1)%20;
+            if (ffAnimationCnt == 0){
+                ffAnimationFrame = (ffAnimationFrame+1)%3;
+            }
+            batch.begin();
+            ffSprite.draw(batch);
+            batch.end();
+        }
     }
 
     private void drawKillables(List<? extends  Killable> killableList) {
