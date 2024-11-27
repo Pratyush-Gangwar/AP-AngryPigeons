@@ -21,6 +21,12 @@ This project
 ### Running the junit testcases
 - Right click on `core/src/test` folder and select the option Run Tests in AP-Angry to run the Junit test cases
 
+## Repository Link:
+https://github.com/Pratyush-Gangwar/AP-AngryPigeons
+
+## Demo Video Link
+https://drive.google.com/file/d/10kHdG9EbxnAk-_lpbE3xxef-o2OpEZs3/view?usp=sharing
+
 ## References
 #### General:
 https://libgdx.com/wiki/start/a-simple-game</br>
@@ -88,6 +94,3 @@ https://github.com/google/gson/blob/main/UserGuide.md</br>
 https://www.baeldung.com/gson-save-file</br>
 https://stackoverflow.com/questions/18645050/is-default-no-args-constructor-mandatory-for-gson</br>
 https://stackoverflow.com/questions/22246737/on-libgdx-catching-onclose-window-event</br>
-
-## Repository Link:
-https://github.com/Pratyush-Gangwar/AP-AngryPigeons</br>
