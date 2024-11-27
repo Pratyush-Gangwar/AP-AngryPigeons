@@ -3,6 +3,8 @@ package com.AngryPigeons.logic;
 import com.AngryPigeons.domain.Bird;
 import com.AngryPigeons.domain.Material;
 import com.AngryPigeons.domain.Pig;
+import com.AngryPigeons.views.LevelRenderer;
+import com.AngryPigeons.views.LevelScreen;
 import com.badlogic.gdx.physics.box2d.*;
 
 import static com.AngryPigeons.Utils.Constants.STD_DP;
@@ -11,8 +13,26 @@ import static com.AngryPigeons.Utils.Constants.STD_DP;
 // - NO attributes at all
 
 public class LevelContactListener implements ContactListener {
+    private final float timeToWaitAfterLaunch = 0.5f;
+
     @Override
     public void beginContact(Contact contact) {
+
+        // A new level was start or an existing level was loaded
+        // In either case, the box2D world is created anew.
+        // Since there are tiny gaps between the structures, they fall a bit and collide
+        // This causes them to lose health and for points to be added without any user-induced collision
+        // So, we ignore collisions for the first 500 milliseconds
+
+        // Furthermore, while pulling the slingshot, the current bird might intersect with the floor
+        // that is registered as a collision
+        // we must avoid that
+
+        LevelScreen levelScreen = LevelRenderer.getInstance().getLevelScreen();
+        if (levelScreen.getTimeSinceLaunch() <= timeToWaitAfterLaunch || levelScreen.getCurrentBird().isWaiting()) {
+           return;
+        }
+
         // Retrieve the fixtures and their associated bodies
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
@@ -84,7 +104,10 @@ public class LevelContactListener implements ContactListener {
             Pig B = (Pig) bodyB.getUserData();
             B.damage(STD_DP);
         }
-//        System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
+
+        levelScreen.setScore(levelScreen.getScore() + 50);
+        System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
+
     }
 
     @Override

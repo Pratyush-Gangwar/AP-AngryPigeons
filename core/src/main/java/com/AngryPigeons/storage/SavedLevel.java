@@ -16,6 +16,7 @@ public class SavedLevel {
     private boolean isComplete; // has level been won at least once?
 
     private int birdPointer;
+    private int score;
 
     private List<SavedKillable> savedPigList;
     private List<SavedKillable> savedMaterialList;
@@ -26,11 +27,14 @@ public class SavedLevel {
         this.savedPigList = new ArrayList<>();
 
         this.birdPointer = 0;
+        this.score = 0;
+
         this.loadingDisabled = false;
     }
 
     public void save(LevelScreen levelScreen) {
         this.birdPointer = levelScreen.getBirdPointer();
+        this.score = levelScreen.getScore();
 
         syncIn(savedMaterialList, levelScreen.getMaterialList());
         syncIn(savedPigList, levelScreen.getPigList());
@@ -66,6 +70,7 @@ public class SavedLevel {
 
     public void load(LevelScreen levelScreen) {
         levelScreen.setBirdPointer(birdPointer);
+        levelScreen.setScore(score);
 
         syncOut(levelScreen.getMaterialList(), savedMaterialList);
         syncOut(levelScreen.getPigList(), savedPigList);
