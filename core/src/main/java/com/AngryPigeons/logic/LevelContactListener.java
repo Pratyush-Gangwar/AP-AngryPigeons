@@ -106,7 +106,7 @@ public class LevelContactListener implements ContactListener {
         }
 
         levelScreen.setScore(levelScreen.getScore() + 50);
-        System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
+//        System.out.println(fixtureA.getBody().getUserData() + " has hit " + fixtureB.getBody().getUserData());
 
     }
 

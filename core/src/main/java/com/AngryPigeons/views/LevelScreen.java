@@ -264,7 +264,6 @@ public class LevelScreen implements Screen{
         Storage.getInstance().loadLevelFromMemory(this);
         world.destroyBody(currentBird.getBody());
         currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer-1));
-//        System.out.println("Pointer "+birdPointer);
     }
 
     @Override
@@ -287,9 +286,6 @@ public class LevelScreen implements Screen{
 
         slingShot.update();
         currentBird.update();
-//        for (Bird bird:birds1){bird.update();}
-//        for (Bird bird:birds2){bird.update();}
-//        for (Bird bird:birds3){bird.update();}
 
         win = true;
         updateMaterials();
@@ -335,7 +331,6 @@ public class LevelScreen implements Screen{
     private void inputUpdate(){
         if (Gdx.input.isTouched(Input.Buttons.LEFT)){
             if (currentBird.isWaiting()) {
-//            System.out.println("MOUSE PRESSED");
                 ssPulled = true;
                 currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
             }
