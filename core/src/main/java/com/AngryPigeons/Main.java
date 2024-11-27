@@ -33,7 +33,7 @@ public class Main extends Game {
 
         Music music = Scene2DUtils.music;
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(0.3f);
         music.play();
 
         // ~~~ Why must we make levelScreenList have the same length as savedLevelList ~~~
