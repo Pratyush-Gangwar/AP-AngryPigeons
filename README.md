@@ -18,6 +18,9 @@ This project
 - Once again, Right click on Lwjgl3Launcher.java and select `Run Lwjgl3Launcher.main()`
 - Now you can run the program by just pressing the run button on the top right
 
+### Running the junit testcases
+- Right click on `core/src/test` folder and select the option Run Tests in AP-Angry to run the Junit test cases
+
 ## References
 #### General:
 https://libgdx.com/wiki/start/a-simple-game</br>
@@ -76,11 +79,15 @@ https://www.youtube.com/playlist?list=PLD_bW3UTVsElsuvyKcYXHLnWb8bD0EQNI</br>
 https://gamefromscratch.com/libgdx-tutorial-13-physics-with-box2d-part-1-a-basic-physics-simulations/</br>
 https://box2d.org/documentation/group__body.html
 
-### Serialization
-https://github.com/google/gson/blob/main/UserGuide.md
-https://www.baeldung.com/gson-save-file
-https://stackoverflow.com/questions/18645050/is-default-no-args-constructor-mandatory-for-gson
-https://stackoverflow.com/questions/22246737/on-libgdx-catching-onclose-window-event
+#### Junit
+https://www.baeldung.com/junit-5</br>
+https://www.baeldung.com/junit-5</br>
+
+#### Serialization
+https://github.com/google/gson/blob/main/UserGuide.md</br>
+https://www.baeldung.com/gson-save-file</br>
+https://stackoverflow.com/questions/18645050/is-default-no-args-constructor-mandatory-for-gson</br>
+https://stackoverflow.com/questions/22246737/on-libgdx-catching-onclose-window-event</br>
 
 ## Repository Link:
-https://github.com/Pratyush-Gangwar/AP-AngryPigeons
+https://github.com/Pratyush-Gangwar/AP-AngryPigeons</br>
