@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.AngryPigeons.Utils.Constants.PPM;
+import static com.AngryPigeons.Utils.Constants.*;
 
 // ~~~ Which attributes to serialize? ~~~
 //- SCALE: NO
@@ -205,7 +205,7 @@ public class LevelScreen implements Screen{
         float h = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, w/SCALE, h/SCALE);
+        camera.setToOrtho(false, WORLD_WIDTH/SCALE, WORLD_HEIGHT/SCALE);
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
 
         b2dr = new Box2DDebugRenderer();
