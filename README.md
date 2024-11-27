@@ -74,6 +74,13 @@ https://libgdx.com/wiki/extensions/physics/box2d</br>
 https://www.gamedevelopment.blog/full-libgdx-game-tutorial-box2d/</br>
 https://www.youtube.com/playlist?list=PLD_bW3UTVsElsuvyKcYXHLnWb8bD0EQNI</br>
 https://gamefromscratch.com/libgdx-tutorial-13-physics-with-box2d-part-1-a-basic-physics-simulations/</br>
+https://box2d.org/documentation/group__body.html
+
+### Serialization
+https://github.com/google/gson/blob/main/UserGuide.md
+https://www.baeldung.com/gson-save-file
+https://stackoverflow.com/questions/18645050/is-default-no-args-constructor-mandatory-for-gson
+https://stackoverflow.com/questions/22246737/on-libgdx-catching-onclose-window-event
 
 ## Repository Link:
 https://github.com/Pratyush-Gangwar/AP-AngryPigeons
