@@ -1,0 +1,1 @@
+java -DPLANTUML_LIMIT_SIZE=8192 -jar .\plantuml-1.2024.7.jar

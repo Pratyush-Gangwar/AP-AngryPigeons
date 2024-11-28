@@ -112,54 +112,6 @@ class Main {
 +dispose() : void
 }
 
-class HomeScreen {
--main : Main
--stage : Stage
--table : Table
--musicDialog : Dialog
--exitDialog : Dialog
--static instance : HomeScreen
-
--HomeScreen(main : Main)
-+static getInstance(main : Main) : HomeScreen
-+getStage() : Stage
-
--setupTable() : void
-
-+show() : void
-+render( delta : float ) : void
-+resize( width : int, height : int ) : void
-+pause() : void
-+resume() : void
-+hide() : void
-+dispose() : void
-}
-
-class LevelSelectorScreen{
--main : Main
--stage : Stage
--table : Table
-
--static instance : LevelSelectorScreen
-
--LevelSelectorScreen(main : Main)
-+static getInstance(main : Main) : LevelSelectorScreen
-+getStage() : Stage
-
--setupTable() : void
--updateLevelStatus() : void
--levelSelectHandler() : void
-
-+show() : void
-+render( delta : float ) : void
-+resize( width : int, height : int ) : void
-+pause() : void
-+resume() : void
-+hide() : void
-+dispose() : void
-}
-
-
 class LevelScreen {
 - SCALE : float = 1
 
@@ -192,6 +144,18 @@ class LevelScreen {
 - win : boolean
 - lose : boolean
 
+- score : int
+
+- timeSinceLaunch : float
+
+- timeSinceEnd
+- static timeToWaitAfterWinLoseConditionIsMet : float
+
+- timeStep : float
+- ffSprite : Sprite
+- ffAnimationCnt : int
+- ffAnimationFrame : int
+
 +LevelScreen(levelInfo : LevelInfo)
 -createLevel() : void
 -createRenderers() : void
@@ -216,6 +180,12 @@ class LevelScreen {
 
 +isComplete() : boolean
 +setComplete( isComplete : boolean ) : void
+
++ getScore() : int
++ setScore(score : int) : void
+
++ getTimeSinceLaunch() : float
++ setTimeSinceLaunch(timeSinceLaunch : float) : void
 
 +getBirdPointer() : int
 +setBirdPointer(birdPointer : int) : void
@@ -244,6 +214,8 @@ Class LevelRenderer {
 -pauseTable : Table
 -musicDialog : Dialog
 -exitDialog : Dialog
+-scoreLabel : Label
+
 -wasHidden : boolean
 -isPaused : boolean
 -hasGameEnded : boolean
@@ -263,6 +235,7 @@ Class LevelRenderer {
 +loseLevel() : void
 
 +getStage() : Stage
++getLevelScreen() : LevelScreen
 +setLevelScreen( levelScreen : LevelScreen ) : void
 +isPaused() : boolean
 
@@ -284,60 +257,6 @@ Class LevelRenderer {
 +mouseMoved(screenX : int, screenY : int) : boolean
 +scrolled(amountX : float, amountY : float) : boolean
 }
-
-class LoseScreen {
--main : Main
--stage : Stage
--table : Table
--background : Texture
--duration : float
-
--static instance : LoseScreen
-
--LoseScreen(main : Main)
-+static getInstance(main : Main) : LoseScreen
-+getStage() : Stage
--setupTable() : void
-
-+show() : void
-+render( delta : float ) : void
-+resize( width : int, height : int ) : void
-+pause() : void
-+resume() : void
-+hide() : void
-+dispose() : void
-}
-
-class WinScreen {
--main : Main
--stage : Stage
--table : Table
--background : Texture
--duration : float
-
--static instance : WinScreen
-
--WinScreen(main : Main)
-+static getInstance(main : Main) : WinScreen
-+getStage() : Stage
--setupTable() : void
-
-+show() : void
-+render( delta : float ) : void
-+resize( width : int, height : int ) : void
-+pause() : void
-+resume() : void
-+hide() : void
-+dispose() : void
-}
-
-enum Screens {
-    HOMESCREEN,
-    LEVELSELECTORSCREEN,
-    LOSESCREEN,
-    WINSCREEN
-}
-
 
 class Storage {
 - gson : Gson
@@ -364,6 +283,7 @@ class SavedLevel {
 - birdPointer : int
 - savedPigList : List<SavedKillable>
 - savedMaterialList : List<SavedKillable>
+- score : int
 
 + SavedLevel()
 + save(levelScreen : LevelScreen) : void
@@ -421,6 +341,14 @@ abstract class Killable {
 +damage(dp : int) : void
 }
 
+class TileMapNotFoundException {
++TileMapNotFoundException( message : String )
+}
+
+class DrawableNotFoundException {
++DrawableNotFoundException( message : String )
+}
+
 class Bird {
 -waiting: boolean
 -dp : int
@@ -449,19 +377,113 @@ class Slingshot {
 +update() : void
 }
 
+class HomeScreen {
+-main : Main
+-stage : Stage
+-table : Table
+-musicDialog : Dialog
+-exitDialog : Dialog
+-static instance : HomeScreen
+
+-HomeScreen(main : Main)
++static getInstance(main : Main) : HomeScreen
++getStage() : Stage
+
+-setupTable() : void
+
++show() : void
++render( delta : float ) : void
++resize( width : int, height : int ) : void
++pause() : void
++resume() : void
++hide() : void
++dispose() : void
+}
+
+class LevelSelectorScreen{
+-main : Main
+-stage : Stage
+-table : Table
+
+-static instance : LevelSelectorScreen
+
+-LevelSelectorScreen(main : Main)
++static getInstance(main : Main) : LevelSelectorScreen
++getStage() : Stage
+
+-setupTable() : void
+-updateLevelStatus() : void
+-levelSelectHandler() : void
+
++show() : void
++render( delta : float ) : void
++resize( width : int, height : int ) : void
++pause() : void
++resume() : void
++hide() : void
++dispose() : void
+}
+
+class LoseScreen {
+-main : Main
+-stage : Stage
+-table : Table
+-background : Texture
+-duration : float
+
+-static instance : LoseScreen
+
+-LoseScreen(main : Main)
++static getInstance(main : Main) : LoseScreen
++getStage() : Stage
+-setupTable() : void
+
++show() : void
++render( delta : float ) : void
++resize( width : int, height : int ) : void
++pause() : void
++resume() : void
++hide() : void
++dispose() : void
+}
+
+class WinScreen {
+-main : Main
+-stage : Stage
+-table : Table
+-background : Texture
+-duration : float
+
+-static instance : WinScreen
+
+-WinScreen(main : Main)
++static getInstance(main : Main) : WinScreen
++getStage() : Stage
+-setupTable() : void
+
++show() : void
++render( delta : float ) : void
++resize( width : int, height : int ) : void
++pause() : void
++resume() : void
++hide() : void
++dispose() : void
+}
+
+enum Screens {
+    HOMESCREEN,
+    LEVELSELECTORSCREEN,
+    LOSESCREEN,
+    WINSCREEN
+}
+
+
+
 class LevelContactListener {
 +beginContact(contact : Contact) : void
 +endContact(contact : Contact) : void
 +preSolve(contact : Contact, oldManifold : Manifold) : void
 +postSolve(contact : Contact, impulse : ContactImpulse) : void
-}
-
-class TileMapNotFoundException {
-+TileMapNotFoundException( message : String )
-}
-
-class DrawableNotFoundException {
-+DrawableNotFoundException( message : String )
 }
 
 class Constants {
