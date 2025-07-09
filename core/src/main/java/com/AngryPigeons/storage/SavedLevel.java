@@ -25,10 +25,10 @@ public class SavedLevel {
     }
 
     public void save(LevelScreen levelScreen) {
-        this.birdPointer = levelScreen.getBirdPointer();
+        this.birdPointer = levelScreen.getBirdManager().getBirdPointer();
         this.score = levelScreen.getScore();
-        syncIn(savedMaterialList, levelScreen.getMaterialList());
-        syncIn(savedPigList, levelScreen.getPigList());
+        syncIn(savedMaterialList, levelScreen.getEntityManager().getMaterials());
+        syncIn(savedPigList, levelScreen.getEntityManager().getPigs());
     }
 
     private void syncIn(List<SavedKillable> savedKillableList,  List<? extends Killable> killableList) {
@@ -52,18 +52,14 @@ public class SavedLevel {
     }
 
     public void load(LevelScreen levelScreen) {
-        levelScreen.setBirdPointer(birdPointer);
+        levelScreen.getBirdManager().setBirdPointer(birdPointer);
         levelScreen.setScore(score);
 
-        syncOut(levelScreen.getMaterialList(), savedMaterialList);
-        syncOut(levelScreen.getPigList(), savedPigList);
+        syncOut(levelScreen.getEntityManager().getMaterials(), savedMaterialList);
+        syncOut(levelScreen.getEntityManager().getPigs(), savedPigList);
     }
 
     public boolean isComplete() {
         return isComplete;
-    }
-
-    public void setComplete(boolean isComplete) {
-        this.isComplete = isComplete;
     }
 }

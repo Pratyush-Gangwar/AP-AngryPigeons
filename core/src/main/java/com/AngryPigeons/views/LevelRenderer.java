@@ -1,6 +1,7 @@
 package com.AngryPigeons.views;
 
 import com.AngryPigeons.Main;
+import com.AngryPigeons.domain.Bird;
 import com.AngryPigeons.storage.SavedLevel;
 import com.AngryPigeons.storage.Storage;
 import com.badlogic.gdx.Gdx;
@@ -148,19 +149,22 @@ public class LevelRenderer implements Screen, InputProcessor {
         // Cannot pause if you've pulled the slingshot
         // Cannot pause if win/lose condition has been met
         // Can only pause if there's a bird on the slingshot and you haven't pulled it
+        Bird currentBird = levelScreen.getBirdManager().getCurrentBird();
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
-            && levelScreen.getCurrentBird().isWaiting()
-            && !levelScreen.isSsPulled()
+            && currentBird != null
+            && currentBird.isWaiting()
+            && !levelScreen.getBirdManager().isSsPulled()
             && !levelScreen.isWin() && !levelScreen.isLose()) {
             isPaused = !isPaused;
         }
 
         if (isPaused) {
             stage.addActor(pauseMenuTable);
-            levelScreen.sleepBodies(); // pause physics for all bodies
+            levelScreen.getEntityManager().sleepBodies(); // pause physics for all bodies
         } else {
             pauseMenuTable.remove();
-            levelScreen.wakeBodies();
+            levelScreen.getEntityManager().wakeBodies();
         }
 
         scoreLabel.setText("Score: " + (levelScreen != null ? levelScreen.getScore() : 0));
@@ -278,7 +282,7 @@ public class LevelRenderer implements Screen, InputProcessor {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("resume clicked");
                 isPaused = false;
-                levelScreen.wakeBodies(); // resume physics for paused bodies
+                levelScreen.getEntityManager().wakeBodies(); // resume physics for paused bodies
             }
         });
 
@@ -383,6 +387,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         mainTable.add(Scene2DUtils.makeLabel("Speed up", 30)).pad(10, 5, 10, 10);
 
         mainTable.add(scoreLabel).pad(10).expandX().right();
+
 
         stage.addActor(mainTable);
     }

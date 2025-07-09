@@ -115,7 +115,7 @@ public class Main extends Game {
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
         LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
-        levelScreen.initializeBirdPointerIfNeeded();
+        levelScreen.getBirdManager().initialize();
         levelRenderer.setLevelScreen(levelScreen);
 
         this.setScreen(levelRenderer);
@@ -128,7 +128,7 @@ public class Main extends Game {
         LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
 
         Storage.getInstance().loadLevel(levelScreen);
-        levelScreen.spawnCurrentBird();
+        levelScreen.getBirdManager().spawnBird();
 
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
         levelRenderer.setLevelScreen(levelScreen);

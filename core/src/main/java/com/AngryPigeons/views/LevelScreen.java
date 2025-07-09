@@ -5,8 +5,10 @@ import com.AngryPigeons.domain.*;
 import com.AngryPigeons.Utils.Constants;
 import com.AngryPigeons.Utils.TiledMapUtil;
 import com.AngryPigeons.exceptions.TileMapNotFoundException;
+import com.AngryPigeons.logic.BirdManager;
 import com.AngryPigeons.logic.LevelContactListener;
-import com.AngryPigeons.storage.Storage;
+import com.AngryPigeons.logic.LevelDrawer;
+import com.AngryPigeons.logic.LevelEntityManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -109,15 +111,6 @@ public class LevelScreen implements Screen{
     private final float SCALE = 1.0f;
 
     private int score;
-
-    public int getLevelID() {
-        return levelID;
-    }
-
-    public void setLevelID(int levelID) {
-        this.levelID = levelID;
-    }
-
     private int levelID;
 
     private OrthographicCamera camera;
@@ -135,19 +128,10 @@ public class LevelScreen implements Screen{
     private Texture background_tex;;
     private Texture cross_hair;
 
-    private List<Material> materialList;
+    private BirdManager birdManager;
 
-    private SlingShot slingShot;
-    private Vector2 ssPosition;
-    private boolean ssPulled;
-    private float distance;
-
-    private List<Integer> birds;
-    private int birdPointer;
-    private Bird currentBird;
-    private Vector3 currentBirdPos;
-
-    private List<Pig> pigList;
+    private LevelEntityManager entityManager;
+    private LevelDrawer levelDrawer;
 
     private boolean win;
     private boolean lose;
@@ -159,9 +143,9 @@ public class LevelScreen implements Screen{
 
     private float timeStep;
 
-    private Sprite ffSprite;
-    private int ffAnimationCnt;
-    private int ffAnimationFrame;
+    private boolean isFastForward = false;
+    private final float NORMAL_TIME_STEP = 1/60f;
+    private final float FAST_TIME_STEP = 1/20f;
 
     // createLevel() and createRenderers() separate two aspects of the Level
     // createLevel() instantiates the Box2D physics related objects
@@ -174,52 +158,44 @@ public class LevelScreen implements Screen{
             throw new TileMapNotFoundException("Tile Map Path " + levelInfo.getTileMapPath()+" does not exist");
         }
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
-        this.birds = levelInfo.getBirds();
         this.levelID = levelInfo.getLevelID();
         this.timeSinceEnd = 0.0f;
-        this.birdPointer = -1;
         this.score = 0;
         this.timeSinceLaunch = 0.0f;
 
-        createLevel();
+        createLevel(levelInfo);
         createRenderers();
     }
 
-    private void createLevel() {
+    private void createLevel(LevelInfo levelInfo) {
         world = new World(new Vector2(0, -9.8f), false);
         world.setContactListener(new LevelContactListener());
 
-        this.materialList = new ArrayList<>();
+        List<Material> materialList = new ArrayList<>();
         materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("ice-layer").getObjects(), 1));
         materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("wood-layer").getObjects(), 2));
         materialList.addAll(TiledMapUtil.parseMaterial(world, map.getLayers().get("stone-layer").getObjects(), 3));
 
-        this.pigList = new ArrayList<>();
+        List<Pig> pigList = new ArrayList<>();
         pigList.addAll(TiledMapUtil.parsePigs(world, map.getLayers().get("large-pigs").getObjects(), false, 3));
         pigList.addAll( TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2));
         pigList.addAll(TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1));
 
-        currentBirdPos = new Vector3();
-
         TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
 
-        slingShot = TiledMapUtil.parseSlingShot(world, map.getLayers().get("sling-shot").getObjects(), true);
+        SlingShot slingShot = TiledMapUtil.parseSlingShot(world, map.getLayers().get("sling-shot").getObjects(), true);
         assert slingShot != null;
-        ssPosition = slingShot.getBody().getPosition();
-        ssPulled = false;
 
-        timeStep = 1/60f;
+        birdManager = new BirdManager(world, slingShot, levelInfo.getBirds(), map.getLayers().get("bird"));
+        birdManager.initialize();
 
-        ffAnimationCnt = 0;
-        ffAnimationFrame = 0;
-        ffSprite = new Sprite(new Texture("Images/FastForwardBlack.png"));
-        ffSprite.setSize(100,100);
+        timeStep = NORMAL_TIME_STEP;
+
+        entityManager = new LevelEntityManager(world, materialList, pigList);
+        levelDrawer = new LevelDrawer();
     }
 
     private void createRenderers() {
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH/SCALE, WORLD_HEIGHT/SCALE);
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
@@ -236,38 +212,6 @@ public class LevelScreen implements Screen{
         tmr.setView(camera);
     }
 
-    public void initializeBirdPointerIfNeeded() {
-        if (this.birdPointer == -1) {
-            this.birdPointer = 0;
-        }
-        spawnCurrentBird();
-    }
-
-    public void spawnCurrentBird() {
-        if (birdPointer >= 0 && birdPointer < birds.size()) {
-            currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer));
-        }
-    }
-
-
-    public void sleepBodies() {
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
-
-        for(Body body : bodies) {
-            body.setAwake(false);
-        }
-    }
-
-    public void wakeBodies() {
-        Array<Body> bodies = new Array<>();
-        world.getBodies(bodies);
-
-        for(Body body : bodies) {
-            body.setAwake(true);
-        }
-    }
-
     // ~~~ Scene2D integration end ~~~
 
     @Override
@@ -276,7 +220,6 @@ public class LevelScreen implements Screen{
     @Override
     public void render(float delta){
         timeSinceLaunch += delta;
-//        System.out.println(timeSinceLaunch);
         update(delta);
         draw();
     }
@@ -285,82 +228,24 @@ public class LevelScreen implements Screen{
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
         updatePhysics();
 
-        //Rendering
+        entityManager.updateMaterials();
+        entityManager.updatePigs();
 
-//        float cameraCenterX = camera.position.x;
-//        float cameraCenterY = camera.position.y;
-//        float crosshairSize = 5f;
+        win = entityManager.getWin();
 
-        slingShot.update();
-        if (birdPointer < birds.size()) currentBird.update();
+        birdManager.update();
+        if (birdManager.isAllBirdsUsed() && !win) {
+            lose = true;
+        }
 
-        win = true;
-        updateMaterials();
-        updatePigs();
-
-        if (win){
+        if (win || lose) {
             timeSinceEnd += delta;
-
             if (timeSinceEnd >= timeToWaitAfterWinLoseConditionIsMet) {
-                levelRenderer.winLevel();
-                return; // don't do anything more
+                if (win) levelRenderer.winLevel();
+                else levelRenderer.loseLevel();
             }
         }
 
-        if (lose) {
-            timeSinceEnd += delta;
-
-            if (timeSinceEnd >= timeToWaitAfterWinLoseConditionIsMet) {
-                levelRenderer.loseLevel();
-                return; // don't do anything more
-            }
-        }
-
-        // We delete the bird if its velocity is less than a certain magnitude
-        // At this magnitude, the bird has almost stopped moving
-        // But all birds apart from the current bird have a velocity of 0.
-        // So, we need a boolean (isWaiting) to differentiate between the one flying bird and the others birds which haven't been launched
-        if (birdPointer < birds.size() &&
-            (
-                (!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)
-                ||(currentBird.getBody().getPosition().y<0)
-            )
-        ) {
-
-            timeStep = 1/60f;
-
-            world.destroyBody(currentBird.getBody());
-            birdPointer++;
-
-            if (birdPointer < birds.size()) {
-                currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer));
-            }
-
-            // birds exhausted
-            else if (!win) {
-                lose = true;
-            }
-        }
-
-//        batch.setProjectionMatrix(camera.projection);
-//        batch.setTransformMatrix(camera.view);
-
-    }
-
-    private void inputUpdate(){
-        if (birdPointer >= birds.size()) return;
-
-        if (Gdx.input.isTouched(Input.Buttons.LEFT)){
-            if (currentBird.isWaiting()) {
-                ssPulled = true;
-                currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
-            }
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
-            if (!currentBird.isWaiting()){
-                timeStep = 1/20f;
-            }
-        }
     }
 
     private void updatePhysics(){
@@ -369,7 +254,7 @@ public class LevelScreen implements Screen{
         // only step through physics simulation if not paused.
         if (!levelRenderer.isPaused()) {
             world.step(timeStep, 6, 2);
-            inputUpdate();
+            handleInput();
         }
 
         // camera updated regardless of pause status
@@ -377,95 +262,46 @@ public class LevelScreen implements Screen{
         batch.setProjectionMatrix(camera.combined);
     }
 
-    private void updateMaterials() {
-        for(Material material : materialList) {
-            if (material.isDead()) {
-                continue;
-            }
-
-            if (material.getHp() <= 0 || material.getBody().getPosition().y < 0) {
-                material.dispose(world);
-                continue;
-            }
-
-            material.update();
+    public void handleInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            toggleFastForward();
         }
-    }
 
-    private void updatePigs() {
-        for(Pig pig : pigList) {
-            if (pig.isDead()) {
-                continue;
+        Bird currentBird = birdManager.getCurrentBird();
+        Vector3 currentBirdPos = birdManager.getCurrentBirdPos();
+
+        if (currentBird == null) return;
+
+        if (Gdx.input.isTouched(Input.Buttons.LEFT)) {
+            if (currentBird.isWaiting()) {
+                birdManager.setSsPulled(true);
+                currentBird.getBody().setTransform(currentBirdPos.x, currentBirdPos.y, currentBirdPos.z);
             }
-
-            if (pig.getHp() <= 0 || pig.getBody().getPosition().y < 0) {
-                pig.dispose(world);
-                continue;
-            }
-
-            win = false;
-            pig.update();
         }
+
     }
 
     private void draw() {
         batch.begin();
-//        batch.draw(cross_hair, cameraCenterX,cameraCenterY, crosshairSize, crosshairSize);//DEBUGGING
-//        batch.draw(cross_hair, 240,360, crosshairSize, crosshairSize); //DEBUGGING
 
         batch.draw(background_tex, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        slingShot.render(batch);
 
-//        for (Bird bird:birds1){bird.render(batch);}
-//        for (Bird bird:birds2){bird.render(batch);}
-//        for (Bird bird:birds3){bird.render(batch);}
+        birdManager.getSlingShot().render(batch);
+        if (!birdManager.isAllBirdsUsed()) birdManager.getCurrentBird().render(batch);
 
-        if (birdPointer < birds.size()) currentBird.render(batch);
+        levelDrawer.drawKillables(batch, entityManager.getMaterials());
+        levelDrawer.drawKillables(batch, entityManager.getPigs());
 
-        drawKillables(materialList);
-        drawKillables(pigList);
-
-//        tmr.setView(camera);
         tmr.render();
-
         batch.end();
 
-        if (ssPulled) {
-            SlingShotUtil.drawTrajectory(shapeRenderer, camera, currentBirdPos, distance, world.getGravity());
-        }
-
-
-//        b2dr.render(world, camera.combined.scl(PPM));
-
-//        System.out.println(currentBird.getBody().getPosition());
-//        System.out.println(ssPosition);
-
-        if (timeStep == 1/20f){
-            if (ffAnimationFrame == 0){
-                ffSprite.setPosition(1105, 10);
-            }
-            else if (ffAnimationFrame == 1) {
-                ffSprite.setPosition(1130, 10);
-            } else{
-                ffSprite.setPosition(1155, 10);
-            }
-
-            ffAnimationCnt = (ffAnimationCnt+1)%20;
-            if (ffAnimationCnt == 0){
-                ffAnimationFrame = (ffAnimationFrame+1)%3;
-            }
-            batch.begin();
-            ffSprite.draw(batch);
-            batch.end();
-        }
+        levelDrawer.drawTrajectoryIfNeeded(shapeRenderer, camera, birdManager.getCurrentBirdPos(), birdManager.getDistance(), world.getGravity(), birdManager.isSsPulled());
+        levelDrawer.drawFastForwardIfNeeded(batch, timeStep, FAST_TIME_STEP);
     }
 
-    private void drawKillables(List<? extends  Killable> killableList) {
-        for(Killable killable : killableList) {
-            if (!killable.isDead()) {
-                killable.render(batch);
-            }
-        }
+    public void toggleFastForward() {
+        isFastForward = !isFastForward;
+        timeStep = isFastForward ? FAST_TIME_STEP : NORMAL_TIME_STEP;
     }
 
     @Override
@@ -494,51 +330,9 @@ public class LevelScreen implements Screen{
 
     }
 
-    public void touchDown(int screenX, int screenY, int pointer, int button) {
-        if (currentBird.isWaiting()) {
-//            System.out.println("Mouse down received at: " + screenX + ", " + screenY);
-            float bird_x = screenX / PPM;
-            float bird_y = (Gdx.graphics.getHeight() - screenY) / PPM;
-
-            distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
-            float angle = SlingShotUtil.calculateAngle(bird_x, bird_y, ssPosition.x, ssPosition.y);
-            distance = Math.min(distance, Constants.SS_RADIUS);
-
-            currentBirdPos = new Vector3((float) (ssPosition.x + distance * -Math.cos(angle)), (float) (ssPosition.y + distance * -Math.sin(angle)), angle);
-        }
-        else {
-            currentBird.power();
-        }
-    }
-
-    public void touchDragged(int screenX, int screenY, int pointer) {
-        if (currentBird.isWaiting()) {
-//            System.out.println("Mouse dragged received at: " + screenX + ", " + screenY);
-            float bird_x = screenX / PPM;
-            float bird_y = (Gdx.graphics.getHeight() - screenY) / PPM;
-
-            distance = SlingShotUtil.calculateEuclideanDistance(bird_x, bird_y, ssPosition.x, ssPosition.y);
-            float angle = SlingShotUtil.calculateAngle(bird_x, bird_y, ssPosition.x, ssPosition.y);
-            distance = Math.min(distance, Constants.SS_RADIUS);
-
-            currentBirdPos = new Vector3((float) (ssPosition.x + distance * -Math.cos(angle)), (float) (ssPosition.y + distance * -Math.sin(angle)), angle);
-        }
-    }
-
-    public void touchUp(int screenX, int screenY, int pointer, int button) {
-        if (currentBird.isWaiting()) {
-//            System.out.println("Mouse up received at: " + screenX + ", " + screenY);
-            ssPulled = false;
-            Vector2 velocity = new Vector2((float) (distance * Constants.MAX_VELOCITY * Math.cos(currentBirdPos.z)), (float) (distance * Constants.MAX_VELOCITY * Math.sin(currentBirdPos.z)));
-            currentBird.getBody().setLinearVelocity(velocity);
-
-            currentBird.setWaiting(false);
-        }
-    }
-
-    public boolean isSsPulled() {
-        return ssPulled;
-    }
+    public void touchDown(int screenX, int screenY, int pointer, int button) { birdManager.touchDown(screenX, screenY); }
+    public void touchDragged(int screenX, int screenY, int pointer) { birdManager.touchDragged(screenX, screenY); }
+    public void touchUp(int screenX, int screenY, int pointer, int button) { birdManager.touchUp(); }
 
     public boolean isWin() {
         return win;
@@ -546,26 +340,6 @@ public class LevelScreen implements Screen{
 
     public boolean isLose() {
         return lose;
-    }
-
-    public int getBirdPointer() {
-        return birdPointer;
-    }
-
-    public void setBirdPointer(int birdPointer) {
-        this.birdPointer = birdPointer;
-    }
-
-    public Bird getCurrentBird() {
-        return currentBird;
-    }
-
-    public List<Material> getMaterialList() {
-        return materialList;
-    }
-
-    public List<Pig> getPigList() {
-        return pigList;
     }
 
     public int getScore() {
@@ -580,8 +354,16 @@ public class LevelScreen implements Screen{
         return timeSinceLaunch;
     }
 
-    public void setTimeSinceLaunch(float timeSinceLaunch) {
-        this.timeSinceLaunch = timeSinceLaunch;
+    public int getLevelID() {
+        return levelID;
+    }
+
+    public BirdManager getBirdManager() {
+        return birdManager;
+    }
+
+    public LevelEntityManager getEntityManager() {
+        return entityManager;
     }
 }
 

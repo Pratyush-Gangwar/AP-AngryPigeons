@@ -29,7 +29,9 @@ public class LevelContactListener implements ContactListener {
         // we must avoid that
 
         LevelScreen levelScreen = LevelRenderer.getInstance().getLevelScreen();
-        if (levelScreen.getTimeSinceLaunch() <= timeToWaitAfterLaunch || levelScreen.getCurrentBird().isWaiting()) {
+        Bird currentBird = levelScreen.getBirdManager().getCurrentBird();
+
+        if (levelScreen.getTimeSinceLaunch() <= timeToWaitAfterLaunch || currentBird == null || currentBird.isWaiting()) {
            return;
         }
 
