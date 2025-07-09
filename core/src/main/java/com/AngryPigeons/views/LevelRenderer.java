@@ -205,22 +205,17 @@ public class LevelRenderer implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        // Scene2D
         stage.getViewport().update(width, height, true);
-        if (musicDialog != null) {
-            musicDialog.setPosition((Gdx.graphics.getWidth() - musicDialog.getWidth())/2, (Gdx.graphics.getHeight() - musicDialog.getHeight())/2);
-        }
-
-        if (exitDialog != null) {
-            exitDialog.setPosition((Gdx.graphics.getWidth() - exitDialog.getWidth())/2, (Gdx.graphics.getHeight() - exitDialog.getHeight())/2);
-        }
-
-        if (saveDialog != null) {
-            saveDialog.setPosition((Gdx.graphics.getWidth() - saveDialog.getWidth())/2, (Gdx.graphics.getHeight() - saveDialog.getHeight())/2);
-        }
-
-        // Box2D
+        centerDialog(musicDialog);
+        centerDialog(exitDialog);
+        centerDialog(saveDialog);
         levelScreen.resize(width, height);
+    }
+
+    private void centerDialog(Dialog dialog) {
+        if (dialog != null)
+            dialog.setPosition((Gdx.graphics.getWidth() - dialog.getWidth()) / 2f,
+                (Gdx.graphics.getHeight() - dialog.getHeight()) / 2f);
     }
 
     // Scene2D
@@ -242,98 +237,53 @@ public class LevelRenderer implements Screen, InputProcessor {
         pauseMenuTable = new Table();
         pauseMenuTable.setFillParent(true);
         pauseMenuTable.setDebug(Scene2DUtils.scene2DDebugEnabled);
-
         setTransparentBackground();
 
-        Label label = Scene2DUtils.makeLabel("Paused", 70);
-        pauseMenuTable.add(label).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
+        pauseMenuTable.add(Scene2DUtils.makeLabel("Paused", 70)).padBottom(Scene2DUtils.paddingSpace).row();
 
-        TextButton resumeBtn = new TextButton("Resume", Scene2DUtils.skin);
-        pauseMenuTable.add(resumeBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
+        String[] buttonLabels = {"Resume", "Save Game", "Music", "Home Screen", "Exit", "Complete Level", "Lose Level"};
+        for (String label : buttonLabels) {
+            TextButton button = new TextButton(label, Scene2DUtils.skin);
+            pauseMenuTable.add(button).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace).row();
+            button.addListener(getButtonListener(label));
+        }
+        
+    }
 
-        TextButton saveBtn = new TextButton("Save Game", Scene2DUtils.skin);
-        pauseMenuTable.add(saveBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
-
-        TextButton musicBtn = new TextButton("Music", Scene2DUtils.skin);
-        pauseMenuTable.add(musicBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
-
-        TextButton homeBtn = new TextButton("Home Screen", Scene2DUtils.skin);
-        pauseMenuTable.add(homeBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
-
-        TextButton exitBtn = new TextButton("Exit", Scene2DUtils.skin);
-        pauseMenuTable.add(exitBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
-
-        TextButton debugCompleteBtn = new TextButton("Complete Level", Scene2DUtils.skin);
-        pauseMenuTable.add(debugCompleteBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
-
-        TextButton debugLoseBtn = new TextButton("Lose Level", Scene2DUtils.skin);
-        pauseMenuTable.add(debugLoseBtn).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
-        pauseMenuTable.row();
-
-        resumeBtn.addListener(new ChangeListener() {
+    private ChangeListener getButtonListener(String label) {
+        return new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("resume clicked");
-                isPaused = false;
-                levelScreen.getEntityManager().wakeBodies(); // resume physics for paused bodies
+                switch (label) {
+                    case "Resume":
+                        isPaused = false;
+                        levelScreen.getEntityManager().wakeBodies();
+                        break;
+                    case "Save Game":
+                        Storage.getInstance().saveLevel(levelScreen);
+                        saveDialog = Scene2DUtils.makeGameSavedWindow();
+                        saveDialog.show(stage);
+                        break;
+                    case "Music":
+                        musicDialog = Scene2DUtils.makeMusicControlWindow();
+                        musicDialog.show(stage);
+                        break;
+                    case "Home Screen":
+                        main.changeScreen(Screens.HOMESCREEN);
+                        break;
+                    case "Exit":
+                        exitDialog = Scene2DUtils.makeExitWindow();
+                        exitDialog.show(stage);
+                        break;
+                    case "Complete Level":
+                        winLevel();
+                        break;
+                    case "Lose Level":
+                        loseLevel();
+                        break;
+                }
             }
-        });
-
-        homeBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                main.changeScreen(Screens.HOMESCREEN);
-            }
-        });
-
-        debugCompleteBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                winLevel();
-            }
-        });
-
-        debugLoseBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                loseLevel();
-            }
-        });
-
-        exitBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                exitDialog = Scene2DUtils.makeExitWindow();
-                exitDialog.show(stage);
-            }
-        });
-
-        musicBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                musicDialog = Scene2DUtils.makeMusicControlWindow();
-                musicDialog.show(stage);
-            }
-        });
-
-        saveBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                Storage.getInstance().saveLevel(levelScreen);
-
-                saveDialog = Scene2DUtils.makeGameSavedWindow();
-                saveDialog.show(stage);
-
-            }
-        });
-
+        };
     }
 
     public void winLevel() {
