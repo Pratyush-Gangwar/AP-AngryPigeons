@@ -106,35 +106,18 @@ public class LevelSelectorScreen implements Screen {
         Scene2DUtils.setBackgroundOfTable(table);
 
         int numLevelButtons = main.getLevelInfoList().size();
-        int numEnabled;
+        int maxCompleted = Storage.getInstance().getMaxCompletedLevel();
+        int maxUnlockedIdx = Math.min(numLevelButtons - 1, maxCompleted + 1); // Next playable level is one after max completed
 
-        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
+        for (int i = 0; i < numLevelButtons; i++) {
+            TextButton levelButton = new TextButton("Level " + i, Scene2DUtils.skin);
 
-        // on first run, no levels are saved and the list is empty
-        if (!savedLevelList.isEmpty()) {
-            SavedLevel lastLevel = savedLevelList.getLast();
-            int numSavedLevels = savedLevelList.size();
-
-            // if the last level is complete, enable the next one
-            // otherwise, enable only till the last one
-            numEnabled  = ( lastLevel.isComplete() ? numSavedLevels + 1 : numSavedLevels );
-        } else {
-            System.out.println("here");
-            numEnabled = 1;
-        }
-
-        System.out.println(numEnabled);
-
-        for(int i = 0; i < numLevelButtons; i++) {
-            TextButton levelButton = new TextButton("Level " + (i + 1), Scene2DUtils.skin);
-
-            if (i != 0 && i >= numEnabled) {
-                levelButton.setColor(Color.GRAY); // change color
+            if (i > maxUnlockedIdx) {
+                levelButton.setColor(Color.GRAY);
                 levelButton.setTouchable(Touchable.disabled);
             }
 
-
-            final int iCopy = i; // lambda functions can only access local variables if they are final
+            final int iCopy = i;
             levelButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -142,12 +125,10 @@ public class LevelSelectorScreen implements Screen {
                 }
             });
 
-            // padBottom to ensure space between buttons
             table.add(levelButton).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace);
             table.row();
         }
 
-        // padTop(30) so that Back button is always 30 pixels below the last level button
         TextButton back = new TextButton("Back", Scene2DUtils.skin);
         table.add(back).width(Scene2DUtils.buttonWidth).padTop(30);
 
@@ -160,34 +141,25 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
-        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
+        int maxCompleted = Storage.getInstance().getMaxCompletedLevel();
 
-        // on first run, no levels are saved and the list is empty
-        if (savedLevelList.isEmpty()) {
-            return;
-        }
-
-        // if the last level is complete, enable the next one
-        // otherwise, enable only till the last one
-        SavedLevel lastLevel = savedLevelList.getLast();
-        if (!lastLevel.isComplete()) {
-            return;
-        }
-
-        int nextLevelIdx = savedLevelList.size();
+        int nextLevelIdx = maxCompleted + 1;
         int numLevelButtons = main.getLevelInfoList().size();
 
-        if (nextLevelIdx >= numLevelButtons) {
-            return;
-        }
+        if (nextLevelIdx >= numLevelButtons) return;
 
-        // all these buttons have already been rendered. we just need to re-enable them
         Actor actor = table.getChild(nextLevelIdx);
-        TextButton levelButton = (TextButton) actor;
-        levelButton.setColor(new Color(37f, 150f, 190f, 1f));
-        levelButton.setTouchable(Touchable.enabled);
+        if (actor instanceof TextButton) {
+            TextButton levelButton = (TextButton) actor;
 
+            if (levelButton.isTouchable()) return;
+
+            levelButton.setColor(Color.WHITE);
+            levelButton.setTouchable(Touchable.enabled);
+        }
     }
+
+
 
     private void levelSelectHandler(int levelIndex) {
 
@@ -217,7 +189,14 @@ public class LevelSelectorScreen implements Screen {
 
         // numeric values will be used later to execute different methods
         dialog.button("New", 1);
-        dialog.button("Load saved", 2);
+
+        boolean saveExists = Storage.getInstance().levelSaveExists(levelIndex);
+        TextButton loadButton = new TextButton("Load saved", Scene2DUtils.skin);
+        if (!saveExists) {
+            loadButton.setColor(Color.GRAY);
+            loadButton.setTouchable(Touchable.disabled);
+        }
+        dialog.button(loadButton, 2);
 
         dialog.show(stage);
     }

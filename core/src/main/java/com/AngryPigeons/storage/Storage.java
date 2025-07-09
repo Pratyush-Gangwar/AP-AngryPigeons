@@ -37,10 +37,8 @@ import java.util.List;
 
 public class Storage {
     private Gson gson;
-    private Main main;
-
-    private List<SavedLevel> savedLevelList;
-    private final static String path = "storage.txt";
+    private static final String SAVE_FOLDER = "saves";
+    private static final String META_FILE = "metadata.json";
 
     private static Storage instance;
 
@@ -52,90 +50,97 @@ public class Storage {
         return Storage.instance;
     }
 
-    public void setMain(Main main) {
-        this.main = main;
-    }
-
     private Storage() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
-        this.savedLevelList = new ArrayList<>();
-        readLevelsFromDisk();
-    }
 
-    public void writeToDisk() {
-        try (FileWriter fileWriter = new FileWriter(path)) {
-            gson.toJson(savedLevelList, fileWriter);
-        } catch (IOException e) {
-            System.out.println("Exception while saving to file.");
+        File folder = new File(SAVE_FOLDER);
+        if (!folder.exists()) {
+            folder.mkdir();
         }
-
-        System.out.println("All levels saved");
     }
 
-    public SavedLevel getOrCreateSavedLevel(int levelIdx) {
-        SavedLevel savedLevel;
-
-        if (levelIdx < savedLevelList.size()) {
-            savedLevel = savedLevelList.get(levelIdx);
-        } else {
-            savedLevel = new SavedLevel();
-            savedLevelList.add(savedLevel);
-        }
-
-        return savedLevel;
-    }
-
-    public void saveLevelInMemory(LevelScreen levelScreen) {
-
-        List<LevelScreen> levelScreenList = main.getLevelScreenList();
-        int levelIdx = levelScreenList.indexOf(levelScreen);
-
-        SavedLevel savedLevel = getOrCreateSavedLevel(levelIdx);
+    public void saveLevel(LevelScreen levelScreen) {
+        SavedLevel savedLevel = new SavedLevel();
         savedLevel.save(levelScreen);
 
-        // if you're trying to save a level, then you should be able to load it
-        savedLevel.setLoadingDisabled(false);
-
-        System.out.println("Level " + levelIdx + " saved");
-    }
-
-    public void readLevelsFromDisk() {
-        if (!saveFileExists()) {
-            System.out.println("Save file doesn't exist.");
-            return;
-        }
-
-        TypeToken<List<SavedLevel>> listTypeToken = new TypeToken<>(){};
-
-        try (FileReader fileReader = new FileReader(path)) {
-            this.savedLevelList = gson.fromJson(fileReader, listTypeToken);
-            System.out.println(this.savedLevelList);
+        int levelID = levelScreen.getLevelID();
+        try (FileWriter writer = new FileWriter(getLevelFile(levelID))) {
+            gson.toJson(savedLevel, writer);
+            System.out.println("Level " + levelID + " saved to disk.");
         } catch (IOException e) {
-            System.out.println("Error while loading from file.");
+            System.out.println("Error saving level " + levelID + ": " + e.getMessage());
         }
 
-        System.out.println("Loaded all levels.");
+        if (savedLevel.isComplete()) {
+            updateMaxCompletedLevel(levelID);
+        }
     }
 
-    public void loadLevelFromMemory(LevelScreen levelScreen) {
-        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+    public void loadLevel(LevelScreen levelScreen) {
+        int levelID = levelScreen.getLevelID();
+        File levelFile = getLevelFile(levelID);
 
-        // level hasn't been saved (likely a new level)
-        if (levelIdx >= savedLevelList.size()) {
+        if (!levelFile.exists()) {
+            System.out.println("No save found for level " + levelID);
             return;
         }
 
-        SavedLevel savedLevel = savedLevelList.get(levelIdx);
-        savedLevel.load(levelScreen);
+        try (FileReader reader = new FileReader(levelFile)) {
+            SavedLevel savedLevel = gson.fromJson(reader, SavedLevel.class);
+            if (savedLevel != null) {
+                savedLevel.load(levelScreen);
+                System.out.println("Level " + levelID + " loaded from disk.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading level " + levelID + ": " + e.getMessage());
+        }
     }
 
-    private boolean saveFileExists() {
-        File file = new File(path);
+
+    private File getLevelFile(int levelID) {
+        return new File(SAVE_FOLDER + File.separator + "level_" + levelID + ".json");
+    }
+
+    public boolean levelSaveExists(int index) {
+        File file = new File("saves/level_" + index + ".json");
         return file.exists();
     }
 
-    public List<SavedLevel> getSavedLevelList() {
-        return savedLevelList;
+    public void updateMaxCompletedLevel(int levelID) {
+        int currentMax = getMaxCompletedLevel();
+        if (levelID > currentMax) {
+            File metaFile = new File(SAVE_FOLDER + File.separator + META_FILE);
+            try (FileWriter writer = new FileWriter(metaFile)) {
+                gson.toJson(levelID, writer);
+                System.out.println("Updated metadata: max completed level = " + levelID);
+            } catch (IOException e) {
+                System.out.println("Error saving metadata: " + e.getMessage());
+            }
+        }
     }
+
+    public int getMaxCompletedLevel() {
+        File metaFile = new File(SAVE_FOLDER + File.separator + META_FILE);
+        if (!metaFile.exists()) return -1;
+
+        try (FileReader reader = new FileReader(metaFile)) {
+            Integer levelID = gson.fromJson(reader, Integer.class);
+            return levelID != null ? levelID : -1;
+        } catch (IOException e) {
+            System.out.println("Error reading metadata: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    public void deleteSavedLevel(int levelID) {
+        File levelFile = new File(SAVE_FOLDER + File.separator + "level_" + levelID + ".json");
+        if (levelFile.exists() && levelFile.delete()) {
+            System.out.println("Deleted save for level " + levelID);
+        } else {
+            System.out.println("No save to delete for level " + levelID);
+        }
+    }
+
+
 
 }

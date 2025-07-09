@@ -22,7 +22,6 @@ import java.util.List;
 public class Main extends Game {
     private List<LevelScreen> levelScreenList;
     private List<LevelInfo> levelInfoList;
-
     // After the Main constructor is called and before create() is called, Gdx is initialized
     // Therefore, we cannot move the below code into a constructor because Scene2DUtils uses Gdx methods
     @Override
@@ -36,38 +35,13 @@ public class Main extends Game {
         music.setVolume(0.3f);
         music.play();
 
-        // ~~~ Why must we make levelScreenList have the same length as savedLevelList ~~~
-        // Assume we didn't make them the same length.
-
-        // 'Play New Game' is selected for Level 1.
-        // resetExistingLevelOrCreateNewLevel() is called which adds Level 1 to the levelScreenList at index 0
-        // win() is called. The LevelScreen at index 0 is replaced by a blank LevelScreen by resetExistingLevelOrCreateNewLevel()
-        // saveLevelToMemory() is called. SavedLevel is added at index 0 of savedLevelList
-
-        // 'Play New Game' is selected for Level 2.
-        // resetExistingLevelOrCreateNewLevel() is called which adds Level 2 to the levelScreenList at index 1
-        // lose() is called. The LevelScreen at index 1 is replaced by a blank LevelScreen by resetExistingLevelOrCreateNewLevel()
-        // saveLevelToMemory() is called. SavedLevel is added at index 1 of savedLevelList
-
-        // Game is now exit and SavedLevelList is stored to disk
-
-        // Game is relaunched
-        // Since we don't set LevelScreenList to any size, it is empty
-        // 'Play New Game' is selected for Level 2
-        // resetExistingLevelOrCreateNewLevel() is called which adds Level 2 to the levelScreenList at index 0
-        // Clearly, this is unwanted
         levelScreenList = new ArrayList<>();
-        for(int i = 0; i < Storage.getInstance().getSavedLevelList().size(); i++) {
-            levelScreenList.add(null);
-        }
-
         levelInfoList = new ArrayList<>();
 
-        levelInfoList.add(new LevelInfo("Maps\\AP_TestLevelMap.tmx", new ArrayList<>(List.of(1,2,3))));
+        levelInfoList.add(new LevelInfo("Maps\\AP_TestLevelMap.tmx", new ArrayList<>(List.of(1, 2, 3))));
         levelInfoList.add(new LevelInfo("Maps\\AP_TestLevelMap2.tmx", new ArrayList<>(List.of(1,2,1,3))));
         levelInfoList.add(new LevelInfo("Maps\\AP_TestLevelMap3.tmx", new ArrayList<>(List.of(1,2,1,3))));
 
-        Storage.getInstance().setMain(this);
         LevelRenderer.getInstance().setMain(this);
 
         this.changeScreen(Screens.HOMESCREEN);
@@ -111,26 +85,37 @@ public class Main extends Game {
     }
 
     public LevelScreen resetExistingLevelOrCreateNewLevel(int index) {
-        LevelScreen levelScreen = null;
+        LevelScreen oldScreen = null;
+
         try {
-            levelScreen = new LevelScreen(levelInfoList.get(index));
-            try {
-                levelScreenList.set(index, levelScreen);
-            } catch (IndexOutOfBoundsException e) {
-                levelScreenList.add(levelScreen);
-            }
+            oldScreen = levelScreenList.get(index);
+        } catch (IndexOutOfBoundsException ignored) {}
+
+        if (oldScreen != null) {
+            oldScreen.dispose(); // ✅ Properly dispose Box2D world and renderer
         }
-        catch (TileMapNotFoundException e){
+
+        LevelScreen newScreen = null;
+        try {
+            newScreen = new LevelScreen(levelInfoList.get(index));
+            if (index < levelScreenList.size()) {
+                levelScreenList.set(index, newScreen);
+            } else {
+                levelScreenList.add(newScreen);
+            }
+        } catch (TileMapNotFoundException e) {
             System.out.println(e.getMessage());
         }
 
-        return levelScreen;
+        return newScreen;
     }
+
 
     public void playNewLevel(int index) {
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
         LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
+        levelScreen.initializeBirdPointerIfNeeded();
         levelRenderer.setLevelScreen(levelScreen);
 
         this.setScreen(levelRenderer);
@@ -140,30 +125,14 @@ public class Main extends Game {
     }
 
     public void loadLevel(int index) {
-
-        List<SavedLevel> savedLevelList = Storage.getInstance().getSavedLevelList();
-
-        // level wasn't saved
-        // this is likely a new level that the user just unlocked
-        if (index >= savedLevelList.size()) {
-            return;
-        }
-
-        // the user won this level and lost their save
-        if (savedLevelList.get(index).isLoadingDisabled()) {
-            return;
-        }
-
-        // create a new level (add/set into levelScreenList) and load the savedLevel into it
-        // we don't want to load into an existing levelScreen because it has its own box2D world and camera/viewport states
         LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
-        levelScreen.load();
+
+        Storage.getInstance().loadLevel(levelScreen);
+        levelScreen.spawnCurrentBird();
 
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
         levelRenderer.setLevelScreen(levelScreen);
         this.setScreen(levelRenderer);
-
-        // when switching screens, must update input processor to current screen
         Gdx.input.setInputProcessor(levelRenderer.getStage());
     }
 
@@ -175,7 +144,7 @@ public class Main extends Game {
     // called when game window is closed
     @Override
     public void dispose() {
-        Storage.getInstance().writeToDisk();
+
     }
 
     public List<LevelScreen> getLevelScreenList() {

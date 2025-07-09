@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SavedLevel {
-
-    // When winLevel() or loseLevel() is called, resetExistingLevelOrCreateNewLevel() creates a fresh level
-    // then, isComplete is set to true for this fresh level (only in winLevel())
-    // however, we don't call saveLevelInMemory() for this fresh level since a fresh level doesn't have any progress
-    // instead, we merely disable loading for this savedLevel
-    private boolean loadingDisabled;
     private boolean isComplete; // has level been won at least once?
 
     private int birdPointer;
@@ -28,32 +22,22 @@ public class SavedLevel {
 
         this.birdPointer = 0;
         this.score = 0;
-
-        this.loadingDisabled = false;
     }
 
     public void save(LevelScreen levelScreen) {
         this.birdPointer = levelScreen.getBirdPointer();
         this.score = levelScreen.getScore();
-
         syncIn(savedMaterialList, levelScreen.getMaterialList());
         syncIn(savedPigList, levelScreen.getPigList());
     }
 
     private void syncIn(List<SavedKillable> savedKillableList,  List<? extends Killable> killableList) {
+        savedKillableList.clear();
 
-        for(int i = 0; i < killableList.size(); i++) {
-            Killable killable = killableList.get(i);
-            SavedKillable savedKillable;
-
-            if (i < savedKillableList.size()) {
-                savedKillable = savedKillableList.get(i);
-            } else {
-                savedKillable = new SavedKillable( /*killable*/ );
-                savedKillableList.add(savedKillable);
-            }
-
+        for (Killable killable : killableList) {
+            SavedKillable savedKillable = new SavedKillable();
             savedKillable.save(killable);
+            savedKillableList.add(savedKillable);
         }
     }
 
@@ -62,7 +46,6 @@ public class SavedLevel {
         for(int i = 0; i < killableList.size(); i++) {
             Killable killable = killableList.get(i);
             SavedKillable savedKillable = savedKillableList.get(i);
-
             savedKillable.load(killable);
         }
 
@@ -78,14 +61,6 @@ public class SavedLevel {
 
     public boolean isComplete() {
         return isComplete;
-    }
-
-    public boolean isLoadingDisabled() {
-        return loadingDisabled;
-    }
-
-    public void setLoadingDisabled(boolean loadingDisabled) {
-        this.loadingDisabled = loadingDisabled;
     }
 
     public void setComplete(boolean isComplete) {

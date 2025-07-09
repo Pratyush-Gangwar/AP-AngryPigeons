@@ -87,7 +87,6 @@ public class Scene2DUtils {
                 Integer option = (Integer) object;
 
                 if (option == 1) {
-                    Storage.getInstance().writeToDisk();
                     Gdx.app.exit();
                 }
             }
@@ -121,22 +120,7 @@ public class Scene2DUtils {
                 // do nothing
             }
 
-            // Custom Height and Width
-//            @Override
-//            public float getPrefWidth() {
-//                return 300;
-//            }
-//
-//            @Override
-//            public float getPrefHeight() {
-//                return 150;
-//            }
         };
-
-//        BitmapFont font = Scene2DUtils.skin.getFont("font");
-//        font.getData().setScale(4f);
-//
-//        Label label = new Label("Set volume: ", new Label.LabelStyle(font, Color.WHITE));
 
         Slider volSlider = new Slider(0f, 100f, 0.01f, false, Scene2DUtils.skin);
         volSlider.setValue(Scene2DUtils.music.getVolume() * 100); // .getVolume() returns value between 0 and 1

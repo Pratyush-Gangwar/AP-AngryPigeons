@@ -110,6 +110,16 @@ public class LevelScreen implements Screen{
 
     private int score;
 
+    public int getLevelID() {
+        return levelID;
+    }
+
+    public void setLevelID(int levelID) {
+        this.levelID = levelID;
+    }
+
+    private int levelID;
+
     private OrthographicCamera camera;
     private Viewport viewport;
 
@@ -165,8 +175,9 @@ public class LevelScreen implements Screen{
         }
         this.map = new TmxMapLoader().load(levelInfo.getTileMapPath());
         this.birds = levelInfo.getBirds();
+        this.levelID = levelInfo.getLevelID();
         this.timeSinceEnd = 0.0f;
-        this.birdPointer = 0;
+        this.birdPointer = -1;
         this.score = 0;
         this.timeSinceLaunch = 0.0f;
 
@@ -188,7 +199,6 @@ public class LevelScreen implements Screen{
         pigList.addAll( TiledMapUtil.parsePigs(world, map.getLayers().get("medium-pigs").getObjects(), false, 2));
         pigList.addAll(TiledMapUtil.parsePigs(world, map.getLayers().get("small-pigs").getObjects(), false, 1));
 
-        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
         currentBirdPos = new Vector3();
 
         TiledMapUtil.parseFloor(world, map.getLayers().get("ground").getObjects(), true);
@@ -226,6 +236,20 @@ public class LevelScreen implements Screen{
         tmr.setView(camera);
     }
 
+    public void initializeBirdPointerIfNeeded() {
+        if (this.birdPointer == -1) {
+            this.birdPointer = 0;
+        }
+        spawnCurrentBird();
+    }
+
+    public void spawnCurrentBird() {
+        if (birdPointer >= 0 && birdPointer < birds.size()) {
+            currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer));
+        }
+    }
+
+
     public void sleepBodies() {
         Array<Body> bodies = new Array<>();
         world.getBodies(bodies);
@@ -249,23 +273,6 @@ public class LevelScreen implements Screen{
     @Override
     public void show(){}
 
-    public void load() {
-        // before deserialization and just after tile map reading, all materials and pigs have isDead set to false
-        // after deserialization, materials and pigs which had died in the previous session now have isDead set to true
-        // so, they won't be drawn by drawKillable() method which only checks the value of isDead()
-
-        // but they will still remain in the Box2D world (as evidenced by the debugRenderer) because updatePig() and
-        // updateMaterial() first checks if the object is dead. If so, it continues. If not, it checks if the HP is
-        // less than zero, and then disposes the object while setting isDead to true
-
-        // therefore, we must remove them from the Box2D world while deserializing
-        // this is done in SavedKillable.load() method
-
-        Storage.getInstance().loadLevelFromMemory(this);
-        world.destroyBody(currentBird.getBody());
-        currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer-1));
-    }
-
     @Override
     public void render(float delta){
         timeSinceLaunch += delta;
@@ -285,7 +292,7 @@ public class LevelScreen implements Screen{
 //        float crosshairSize = 5f;
 
         slingShot.update();
-        currentBird.update();
+        if (birdPointer < birds.size()) currentBird.update();
 
         win = true;
         updateMaterials();
@@ -300,26 +307,38 @@ public class LevelScreen implements Screen{
             }
         }
 
+        if (lose) {
+            timeSinceEnd += delta;
+
+            if (timeSinceEnd >= timeToWaitAfterWinLoseConditionIsMet) {
+                levelRenderer.loseLevel();
+                return; // don't do anything more
+            }
+        }
+
         // We delete the bird if its velocity is less than a certain magnitude
         // At this magnitude, the bird has almost stopped moving
         // But all birds apart from the current bird have a velocity of 0.
         // So, we need a boolean (isWaiting) to differentiate between the one flying bird and the others birds which haven't been launched
-        if ((!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)||(currentBird.getBody().getPosition().y<0)) {
+        if (birdPointer < birds.size() &&
+            (
+                (!currentBird.isWaiting() && currentBird.getBody().getLinearVelocity().len() <= 0.4f)
+                ||(currentBird.getBody().getPosition().y<0)
+            )
+        ) {
+
             timeStep = 1/60f;
-            if (birdPointer<birds.size()) {
-                world.destroyBody(currentBird.getBody());
-                currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer++));
+
+            world.destroyBody(currentBird.getBody());
+            birdPointer++;
+
+            if (birdPointer < birds.size()) {
+                currentBird = TiledMapUtil.parseBird(world, map.getLayers().get("bird").getObjects(), birds.get(birdPointer));
             }
 
             // birds exhausted
-            else if (!win){
+            else if (!win) {
                 lose = true;
-                timeSinceEnd += delta;
-
-                if (timeSinceEnd >= timeToWaitAfterWinLoseConditionIsMet) {
-                    levelRenderer.loseLevel();
-                    return; // don't do anything more
-                }
             }
         }
 
@@ -329,6 +348,8 @@ public class LevelScreen implements Screen{
     }
 
     private void inputUpdate(){
+        if (birdPointer >= birds.size()) return;
+
         if (Gdx.input.isTouched(Input.Buttons.LEFT)){
             if (currentBird.isWaiting()) {
                 ssPulled = true;
@@ -399,7 +420,7 @@ public class LevelScreen implements Screen{
 //        for (Bird bird:birds2){bird.render(batch);}
 //        for (Bird bird:birds3){bird.render(batch);}
 
-        currentBird.render(batch);
+        if (birdPointer < birds.size()) currentBird.render(batch);
 
         drawKillables(materialList);
         drawKillables(pigList);

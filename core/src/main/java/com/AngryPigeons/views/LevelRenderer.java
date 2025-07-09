@@ -322,7 +322,7 @@ public class LevelRenderer implements Screen, InputProcessor {
         saveBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                Storage.getInstance().saveLevelInMemory(levelScreen);
+                Storage.getInstance().saveLevel(levelScreen);
 
                 saveDialog = Scene2DUtils.makeGameSavedWindow();
                 saveDialog.show(stage);
@@ -333,54 +333,25 @@ public class LevelRenderer implements Screen, InputProcessor {
     }
 
     public void winLevel() {
-
-        // Once you win a level, you lose your previous save. You cannot do 'Load Game' on that level.
-        // Note, we are not syncing resetLevel with savedLevel. savedLevel stores the previous save.
-        // We do not need to sync them as we show case-by-case below.
-
-        // Also note that we do not call resetExistingLevelOrCreateNewLevel() here.
-        // There is no need to because when playNewLevel() or loadLevel() is called, they call resetExistingLevelOrCreateNewLevel()
-        // to get fresh copies of that level
-
-        // Also note that we do not set isComplete of the LevelScreen here but of savedLevel
-        // This is because LevelScreen is merely transient, in-memory storage whereas savedLevel is permanent
-
-        // CASE 1
-        // Since loadingDisabled is true, the user cannot use 'Load Game' for this level in this session
-        // They can only use 'New Game'. resetExistingLevelOrCreateNewLevel() will associate LevelRenderer with a fresh
-        // copy of that level.
-
-        // If they do not 'Save Level' during this new game, loadingDisabled will remain false and the user won't be
-        // able to use 'Load Level' (because there is no save to load).
-
-        // If they use 'Save Level' during the new game, loadingDisabled will be set to true and savedLevel will
-        // contain the new save.
-
-        // CASE 2
-        // Assume that they have just won the level. Then, the game is exited and restarted.
-        // Since loadingDisabled is true, the user cannot use 'Load Game' for this level even in this new session
-        // They can only use 'New Game'. resetExistingLevelOrCreateNewLevel() will associate LevelRenderer with a fresh
-        // copy of that level.
-
-        // If they do not 'Save Level' during this new game, loadingDisabled will remain false and the user won't be
-        // able to use 'Load Level' (because there is no save to load).
-
-        // If they use 'Save Level' during the new game, loadingDisabled will be set to true and savedLevel will
-        // contain the new save.
-
         hasGameEnded = true;
 
         int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-        SavedLevel savedLevel = Storage.getInstance().getOrCreateSavedLevel(levelIdx);
-        savedLevel.setLoadingDisabled(true);
-        savedLevel.setComplete(true);
 
+        // Delete saved progress for this level
+        Storage.getInstance().deleteSavedLevel(levelIdx);
+
+        // Persist that this level is now completed
+        Storage.getInstance().updateMaxCompletedLevel(levelIdx);
+
+        // Transition to win screen
         main.changeScreen(Screens.WINSCREEN);
     }
 
+
+
     public void loseLevel() {
 
-        // When you lose a level, you do not lose your previous save. That is, loadingDisabled remains false
+        // When you lose a level, you do not lose your previous save.
 
         // Also note that we do not call resetExistingLevelOrCreateNewLevel() here.
         // There is no need to because when playNewLevel() or loadLevel() is called, they call resetExistingLevelOrCreateNewLevel()
@@ -412,22 +383,6 @@ public class LevelRenderer implements Screen, InputProcessor {
         mainTable.add(Scene2DUtils.makeLabel("Speed up", 30)).pad(10, 5, 10, 10);
 
         mainTable.add(scoreLabel).pad(10).expandX().right();
-        
-
-
-//        Texture texture = new Texture(Gdx.files.internal("textures/pause.png"));
-//        TextureRegion textureRegion = new TextureRegion(texture);
-//        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(textureRegion);
-
-//        ImageButton imageButton = new ImageButton(textureRegionDrawable);
-//        mainTable.add(imageButton).width(100).height(100);
-
-//        imageButton.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                isPaused = true;
-//            }
-//        });
 
         stage.addActor(mainTable);
     }

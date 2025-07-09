@@ -10,12 +10,26 @@ import java.util.ArrayList;
 //	- set once in constructor and doesn't change during run-time
 
 public class LevelInfo {
+    private static int nextLevelID = 0;
+
+    public int getLevelID() {
+        return levelID;
+    }
+
+    public void setLevelID(int levelID) {
+        this.levelID = levelID;
+    }
+
+    private int levelID;
     private ArrayList<Integer> birds;
     private String tileMapPath;
 
     public LevelInfo(String tileMapPath, ArrayList<Integer> birds) {
         this.tileMapPath = tileMapPath;
         this.birds = birds;
+
+        this.levelID = LevelInfo.nextLevelID;
+        LevelInfo.nextLevelID++;
     }
 
     public ArrayList<Integer> getBirds() {
