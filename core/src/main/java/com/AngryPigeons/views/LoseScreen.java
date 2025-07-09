@@ -139,8 +139,7 @@ public class LoseScreen implements Screen {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 LevelScreen levelScreen = LevelRenderer.getInstance().getLevelScreen(); // current level
-                int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
-                main.playNewLevel(levelIdx);
+                main.playNewLevel(levelScreen.getLevelID());
             }
         });
     }

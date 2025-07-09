@@ -12,14 +12,6 @@ import java.util.ArrayList;
 public class LevelInfo {
     private static int nextLevelID = 0;
 
-    public int getLevelID() {
-        return levelID;
-    }
-
-    public void setLevelID(int levelID) {
-        this.levelID = levelID;
-    }
-
     private int levelID;
     private ArrayList<Integer> birds;
     private String tileMapPath;
@@ -36,15 +28,12 @@ public class LevelInfo {
         return birds;
     }
 
-    public void setBirds(ArrayList<Integer> birds) {
-        this.birds = birds;
-    }
-
     public String getTileMapPath() {
         return tileMapPath;
     }
 
-    public void setTileMapPath(String tileMapPath) {
-        this.tileMapPath = tileMapPath;
+    public int getLevelID() {
+        return levelID;
     }
+
 }

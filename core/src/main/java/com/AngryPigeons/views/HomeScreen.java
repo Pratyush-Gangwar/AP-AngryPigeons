@@ -48,8 +48,6 @@ public class HomeScreen implements Screen {
     }
 
     private HomeScreen(Main main) {
-        System.out.println("Constructed home");
-
         this.main = main;
 
         musicDialog = null;

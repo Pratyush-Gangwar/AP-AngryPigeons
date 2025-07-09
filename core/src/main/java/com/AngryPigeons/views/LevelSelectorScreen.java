@@ -106,13 +106,13 @@ public class LevelSelectorScreen implements Screen {
         Scene2DUtils.setBackgroundOfTable(table);
 
         int numLevelButtons = main.getLevelInfoList().size();
-        int maxCompleted = Storage.getInstance().getMaxCompletedLevel();
-        int maxUnlockedIdx = Math.min(numLevelButtons - 1, maxCompleted + 1); // Next playable level is one after max completed
+        int maxCompletedLevelID = Storage.getInstance().getMaxCompletedLevel();
+        int nextUnlockedLevelID = Math.min(numLevelButtons - 1, maxCompletedLevelID + 1); // Next playable level is one after max completed
 
         for (int i = 0; i < numLevelButtons; i++) {
             TextButton levelButton = new TextButton("Level " + i, Scene2DUtils.skin);
 
-            if (i > maxUnlockedIdx) {
+            if (i > nextUnlockedLevelID) {
                 levelButton.setColor(Color.GRAY);
                 levelButton.setTouchable(Touchable.disabled);
             }
@@ -141,14 +141,14 @@ public class LevelSelectorScreen implements Screen {
     }
 
     private void updateLevelStatus() {
-        int maxCompleted = Storage.getInstance().getMaxCompletedLevel();
+        int maxCompletedLevelID = Storage.getInstance().getMaxCompletedLevel();
 
-        int nextLevelIdx = maxCompleted + 1;
+        int nextUnlockedLevelID = maxCompletedLevelID + 1;
         int numLevelButtons = main.getLevelInfoList().size();
 
-        if (nextLevelIdx >= numLevelButtons) return;
+        if (nextUnlockedLevelID >= numLevelButtons) return;
 
-        Actor actor = table.getChild(nextLevelIdx);
+        Actor actor = table.getChild(nextUnlockedLevelID);
         if (actor instanceof TextButton) {
             TextButton levelButton = (TextButton) actor;
 

@@ -11,7 +11,9 @@ import com.AngryPigeons.views.*;
 import com.badlogic.gdx.Game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -20,7 +22,7 @@ import java.util.List;
 
 // Scene2D entirely
 public class Main extends Game {
-    private List<LevelScreen> levelScreenList;
+    private Map<Integer, LevelScreen> levelScreenMap;
     private List<LevelInfo> levelInfoList;
     // After the Main constructor is called and before create() is called, Gdx is initialized
     // Therefore, we cannot move the below code into a constructor because Scene2DUtils uses Gdx methods
@@ -35,7 +37,7 @@ public class Main extends Game {
         music.setVolume(0.3f);
         music.play();
 
-        levelScreenList = new ArrayList<>();
+        levelScreenMap = new HashMap<>();
         levelInfoList = new ArrayList<>();
 
         levelInfoList.add(new LevelInfo("Maps\\AP_TestLevelMap.tmx", new ArrayList<>(List.of(1, 2, 3))));
@@ -84,37 +86,29 @@ public class Main extends Game {
         }
     }
 
-    public LevelScreen resetExistingLevelOrCreateNewLevel(int index) {
-        LevelScreen oldScreen = null;
-
-        try {
-            oldScreen = levelScreenList.get(index);
-        } catch (IndexOutOfBoundsException ignored) {}
+    public LevelScreen resetExistingLevelOrCreateNewLevel(int levelScreenID) {
+        LevelScreen oldScreen = levelScreenMap.get(levelScreenID);
 
         if (oldScreen != null) {
-            oldScreen.dispose(); // ✅ Properly dispose Box2D world and renderer
+            oldScreen.dispose(); // Properly dispose Box2D world and renderer
         }
 
         LevelScreen newScreen = null;
         try {
-            newScreen = new LevelScreen(levelInfoList.get(index));
-            if (index < levelScreenList.size()) {
-                levelScreenList.set(index, newScreen);
-            } else {
-                levelScreenList.add(newScreen);
-            }
+            newScreen = new LevelScreen(levelInfoList.get(levelScreenID));
         } catch (TileMapNotFoundException e) {
             System.out.println(e.getMessage());
         }
 
+        levelScreenMap.put(levelScreenID, newScreen);
         return newScreen;
     }
 
 
-    public void playNewLevel(int index) {
+    public void playNewLevel(int levelScreenID) {
         LevelRenderer levelRenderer = LevelRenderer.getInstance();
 
-        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
+        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(levelScreenID);
         levelScreen.getBirdManager().initialize();
         levelRenderer.setLevelScreen(levelScreen);
 
@@ -124,8 +118,8 @@ public class Main extends Game {
         Gdx.input.setInputProcessor(levelRenderer.getStage());
     }
 
-    public void loadLevel(int index) {
-        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(index);
+    public void loadLevel(int levelScreenID) {
+        LevelScreen levelScreen = resetExistingLevelOrCreateNewLevel(levelScreenID);
 
         Storage.getInstance().loadLevel(levelScreen);
         levelScreen.getBirdManager().spawnBird();
@@ -145,10 +139,6 @@ public class Main extends Game {
     @Override
     public void dispose() {
 
-    }
-
-    public List<LevelScreen> getLevelScreenList() {
-        return levelScreenList;
     }
 
     public List<LevelInfo> getLevelInfoList() {

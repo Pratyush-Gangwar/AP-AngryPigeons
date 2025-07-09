@@ -247,7 +247,7 @@ public class LevelRenderer implements Screen, InputProcessor {
             pauseMenuTable.add(button).width(Scene2DUtils.buttonWidth).padBottom(Scene2DUtils.paddingSpace).row();
             button.addListener(getButtonListener(label));
         }
-        
+
     }
 
     private ChangeListener getButtonListener(String label) {
@@ -289,15 +289,10 @@ public class LevelRenderer implements Screen, InputProcessor {
     public void winLevel() {
         hasGameEnded = true;
 
-        int levelIdx = main.getLevelScreenList().indexOf(levelScreen);
+        int levelID = levelScreen.getLevelID();
+        Storage.getInstance().deleteSavedLevel(levelID);
+        Storage.getInstance().updateMaxCompletedLevel(levelID);
 
-        // Delete saved progress for this level
-        Storage.getInstance().deleteSavedLevel(levelIdx);
-
-        // Persist that this level is now completed
-        Storage.getInstance().updateMaxCompletedLevel(levelIdx);
-
-        // Transition to win screen
         main.changeScreen(Screens.WINSCREEN);
     }
 
